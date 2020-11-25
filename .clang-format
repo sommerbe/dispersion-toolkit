@@ -1,0 +1,18 @@
+# BasedOnStyle: WebKit
+BasedOnStyle: Mozilla
+
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never 
+ColumnLimit: 90
+
+# IndentWrappedFunctionNames: true
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: All
+
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
