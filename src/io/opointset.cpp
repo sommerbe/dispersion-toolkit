@@ -1,4 +1,5 @@
 #include "opointset.hpp"
+#include "ostream.hpp"
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -35,19 +36,22 @@ void ostream_close(std::ostream*& os)
   os = nullptr;
 }
 
-void write_pointset(std::ostream& os, regular_pointset<b64>& pts, i8 del)
+void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
 {
-  os << std::scientific << std::setprecision(16);
+  if (pts.coords.empty()) {
+    return;
+  }
+  ensure_precision(os, pts.coords[0]);
   for (u64 i = 0, d = 1; i < pts.coords.size(); ++i, ++d) {
-    os << pts.coords[i];
+    *os << pts.coords[i];
     if (d == pts.dimensions) {
-      os << std::endl;
-      d = 1;
+      *os << std::endl;
+      d = 0;
     } else {
-      os << del;
+      *os << del;
     }
   }
-  os << "#eos" << std::endl;
+  *os << "#eos" << std::endl;
 }
 
 } // namespace dptk

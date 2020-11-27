@@ -5,6 +5,7 @@ set(SOURCES
   ${src}/io/argparse.cpp
   ${src}/io/ipointset.cpp
   ${src}/io/opointset.cpp
+  ${src}/io/ostream.cpp
 )
 
 set(HEADERS

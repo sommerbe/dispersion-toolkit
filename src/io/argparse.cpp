@@ -1,7 +1,17 @@
 #include "argparse.hpp"
+#include <iostream>
 
 namespace dptk {
 namespace argparse {
+
+void replace(std::string& str, const std::string& from, const std::string& to)
+{
+  int p = 0;
+  while (p < str.size() && (p = str.find(from, p)) != str.npos) {
+    str.replace(p, from.size(), to);
+    p += to.size();
+  }
+}
 
 void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& args)
 {
@@ -9,6 +19,13 @@ void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& 
 
   for (i32 i = 1; i < argc; ++i) {
     std::string s = argv[i];
+
+    replace(s, "\\t", "\t");
+    replace(s, "\\n", "\n");
+    replace(s, "\\f", "\f");
+    replace(s, "\\r", "\r");
+    // replace(s, "\\'", "\'");
+    // replace(s, "\\?", "\?");
 
     // skip empty elements
     if (s.empty()) {
@@ -42,6 +59,33 @@ void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& 
     // emit normal argument
     args.push_back(s);
   }
+}
+
+void require_argval(const std::vector<std::string>& args,
+                    u64                             idx,
+                    const std::string&              error_message)
+{
+  if (idx + 1 == args.size()) {
+    std::__throw_invalid_argument(error_message.c_str());
+  }
+}
+
+void ensure(u1 predicate, const std::string& error_message)
+{
+  if (!predicate) {
+    std::__throw_invalid_argument(error_message.c_str());
+  }
+}
+
+u1 argval(const std::vector<std::string>& args, u64 idx)
+{
+  return idx + 1 < args.size() || args[idx + 1].empty();
+}
+
+u1 err(const std::string& msg)
+{
+  std::cerr << msg << std::endl;
+  return false;
 }
 
 } // namespace argparse

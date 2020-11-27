@@ -380,7 +380,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   assert(rt.os != nullptr);
 
   // compute dispersion
-  dispersion_combinatorial(&problem);
+  dptk::dispersion_combinatorial(&problem);
 
   // show result
   dptk::i32 r = dptk::return_results(rt, problem);

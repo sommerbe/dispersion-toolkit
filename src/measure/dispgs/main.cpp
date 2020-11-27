@@ -235,16 +235,12 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "-i") {
-      if (++i == arg.size()) {
-        std::cerr << "invalid argument: -i misses a mandatory parameter" << std::endl;
-        return false;
-      }
+      if (++i == arg.size())
+        return argparse::err("invalid argument: -i misses a mandatory parameter");
       rt.input = arg[i];
     } else if (s == "-o") {
-      if (++i == arg.size()) {
-        std::cerr << "invalid argument: -o misses a mandatory parameter" << std::endl;
-        return false;
-      }
+      if (++i == arg.size())
+        return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
       std::cout << "# NAME #" << std::endl
@@ -324,7 +320,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
 
   // compute dispersion
-  dispersion(gap, &problem);
+  dptk::dispersion(gap, &problem);
 
   // show result
   dptk::i32 r = dptk::return_results(rt, problem, gap);

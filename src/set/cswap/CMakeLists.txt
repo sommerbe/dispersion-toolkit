@@ -1,8 +1,7 @@
 
-set(NAME "dispgs")
+set(NAME "cswap")
 
 set(SOURCES
-  ${src}/index/pointset_dsorted.cpp
   ${src}/io/argparse.cpp
   ${src}/io/ipointset.cpp
   ${src}/io/opointset.cpp
@@ -10,7 +9,6 @@ set(SOURCES
 )
 
 set(HEADERS
-  ${src}/index/pointset_dsorted.hpp
   ${src}/io/argparse.hpp
   ${src}/io/ipointset.hpp
   ${src}/io/opointset.hpp

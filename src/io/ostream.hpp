@@ -19,11 +19,6 @@ void ensure_precision(std::ostream* os, const b64& data);
 // implementation
 //
 
-void ensure_precision(std::ostream* os, const b64& data)
-{
-  *os << std::scientific << std::setprecision(16);
-}
-
 template<typename d>
 void putln(std::ostream* os, d& data, u1 predicate)
 {

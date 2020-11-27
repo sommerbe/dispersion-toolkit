@@ -142,5 +142,8 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 ##############################################################
 set(src "${CMAKE_SOURCE_DIR}/src")
 
+add_subdirectory(src/set/fibonacci)
+add_subdirectory(src/set/kritzinger)
+add_subdirectory(src/set/cswap)
 add_subdirectory(src/measure/dispcombinatorial)
 add_subdirectory(src/measure/dispgs)

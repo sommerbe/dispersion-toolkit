@@ -31,6 +31,8 @@ u64 regular_pointset<prec>::size() const
 template<typename prec>
 void regular_pointset<prec>::allocate(u64 num_points, u64 num_dimensions)
 {
+  points     = num_points;
+  dimensions = num_dimensions;
   coords.resize(num_points * num_dimensions);
 }
 

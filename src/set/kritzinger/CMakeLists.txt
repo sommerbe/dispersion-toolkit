@@ -1,18 +1,14 @@
 
-set(NAME "dispgs")
+set(NAME "kritzingerlattice")
 
 set(SOURCES
-  ${src}/index/pointset_dsorted.cpp
   ${src}/io/argparse.cpp
-  ${src}/io/ipointset.cpp
   ${src}/io/opointset.cpp
   ${src}/io/ostream.cpp
 )
 
 set(HEADERS
-  ${src}/index/pointset_dsorted.hpp
   ${src}/io/argparse.hpp
-  ${src}/io/ipointset.hpp
   ${src}/io/opointset.hpp
   ${src}/io/ostream.hpp
   ${src}/math/pointset.hpp
