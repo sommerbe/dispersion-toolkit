@@ -306,9 +306,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "# DESCRIPTION #" << std::endl;
       std::cout
         << "Computes dispersion, n*dispersion and/or number of empty boxes found (close "
-           "approximation from below), in this order, of a given point set using -i FILE "
-           "option. If -i "
-           "FILE option is missing, standard input is assumed. The option "
+           "approximation from below), in this order, of a given point set sequence "
+           "using -i FILE option. If -i FILE option is missing, standard input is "
+           "assumed. The option "
            "--interior-boxes limits both the counting of boxes and the tracking of boxes "
            "to interior boxes, i.e. those not intersecting with the domain boundary. The "
            "option --greatest-box returns the first greatest box found. All boxes are "
@@ -345,6 +345,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
   dptk::problem_param problem;
   dptk::program_param rt;
+  dptk::i32           r;
 
   // default configuration
   rt.compute_boxcount     = false;
@@ -360,8 +361,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   problem.domain_bound[0] = 0;
   problem.domain_bound[1] = 1;
   problem.box_count       = 0;
-
-  problem.pts.clear();
+  r                       = EXIT_SUCCESS;
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {
@@ -372,18 +372,29 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::istream_init(rt.input, rt.is);
   dptk::ostream_init(rt.output, rt.os);
 
-  // retrieve point set
-  dptk::read_pointset(*rt.is, problem.pts);
+  // iterate through pointset sequence
+  while (!rt.is->eof() && r == EXIT_SUCCESS) {
+    // clear pointset
+    problem.pts.clear();
 
-  assert(problem.pts.dimensions == 2);
-  assert(rt.is != nullptr);
-  assert(rt.os != nullptr);
+    // retrieve point set
+    dptk::read_pointset(*rt.is, problem.pts);
 
-  // compute dispersion
-  dptk::dispersion_combinatorial(&problem);
+    // skip empty points
+    if (problem.pts.coords.empty()) {
+      continue;
+    }
 
-  // show result
-  dptk::i32 r = dptk::return_results(rt, problem);
+    assert(problem.pts.dimensions == 2);
+    assert(rt.is != nullptr);
+    assert(rt.os != nullptr);
+
+    // compute dispersion
+    dptk::dispersion_combinatorial(&problem);
+
+    // show result
+    r = dptk::return_results(rt, problem);
+  }
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);

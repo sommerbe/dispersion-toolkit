@@ -46,7 +46,13 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out)
   b64         c;
 
   while (std::getline(in, ln) && !in.fail()) {
-    if (ln.empty() || ln[0] == '#') {
+    if (ln.empty()) {
+      continue;
+    }
+    if (ln == "#eos") {
+      break;
+    }
+    if (ln[0] == '#') {
       continue;
     }
     z = (i8*)ln.data();

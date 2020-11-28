@@ -255,8 +255,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "# DESCRIPTION #" << std::endl;
       std::cout
         << "Computes dispersion, n*dispersion and/or number of empty boxes found (close "
-           "approximation from below), in this order, of a given point set using -i FILE "
-           "option. If -i "
+           "approximation from below), in this order, of a given point set sequence "
+           "using -i FILE option. If -i "
            "FILE option is missing, standard input is assumed. The result will be "
            "written to standard output, or to the file given by -o FILE. The option "
            "--silent suppresses comments, yielding only the computed value."
@@ -285,6 +285,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::dispersion_param gap;
   dptk::problem_param    problem;
   dptk::program_param    rt;
+  dptk::i32              r;
 
   // default configuration
   rt.compute_boxcount     = false;
@@ -297,8 +298,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   problem.domain_bound[0] = 0;
   problem.domain_bound[1] = 1;
   problem.box_count       = 0;
-
-  problem.pts.clear();
+  r                       = EXIT_SUCCESS;
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {
@@ -309,21 +309,32 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::istream_init(rt.input, rt.is);
   dptk::ostream_init(rt.output, rt.os);
 
-  // retrieve point set
-  dptk::read_pointset(*rt.is, problem.pts);
+  // iterate through pointset sequence
+  while (!rt.is->eof() && r == EXIT_SUCCESS) {
+    // clear pointset
+    problem.pts.clear();
 
-  assert(problem.pts.dimensions == 2);
-  assert(rt.is != nullptr);
-  assert(rt.os != nullptr);
+    // retrieve point set
+    dptk::read_pointset(*rt.is, problem.pts);
 
-  // allocate
-  problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
+    // skip empty points
+    if (problem.pts.coords.empty()) {
+      continue;
+    }
 
-  // compute dispersion
-  dptk::dispersion(gap, &problem);
+    assert(problem.pts.dimensions == 2);
+    assert(rt.is != nullptr);
+    assert(rt.os != nullptr);
 
-  // show result
-  dptk::i32 r = dptk::return_results(rt, problem, gap);
+    // allocate
+    problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
+
+    // compute dispersion
+    dptk::dispersion(gap, &problem);
+
+    // show result
+    r = dptk::return_results(rt, problem, gap);
+  }
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);
@@ -331,114 +342,3 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   return r;
 }
-
-// int main(int argc, char** argv)
-// {
-//   utk::ParamParser_getopt             parser;
-//   utk::PointsetReader<D, prec, point> stream;
-//   std::string                         infile_pts;
-//   bool                                ndisp_param = false;
-//   bool                                disp_param  = false;
-//   bool                                silent      = false;
-
-//   dispersion_param gap;
-//   problem_param    problem;
-
-//   problem.domain_bound[0] = 0;
-//   problem.domain_bound[1] = 1;
-//   problem.use_box_count   = false;
-//   problem.box_count       = 0;
-
-//   // parse arguments
-//   parser.addShortOption('i',
-//                         &infile_pts,
-//                         1,
-//                         utk::assignString,
-//                         utk::displayString,
-//                         "[string]\t\tThe input pointsets",
-//                         "Input");
-
-//   parser.addLongOption((char*)"ndisp",
-//                        &ndisp_param,
-//                        0,
-//                        utk::assignBoolTrue,
-//                        utk::displayBool,
-//                        (char*)"\t\tOutput (#points - 1)*disp(.)",
-//                        (char*)"ndisp");
-
-//   parser.addLongOption((char*)"disp",
-//                        &disp_param,
-//                        0,
-//                        utk::assignBoolTrue,
-//                        utk::displayBool,
-//                        (char*)"\t\t\tOutput disp(.).",
-//                        (char*)"disp");
-
-//   parser.addLongOption((char*)"silent",
-//                        &silent,
-//                        0,
-//                        utk::assignBoolTrue,
-//                        utk::displayBool,
-//                        (char*)"\t\tOutput the plain value only",
-//                        (char*)"silent");
-
-//   parser.addLongOption((char*)"count-boxes",
-//                        &problem.use_box_count,
-//                        problem.use_box_count,
-//                        utk::assignBoolTrue,
-//                        utk::displayBool,
-//                        "[bool]\tCount all empty boxes found");
-
-//   parser.parse(argc, argv);
-
-//   if (infile_pts.empty()) {
-//     std::cerr << "missing argument: -i [source]" << std::endl;
-//     std::cerr << parser.getHelp() << std::endl;
-//     return EXIT_FAILURE;
-//   }
-//   if (!ndisp_param && !disp_param && !problem.use_box_count) {
-//     std::cerr
-//       << "missing argument: either --disp or --ndisp or --count-boxes needed"
-//       << std::endl;
-//     std::cerr << parser.getHelp() << std::endl;
-//     return EXIT_FAILURE;
-//   }
-
-//   // load pointset
-//   stream.open(infile_pts);
-//   if (!stream.readPointset(problem.pts)) {
-//     std::cerr << "cannot read pointset" << std::endl;
-//     return EXIT_FAILURE;
-//   }
-
-//   // allocate
-//   problem.idx.allocate(problem.pts.size(), D);
-
-//   // run optimization
-//   dispersion(gap, &problem);
-
-//   // show result
-//   if (!silent)
-//     std::cout << "# src=" << infile_pts << std::endl;
-
-//   if (disp_param) {
-//     if (!silent)
-//       std::cout << "# computed dispersion:" << std::endl;
-//     std::cout << std::scientific << std::setprecision(16) << gap.disp
-//               << std::endl;
-//   } else if (ndisp_param) {
-//     prec ndisp = problem.pts.size() * gap.disp;
-//     if (!silent)
-//       std::cout << "# computed n*dispersion:" << std::endl;
-//     std::cout << std::scientific << std::setprecision(16) << ndisp << std::endl;
-//   } else if (problem.use_box_count) {
-//     if (!silent)
-//       std::cout << "# counted number of all empty boxes:" << std::endl;
-//     std::cout << problem.box_count << std::endl;
-//   } else {
-//     std::cerr << "unsupported output option" << std::endl;
-//     return EXIT_FAILURE;
-//   }
-
-//   return EXIT_SUCCESS;
-// }

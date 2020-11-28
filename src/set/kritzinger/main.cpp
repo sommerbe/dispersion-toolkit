@@ -151,22 +151,19 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     const std::string& s = arg[i];
 
     if (s == "--fibonacci-index" || s == "-i") {
-      if (i + 1 == arg.size()) {
-        std::cerr << "missing fibonacci index. Consider using -h or --help." << std::endl;
-        return false;
-      }
+      if (!argparse::argval(arg, i))
+        return argparse::err(
+          "missing fibnacci-index value. Consider using -h or --help.");
       rt.fibonacci_index = std::strtol(arg[++i].c_str(), nullptr, 10);
-      if (rt.fibonacci_index < 3) {
-        std::cerr << "invalid argument: value to --fibonacci-index needs to be >= 3."
-                  << std::endl;
-        return false;
-      }
+      if (rt.fibonacci_index < 3)
+        return argparse::err(
+          "invalid argument: value to --fibonacci-index needs to be >= 3.");
+
     } else if (s == "--delimiter") {
-      if (i + 1 == arg.size() || arg[i + 1].empty()) {
-        std::cerr << "missing delimiter value. Consider using -h or --help." << std::endl;
-        return false;
-      }
+      if (!argparse::argval(arg, i))
+        return argparse::err("missing delimiter value. Consider using -h or --help.");
       rt.delimiter = arg[++i][0];
+
     } else if (s == "--compute-fibonacci-number") {
       rt.compute_fibonacci_number = true;
     } else if (s == "--cardinality") {
@@ -191,7 +188,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "# SYNOPSIS #" << std::endl;
       std::cout << "" << argv[0]
                 << " --fibonacci-index|-i INTEGER [-o FILE] [--compute-fibonacci-number] "
-                   "[--cardinality] [--no-pointset] [--silent]"
+                   "[--cardinality] [--no-pointset] [--delimiter=CHARACTER] [--silent]"
                 << std::endl
                 << std::endl;
       std::cout << "# DESCRIPTION #" << std::endl;
