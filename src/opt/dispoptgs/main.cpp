@@ -6,7 +6,9 @@
 #include "../../math/pointset.hpp"
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <stdlib.h>
+#include <vector>
 
 namespace dptk {
 
@@ -37,7 +39,9 @@ struct problem_param
   u64                    pts_end_idx;
   pointset_dsorted_index idx;
   prec                   domain_bound[2];
-  program_param*         rt;
+  std::stringstream*     os;
+  const program_param*   rt;
+  dptk::i32              r;
 };
 
 struct grow_shrink_param
@@ -70,19 +74,19 @@ void msg(const ascent_param& a, const problem_param* p)
     return;
 
   if (!p->rt->silent) {
-    *p->rt->os << "# " << a.i << " grad=" << std::scientific << std::setprecision(16)
-               << a.grad_len << " ndisp=" << std::scientific << std::setprecision(16)
-               << ((p->pts.size() - 1) * a.disp) << std::endl;
+    *p->os << "# " << a.i << " grad=" << std::scientific << std::setprecision(16)
+           << a.grad_len << " ndisp=" << std::scientific << std::setprecision(16)
+           << ((p->pts.size() - 1) * a.disp) << std::endl;
   }
 }
 
 void msg_param(const ascent_param& a, const problem_param* p)
 {
   if (!p->rt->silent) {
-    *p->rt->os << "# i_end=" << std::scientific << a.i_end << std::endl
-               << "# tau=" << a.tau << std::endl
-               << "# dt=" << a.dt << std::endl
-               << "# points=" << p->pts.size() << std::endl;
+    *p->os << "# i_end=" << std::scientific << a.i_end << std::endl
+           << "# tau=" << a.tau << std::endl
+           << "# dt=" << a.dt << std::endl
+           << "# points=" << p->pts.size() << std::endl;
   }
 }
 
@@ -286,7 +290,7 @@ void gradient_ascent(ascent_param& ga, problem_param* problem)
   }
 
   if (!problem->rt->silent)
-    *problem->rt->os << "# runs=" << ga.i << std::endl;
+    *problem->os << "# runs=" << ga.i << std::endl;
 };
 
 i32 return_results(const program_param& rt,
@@ -294,17 +298,17 @@ i32 return_results(const program_param& rt,
                    const ascent_param&  ga)
 {
   if (!rt.silent)
-    *rt.os << "# src=" << rt.input << std::endl;
+    *problem.os << "# src=" << rt.input << std::endl;
 
   if (rt.compute_sequence_size) {
-    putln(rt.os, "# sequence size of gradient ascent steps:", !rt.silent);
-    putln(rt.os, ga.i);
+    putln(problem.os, "# sequence size of gradient ascent steps:", !rt.silent);
+    putln(problem.os, ga.i);
   }
 
   if (rt.compute_pointset || rt.compute_pointset_sequence) {
-    putln(rt.os, "# coordinates of points:", !rt.silent);
-    putln(rt.os, "# (coord_0 coord_1):", !rt.silent);
-    write_pointset(rt.os, problem.pts, rt.delimiter);
+    putln(problem.os, "# coordinates of points:", !rt.silent);
+    putln(problem.os, "# (coord_0 coord_1):", !rt.silent);
+    write_pointset(problem.os, problem.pts, rt.delimiter);
   }
 
   return EXIT_SUCCESS;
@@ -433,9 +437,10 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::ascent_param  ga;
-  dptk::problem_param problem;
-  dptk::program_param rt;
+  dptk::ascent_param               ga;
+  dptk::program_param              rt;
+  std::vector<dptk::problem_param> problems;
+  dptk::i32                        r;
 
   // default configuration
   rt.tau                       = 2e-15;
@@ -448,11 +453,6 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.input                     = "-";
   rt.output                    = "-";
   rt.delimiter                 = ' ';
-  problem.rt                   = &rt;
-  problem.domain_bound[0]      = 0;
-  problem.domain_bound[1]      = 1;
-
-  problem.pts.clear();
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {
@@ -468,21 +468,72 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::istream_init(rt.input, rt.is);
   dptk::ostream_init(rt.output, rt.os);
 
-  // retrieve point set
-  dptk::read_pointset(*rt.is, problem.pts);
-
-  assert(problem.pts.dimensions == 2);
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);
 
-  // allocate
-  problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
+  // iterate through point set sequence
+  while (!rt.is->eof()) {
+    // allocate problem
+    dptk::problem_param problem;
 
-  // compute optimisation
-  dptk::gradient_ascent(ga, &problem);
+    problem.rt              = &rt;
+    problem.domain_bound[0] = 0;
+    problem.domain_bound[1] = 1;
 
-  // show result
-  dptk::i32 r = dptk::return_results(rt, problem, ga);
+    problem.pts.clear();
+
+    // retrieve point set
+    dptk::read_pointset(*rt.is, problem.pts);
+
+    // skip empty point sets
+    if (problem.pts.coords.empty()) {
+      continue;
+    }
+
+    assert(problem.pts.dimensions == 2);
+
+    // allocate thread local output stream
+    // - a shared ostream yields race conditions or
+    // - performance penalty due to using mutex's and locks
+    problem.os = new std::stringstream;
+
+    // allocate index
+    problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
+
+    // store problem for parallel work
+    problems.push_back(problem);
+  }
+
+// parallel iterate through point set sequence
+#pragma omp parallel for
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
+    // need local copies to ensure performance
+    dptk::problem_param* p   = &problems[i];
+    dptk::ascent_param   gap = ga;
+
+    // compute optimisation
+    dptk::gradient_ascent(gap, p);
+
+    // show result
+    p->r = dptk::return_results(rt, *p, gap);
+  }
+
+  // finalise parallel iterate
+  r = EXIT_SUCCESS;
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
+    dptk::problem_param* p = &problems[i];
+
+    // redirect local output buffers to program output
+    *rt.os << p->os->str();
+
+    // collect exit code (worst case)
+    if (p->r == EXIT_FAILURE) {
+      r = p->r;
+    }
+
+    // clean up heap allocations
+    delete p->os;
+  }
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);

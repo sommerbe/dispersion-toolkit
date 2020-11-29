@@ -123,6 +123,12 @@ endif(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_VERBOSE_MAKEFILE true CACHE BOOL "Enables verbose mode.")
 
 ##############################################################
+# Dependencies
+##############################################################
+# find_package(glfw REQUIRED)
+find_package(OpenMP)
+
+##############################################################
 # Compiler configuration
 ##############################################################
 message(STATUS "Current CXX Compiler: ${CMAKE_CXX_COMPILER}")
@@ -130,12 +136,6 @@ message(STATUS "Current C Compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "Current CXX FLAGS: ${CMAKE_CXX_FLAGS}")
 message(STATUS "Current LINKER FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-
-##############################################################
-# Dependencies
-##############################################################
-# find_package(glfw REQUIRED)
-# find_package(OpenMP REQUIRED)
 
 ##############################################################
 # Modules
@@ -148,4 +148,5 @@ add_subdirectory(src/set/cswap)
 add_subdirectory(src/measure/dispcombinatorial)
 add_subdirectory(src/measure/dispgs)
 add_subdirectory(src/opt/dispoptgs)
+add_subdirectory(src/stat/confidence)
 add_subdirectory(src/vis/psspy)

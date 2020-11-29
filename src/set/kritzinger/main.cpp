@@ -150,7 +150,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   for (u64 i = 0; i < arg.size(); ++i) {
     const std::string& s = arg[i];
 
-    if (s == "--fibonacci-index" || s == "-i") {
+    if (s == "--fibonacci-index" || s == "--i") {
       if (!argparse::argval(arg, i))
         return argparse::err(
           "missing fibnacci-index value. Consider using -h or --help.");
@@ -187,7 +187,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
                 << std::endl;
       std::cout << "# SYNOPSIS #" << std::endl;
       std::cout << "" << argv[0]
-                << " --fibonacci-index|-i INTEGER [-o FILE] [--compute-fibonacci-number] "
+                << " --fibonacci-index|--i=INTEGER [-o FILE] [--compute-fibonacci-number] "
                    "[--cardinality] [--no-pointset] [--delimiter=CHARACTER] [--silent]"
                 << std::endl
                 << std::endl;

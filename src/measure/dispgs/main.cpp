@@ -309,6 +309,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::istream_init(rt.input, rt.is);
   dptk::ostream_init(rt.output, rt.os);
 
+  assert(rt.is != nullptr);
+  assert(rt.os != nullptr);
+
   // iterate through pointset sequence
   while (!rt.is->eof() && r == EXIT_SUCCESS) {
     // clear pointset
@@ -317,14 +320,12 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     // retrieve point set
     dptk::read_pointset(*rt.is, problem.pts);
 
-    // skip empty points
+    // skip empty point sets
     if (problem.pts.coords.empty()) {
       continue;
     }
 
     assert(problem.pts.dimensions == 2);
-    assert(rt.is != nullptr);
-    assert(rt.os != nullptr);
 
     // allocate
     problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);

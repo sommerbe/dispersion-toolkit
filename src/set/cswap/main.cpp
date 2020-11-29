@@ -27,20 +27,27 @@ struct program_param
   u64           count;
   prec          percentage;
   i8            delimiter;
+  u64           repeat;
+  pointset      pts;
 };
 
 struct problem_param
 {
   pointset       pts;
+  u64            pts_sequence_index;
   program_param* rt;
 };
 
 void swap_coordinates(problem_param* problem, std::mt19937_64& rengine)
 {
   assert(problem != nullptr);
-  assert(problem->pts.size() > 0);
-  assert(problem->rt->axis < problem->pts.dimensions);
+  assert(problem->rt->pts.size() > 0);
+  assert(problem->rt->axis < problem->rt->pts.dimensions);
 
+  // obtain local copy due to needing independent repetitions
+  problem->pts = problem->rt->pts;
+
+  // prepare uniform sampling distribution
   std::uniform_int_distribution<u64> distr(0, problem->pts.size() - 1);
   std::uniform_int_distribution<u64> distr_axis(0, 1);
 
@@ -49,9 +56,11 @@ void swap_coordinates(problem_param* problem, std::mt19937_64& rengine)
   u64 axis;
 
   if (!problem->rt->silent) {
+    *problem->rt->os << "# sequence index = " << problem->pts_sequence_index << std::endl;
     *problem->rt->os << "# number of swaps = " << problem->rt->count << std::endl;
   }
 
+  // swap coordinates x times, x = problem->rt->count
   for (std::size_t z = 0; z < problem->rt->count; ++z) {
     do {
       i = distr(rengine);
@@ -75,8 +84,9 @@ void swap_coordinates(problem_param* problem, std::mt19937_64& rengine)
 
 i32 return_results(const program_param& rt, const problem_param& problem)
 {
-  if (!rt.silent)
-    *rt.os << "# src=" << rt.input << std::endl;
+  if (!rt.silent) {
+    *rt.os << "# src = " << rt.input << std::endl;
+  }
 
   putln(rt.os, "# coordinates of points:", !rt.silent);
   putln(rt.os, "# (coord_0 coord_1):", !rt.silent);
@@ -110,11 +120,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (!rt.axis_random)
         rt.axis = std::strtol(arg[i].c_str(), nullptr, 10);
 
-    } else if (s == "--count" || s == "-c") {
+    } else if (s == "--count" || s == "--c") {
       if (!argparse::argval(arg, i))
         return argparse::err("missing count value. Consider using -h or --help.");
       rt.count = std::strtol(arg[++i].c_str(), nullptr, 10);
-      if (arg[i][0] == '-')
+      if (arg[i][0] == '-' || rt.count == 0)
         return argparse::err("invalid argument: count > 0.");
 
     } else if (s == "--percentage") {
@@ -123,6 +133,13 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.percentage = std::strtod(arg[++i].c_str(), nullptr);
       if (rt.percentage <= 0 || rt.percentage > 1)
         return argparse::err("invalid argument: 0 < percentage < 1");
+
+    } else if (s == "--repeat" || s == "--r") {
+      if (!argparse::argval(arg, i))
+        return argparse::err("missing repeat value. Consider using -h or --help.");
+      rt.repeat = std::strtol(arg[++i].c_str(), nullptr, 10);
+      if (arg[i][0] == '-' || rt.repeat == 0)
+        return argparse::err("invalid argument: repeat > 0.");
 
     } else if (s == "--silent") {
       rt.silent = true;
@@ -140,8 +157,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
                 << std::endl;
       std::cout << "# SYNOPSIS #" << std::endl;
       std::cout << "" << argv[0]
-                << " [-i FILE] [-o FILE] [--count|-c=INTEGER] [--axis=-1|INTEGER] "
-                   "[--percentage=BINARY64] [--silent]"
+                << " [-i FILE] [-o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER] "
+                   "[--percentage=BINARY64] [--repeat|--r=INTEGER] [--silent]"
                 << std::endl
                 << std::endl;
       std::cout << "# DESCRIPTION #" << std::endl;
@@ -162,6 +179,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
            "--silent suppresses comments, yielding only the computed value."
         << std::endl
         << std::endl;
+      std::cout
+        << "A sequence of point sets is emitted with the option --repeat=INTEGER, "
+           "INTEGER > 0, where INTEGER is the size of this sequence."
+        << std::endl
+        << std::endl;
       std::cout << "# LIMITATION #" << std::endl;
       std::cout << "Given point set must be two-dimensional." << std::endl;
       return false;
@@ -177,6 +199,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
   dptk::problem_param problem;
   dptk::program_param rt;
+  dptk::i32           r;
 
   // default configuration
   rt.axis        = 0;
@@ -188,9 +211,11 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.input       = "-";
   rt.output      = "-";
   problem.rt     = &rt;
+  r              = EXIT_SUCCESS;
 
-  problem.pts.clear();
+  rt.pts.clear();
 
+  // initialize a pseudo-random number generator
   std::random_device rd;
   std::mt19937_64    rengine(rd());
 
@@ -204,13 +229,13 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::ostream_init(rt.output, rt.os);
 
   // retrieve point set
-  dptk::read_pointset(*rt.is, problem.pts);
+  dptk::read_pointset(*rt.is, rt.pts);
 
-  assert(problem.pts.dimensions == 2);
+  assert(rt.pts.dimensions == 2);
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);
 
-  if (rt.axis >= problem.pts.dimensions) {
+  if (rt.axis >= rt.pts.dimensions) {
     dptk::argparse::err(
       "invalid argument: axis to swap exceeds dimensions of given point set");
     return EXIT_FAILURE;
@@ -218,15 +243,20 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   // convert percentage to count number
   if (rt.percentage > 0) {
-    rt.count = rt.percentage * problem.pts.size();
+    rt.count = rt.percentage * rt.pts.size();
     rt.count = std::max(dptk::u64(1), rt.count);
   }
 
-  // scramble coordinates randomly
-  dptk::swap_coordinates(&problem, rengine);
+  // emit multiple realisations (repetitions)
+  for (dptk::u64 i = 0; i < rt.repeat && r == EXIT_SUCCESS; ++i) {
+    problem.pts_sequence_index = i;
 
-  // show result
-  dptk::i32 r = dptk::return_results(rt, problem);
+    // scramble coordinates randomly
+    dptk::swap_coordinates(&problem, rengine);
+
+    // show result
+    r = dptk::return_results(rt, problem);
+  }
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);

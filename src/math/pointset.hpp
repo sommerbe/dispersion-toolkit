@@ -20,6 +20,8 @@ struct regular_pointset
   inline prec*       at(u64 pidx, u64 axis);
   inline const prec* at(u64 pidx, u64 axis) const;
   inline prec&       operator[](u64 pidx);
+
+  void extract(u64 axis, regular_pointset<prec>& pts) const;
 };
 
 template<typename prec>
@@ -65,6 +67,15 @@ void regular_pointset<prec>::clear()
   dimensions = 0;
   points     = 0;
   coords.clear();
+}
+
+template<typename prec>
+void regular_pointset<prec>::extract(u64 axis, regular_pointset<prec>& pts) const
+{
+  pts.allocate(points, 1);
+  for (u64 i = 0; i < points; ++i) {
+    pts.coords[i] = *at(i, axis);
+  }
 }
 
 } // namespace dptk
