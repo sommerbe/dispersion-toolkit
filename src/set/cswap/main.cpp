@@ -127,7 +127,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (arg[i][0] == '-' || rt.count == 0)
         return argparse::err("invalid argument: count > 0.");
 
-    } else if (s == "--percentage") {
+    } else if (s == "--percentage" || s == "--p") {
       if (!argparse::argval(arg, i))
         return argparse::err("missing percentage value. Consider using -h or --help.");
       rt.percentage = std::strtod(arg[++i].c_str(), nullptr);
@@ -158,7 +158,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "# SYNOPSIS #" << std::endl;
       std::cout << "" << argv[0]
                 << " [-i FILE] [-o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER] "
-                   "[--percentage=BINARY64] [--repeat|--r=INTEGER] [--silent]"
+                   "[--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]"
                 << std::endl
                 << std::endl;
       std::cout << "# DESCRIPTION #" << std::endl;
