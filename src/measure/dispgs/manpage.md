@@ -1,0 +1,41 @@
+% DISPGS(1) 1.0.0 | Dispersion Toolkit Manuals
+% Benjamin Sommer
+% November 30, 2020
+
+# NAME
+
+dispgs - compute dispersion using a grow&shrink algorithm
+
+# SYNOPSIS
+
+**dispgs** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
+
+# DESCRIPTION
+
+Computes dispersion, *n* * dispersion and/or the number of empty boxes of a given point set with cardinality *n*.
+
+The measures are written to *standard output*, or to the file given by **\--o** *FILE*.
+
+# OPTIONS
+
+**\--i** *FILE*, **\--i**=*FILE*
+:   Retrieves a point set sequence (P_0, P_1, ..., *P_i*, ..., P_m) from *FILE*. Its absence is substituted by *stdin*. The end of a point set *P_i*, which equals the line #eos, starts the algorithm to emit the requested measure(s) applied on *P_i*.
+
+**\--o** *FILE*, **\--o**=*FILE*
+:   Redirects the measures to *FILE*, opened in overwrite mode (not appending mode). Without *FILE*, results are forwarded to *stdout*. Errors encountered during the program's execution are streamed into *stderr*, and not into either *stdout* or *FILE*.
+
+**\--disp**
+:   Computes dispersion of *P_i*.
+
+**\--ndisp**
+:   Computes dispersion of *P_i*, multiplied by the cardinality *n* of *P_i*.
+
+**\--count-boxes**
+:   Counts all empty boxes of *P_i*, including interiour and exteriour boxes.
+
+**\--silent**
+:   Suppress comments in the output stream, yielding only the computed value. The latter could be the point set or its cardinality.
+
+# LIMITATION
+
+The algorithm requires a two-dimensional point set sequence.

@@ -4,6 +4,7 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -327,12 +328,12 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   for (u64 i = 0; i < arg.size(); ++i) {
     const std::string& s = arg[i];
 
-    if (s == "--iteration-limit" || s == "-c") {
+    if (s == "--iteration-limit" || s == "--c") {
       if (!argparse::argval(arg, i))
         return argparse::err("missing iterations value. Consider using -h or --help.");
       rt.iteration_limit = std::strtol(arg[++i].c_str(), nullptr, 10);
 
-    } else if (s == "--tau" || s == "-t") {
+    } else if (s == "--tau" || s == "--t") {
       if (!argparse::argval(arg, i))
         return argparse::err("missing tau value. Consider using -h or --help.");
       rt.tau = std::strtod(arg[++i].c_str(), nullptr);
@@ -355,59 +356,17 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.compute_sequence_size = true;
     } else if (s == "--silent") {
       rt.silent = true;
-    } else if (s == "-i") {
+    } else if (s == "--i") {
       if (++i == arg.size())
         return argparse::err("invalid argument: -i misses a mandatory parameter");
       rt.input = arg[i];
-    } else if (s == "-o") {
+    } else if (s == "--o") {
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
 
     } else if (s == "-h" || s == "--help") {
-      std::cout << "# NAME #" << std::endl
-                << "" << argv[0]
-                << " - gradient ascent to reduce dispersion based on grow&shrink strategy"
-                << std::endl
-                << std::endl;
-
-      std::cout << "# SYNOPSIS #" << std::endl;
-      std::cout << "" << argv[0]
-                << " [-i FILE] [-o FILE] [--iteration-limit=INTEGER] [--tau=BINARY64] "
-                   "[--stepsize=BINARY64] [--delimiter=CHARACTER] [--no-pointset] "
-                   "[--compute-iterations] [--pointset-sequence] [--silent]"
-                << std::endl
-                << std::endl;
-
-      std::cout << "# DESCRIPTION #" << std::endl;
-      std::cout
-        << "A gradient descent algorithm, based on grow&shrink, iteratively seeks to "
-           "reduce the dispersion of a given point set using -i FILE "
-           "option. If -i "
-           "FILE option is missing, standard input is assumed. The option "
-           "--iteration-limit=INTEGER sets the upper limit of possible iterations. The "
-           "speed "
-           "of gradient ascent is controlled with the option --stepsize=BINARY64, where "
-           "BINARY64 > 0 (too large values destabilise the ascent; a good value might be "
-           "0.01 or 0.1). The sequence of iterations terminates if the largest gradient "
-           "magnitude falls below tau, to be controlled with the option --tau=BINARY64. "
-           "Here, 0 < BINARY64 << 1. Notice that BINARY64 (or tau) cannot be zero due to "
-           "the limitation of discrete computation. A good value of tau might be 2e-15. "
-           "The resulting pointset will be "
-           "written to standard output, or to the file given by -o FILE. The option "
-           "--no-pointset disables the return of the computed point set. The option "
-           "--compute-iterations enables to return the actual number of iterations used. "
-           "The option "
-           "--silent suppresses comments, yielding only the computed value."
-        << std::endl
-        << std::endl;
-      std::cout
-        << "Visualisation of how the point set is changed during the gradient descent is "
-           "enabled using the option --pointset-sequence, instructing to stream the "
-           "pointsets to the given output. This output is supposed to be piped (as "
-           "input) into a visualisation program compatible with a pointset sequence."
-        << std::endl
-        << std::endl;
+      std::cout << manpage;
 
       std::cout << "# DEFAULT PARAMETERS #" << std::endl;
       std::cout << "--iteration-limit=" << rt.iteration_limit << std::endl
@@ -415,9 +374,6 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
                 << "--stepsize=" << rt.dt << std::endl
                 << "--delimiter='" << rt.delimiter << "'" << std::endl
                 << std::endl;
-
-      std::cout << "# LIMITATION #" << std::endl;
-      std::cout << "Given point set must be two-dimensional." << std::endl;
       return false;
     }
   }

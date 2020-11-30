@@ -1,0 +1,9 @@
+#pragma once
+#include <string>
+
+/* %(generator)s */
+
+namespace dptk
+{
+ std::string manpage = R"V0G0N(%(manpage)s)V0G0N";
+}

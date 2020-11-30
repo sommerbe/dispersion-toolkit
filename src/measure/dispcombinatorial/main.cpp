@@ -3,6 +3,7 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -278,52 +279,20 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.compute_boxes = true;
     } else if (s == "--silent") {
       rt.silent = true;
-    } else if (s == "-i") {
+    } else if (s == "--i") {
       if (++i == arg.size()) {
         std::cerr << "invalid argument: -i misses a mandatory parameter" << std::endl;
         return false;
       }
       rt.input = arg[i];
-    } else if (s == "-o") {
+    } else if (s == "--o") {
       if (++i == arg.size()) {
         std::cerr << "invalid argument: -o misses a mandatory parameter" << std::endl;
         return false;
       }
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout
-        << "# NAME #" << std::endl
-        << "" << argv[0]
-        << " - compute dispersion using a combinatorial (exhaustive search) algorithm"
-        << std::endl
-        << std::endl;
-      std::cout << "# SYNOPSIS #" << std::endl;
-      std::cout << "" << argv[0]
-                << " [-i FILE] [-o FILE] [--disp] [--ndisp] [--count-boxes] "
-                   "[--interior-boxes] [--greatest-box] [--boxes] [--silent]"
-                << std::endl
-                << std::endl;
-      std::cout << "# DESCRIPTION #" << std::endl;
-      std::cout
-        << "Computes dispersion, n*dispersion and/or number of empty boxes found (close "
-           "approximation from below), in this order, of a given point set sequence "
-           "using -i FILE option. If -i FILE option is missing, standard input is "
-           "assumed. The option "
-           "--interior-boxes limits both the counting of boxes and the tracking of boxes "
-           "to interior boxes, i.e. those not intersecting with the domain boundary. The "
-           "option --greatest-box returns the first greatest box found. All boxes are "
-           "return with --boxes (this option is ignored if --greatest-box is given). The "
-           "result will be "
-           "written to standard output, or to the file given by -o FILE. The option "
-           "--silent suppresses comments, yielding only the computed value."
-        << std::endl
-        << std::endl;
-      std::cout << "# LIMITATION #" << std::endl;
-      std::cout << "Given point set must be two-dimensional." << std::endl << std::endl;
-      std::cout << "# FURTHER DETAILS #" << std::endl;
-      std::cout << "Consider using (UNIX style) man page:" << std::endl
-                << "man -l ./man/dispcombinatorial" << std::endl
-                << "man dispcombinatorial" << std::endl;
+      std::cout << manpage;
       return false;
     }
   }

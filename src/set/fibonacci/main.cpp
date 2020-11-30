@@ -3,6 +3,7 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -21,7 +22,6 @@ struct program_param
   u1            silent;
   u1            compute_cardinality;
   u1            compute_pointset;
-  u1            compute_fibonacci_number;
   u32           fibonacci_index;
   i8            delimiter;
 };
@@ -82,13 +82,9 @@ void fibonacci_lattice(problem_param* problem)
 
 i32 return_results(const program_param& rt, const problem_param& problem)
 {
-  if (rt.compute_fibonacci_number) {
-    putln(rt.os, "# computed Fibonacci number:", !rt.silent);
-    putln(rt.os, problem.fibonacci_number);
-  }
   if (rt.compute_cardinality) {
-    putln(rt.os, "# computed set's cardinality:", !rt.silent);
-    putln(rt.os, problem.pts.points);
+    putln(rt.os, "# computed set's cardinality (== Fibonacci number):", !rt.silent);
+    putln(rt.os, problem.fibonacci_number);
   }
   if (rt.compute_pointset) {
     putln(rt.os, "# coordinates of points:", !rt.silent);
@@ -126,48 +122,25 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return argparse::err("missing delimiter value. Consider using -h or --help.");
       rt.delimiter = arg[++i][0];
 
-    } else if (s == "--compute-fibonacci-number") {
-      rt.compute_fibonacci_number = true;
-    } else if (s == "--cardinality") {
+    } else if (s == "--cardinality" || s == "--compute-fibonacci-number") {
       rt.compute_cardinality = true;
     } else if (s == "--no-pointset") {
       rt.compute_pointset = false;
     } else if (s == "--silent") {
       rt.silent = true;
-    } else if (s == "-o") {
+    } else if (s == "--o") {
       if (++i == arg.size()) {
         std::cerr << "invalid argument: -o misses a mandatory parameter" << std::endl;
         return false;
       }
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "# NAME #" << std::endl
-                << "" << argv[0] << " - compute Fibonacci lattice" << std::endl
-                << std::endl;
-      std::cout << "# SYNOPSIS #" << std::endl;
-      std::cout << "" << argv[0]
-                << " --fibonacci-index|-i=INTEGER [-o FILE] [--compute-fibonacci-number] "
-                   "[--cardinality] [--no-pointset] [--delimiter=CHARACTER] [--silent]"
-                << std::endl
-                << std::endl;
-      std::cout << "# DESCRIPTION #" << std::endl;
-      std::cout
-        << "Computes the Fibonacci lattice given the Fibonacci index --fibonacci-index "
-           "INTEGER, which need to be >= 2. Unless the option --no-pointset is given, "
-           "the resulting lattice is written to standard output, or to the file given by "
-           "-o FILE. The option --compute-fibonacci-number returns the Fibonacci number "
-           "given the before mentioned index. The option --cardinality only computes the "
-           "cardinality of the resulting point set. The option --silent suppresses "
-           "comments, yielding only the computed value."
-        << std::endl
-        << std::endl;
-      std::cout << "# LIMITATION #" << std::endl;
-      std::cout << "Given point set must be two-dimensional." << std::endl;
+      std::cout << manpage;
       return false;
     }
   }
 
-  if (!(rt.compute_fibonacci_number || rt.compute_cardinality || rt.compute_pointset)) {
+  if (!(rt.compute_cardinality || rt.compute_pointset)) {
     std::cerr
       << "fatal error: unsupported output option. Consider program option -h or --help."
       << std::endl;
@@ -185,7 +158,6 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::program_param rt;
 
   // default configuration
-  rt.compute_fibonacci_number = false;
   rt.compute_cardinality      = false;
   rt.compute_pointset         = true;
   rt.silent                   = false;

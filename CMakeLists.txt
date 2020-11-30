@@ -55,6 +55,8 @@ set( VERSION_MINOR 0)
 set( VERSION_PATCH 0)
 set( VERSION_STRING ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
+set(CONFIGURE_MANPAGE ON CACHE BOOL "Generates manpages and their embedding into the main.cpp files")
+
 ##############################################################
 # ISA configuration
 ##############################################################
@@ -100,6 +102,7 @@ string(REGEX REPLACE ";" "," ISA_TARGETS "${ISA_TARGETS}")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+set(CMAKE_MAN_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/man")
 
 ##############################################################
 # Compiler Selection
@@ -127,6 +130,15 @@ set(CMAKE_VERBOSE_MAKEFILE true CACHE BOOL "Enables verbose mode.")
 ##############################################################
 # find_package(glfw REQUIRED)
 find_package(OpenMP)
+
+##############################################################
+# Helper scripts and functions
+##############################################################
+function(configure_manpage_embedding NAME SECTION)
+  set(MANPAGE "" CACHE STRING "manual preprint page")
+  file(READ ${NAME}.1.pre MANPAGE)
+  configure_file(${NAME}.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/${NAME}.hpp ESCAPE_QUOTES @ONLY)
+endfunction()
 
 ##############################################################
 # Compiler configuration

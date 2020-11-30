@@ -4,6 +4,7 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -234,36 +235,16 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.compute_boxcount = true;
     } else if (s == "--silent") {
       rt.silent = true;
-    } else if (s == "-i") {
+    } else if (s == "--i") {
       if (++i == arg.size())
         return argparse::err("invalid argument: -i misses a mandatory parameter");
       rt.input = arg[i];
-    } else if (s == "-o") {
+    } else if (s == "--o") {
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "# NAME #" << std::endl
-                << "" << argv[0] << " - compute dispersion using grow&shrink algorithm"
-                << std::endl
-                << std::endl;
-      std::cout << "# SYNOPSIS #" << std::endl;
-      std::cout << "" << argv[0]
-                << " [-i FILE] [-o FILE] [--disp] [--ndisp] [--count-boxes] [--silent]"
-                << std::endl
-                << std::endl;
-      std::cout << "# DESCRIPTION #" << std::endl;
-      std::cout
-        << "Computes dispersion, n*dispersion and/or number of empty boxes found (close "
-           "approximation from below), in this order, of a given point set sequence "
-           "using -i FILE option. If -i "
-           "FILE option is missing, standard input is assumed. The result will be "
-           "written to standard output, or to the file given by -o FILE. The option "
-           "--silent suppresses comments, yielding only the computed value."
-        << std::endl
-        << std::endl;
-      std::cout << "# LIMITATION #" << std::endl;
-      std::cout << "Given point set must be two-dimensional." << std::endl;
+      std::cout << manpage;
       return false;
     }
   }

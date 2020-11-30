@@ -4,6 +4,7 @@
 #include "../../io/ostream.hpp"
 #include "../../math/arithmetic.hpp"
 #include "../../math/pointset.hpp"
+#include "manpage.hpp"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -167,7 +168,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   for (u64 i = 0; i < arg.size(); ++i) {
     const std::string& s = arg[i];
 
-    if (s == "--percentiles" || s == "-p") {
+    if (s == "--percentiles" || s == "--p") {
       if (!argparse::argval(arg, i))
         return argparse::err("missing percentile value. Consider using -h or --help.");
 
@@ -206,41 +207,16 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.compute_arithmetic_mean = true;
     } else if (s == "--silent") {
       rt.silent = true;
-    } else if (s == "-i") {
+    } else if (s == "--i") {
       if (++i == arg.size())
         return argparse::err("invalid argument: -i misses a mandatory parameter");
       rt.input = arg[i];
-    } else if (s == "-o") {
+    } else if (s == "--o") {
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "# NAME #" << std::endl
-                << "" << argv[0]
-                << " - estimate confidence intervals, median and arithmetic mean"
-                << std::endl
-                << std::endl;
-      std::cout << "# SYNOPSIS #" << std::endl;
-      std::cout << "" << argv[0]
-                << " [-i FILE] [-o FILE] [--percentiles|-p=BINARY64 BINARY64 ...] "
-                   "[--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]"
-                << std::endl
-                << std::endl;
-      std::cout << "# DESCRIPTION #" << std::endl;
-      std::cout
-        << "Estimate the statistics in terms of confidence intervals using percentiles, "
-           "statisic median and arithmetic mean of a given point set using -i FILE "
-           "option. If -i FILE option is missing, standard input is assumed. The result "
-           "will be "
-           "written to standard output, or to the file given by -o FILE. The option "
-           "--percentiles accepts a list of BINDARY64 values separated by whitespace. "
-           "The option --2sigma relates to the two-sigma rule including the median. The "
-           "option --iqr relates to the inter-quartile-range rule. The option --mean "
-           "enables the estimation of the arithmetic mean. The option --iqr-box additionally computes the lower and upper whiskers, in addition to the --iqr percentiles, used for statistical box plots. The "
-           "option "
-           "--silent suppresses comments, yielding only the computed value."
-        << std::endl
-        << std::endl;
+      std::cout << manpage;
       return false;
     }
   }
