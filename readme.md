@@ -34,46 +34,16 @@ A manpage is located in the directory of each C++11 main.cpp source file.
 
 * manual generation: bash, pandoc
 
-## Project structure
-
-``
-(build/)
-cmake/
-script/
-src/
-├── adapter
-│   └── utk
-├── index
-├── io
-├── math
-├── measure
-│   ├── dispcombinatorial
-│   └── dispgs
-├── opt
-│   └── dispoptgs
-├── set
-│   ├── cswap
-│   ├── fibonacci
-│   └── kritzinger
-├── stat
-│   └── confidence
-├── vis
-│   └── psspy
-├── CMakeLists.txt
-├── license.txt
-└── readme.md
-``
-
 ## Building
 
 The following commands assume that the parent working directory equals this project's root directory.
 
 Create an out-of-source build directory
 
-``
+````
 mkdir build
 cd build
-``
+````
 
 and prepare the build using
 

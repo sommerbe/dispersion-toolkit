@@ -1,0 +1,77 @@
+? Dispersion Toolkit Manual
+? Benjamin Sommer
+? December 1, 2020
+
+---
+documentclass: extarticle
+fontsize: 12pt
+papersize: a4
+title-meta: 'META Title'
+author-meta: 'The Author'
+date-meta: '1. Juni, 2020'
+keywords:
+- 'keyword1'
+- 'keyword2'
+- 'keyword3'
+subject: My Favorite Subject
+---
+
+!INCLUDE "readme.md"
+
+# Programs
+
+## Sets
+
+### Fibonacci Lattice
+
+!INCLUDE "src/set/fibonacci/manpage.md", 3
+
+
+### Modified Fibonacci Lattice
+
+!INCLUDE "src/set/kritzinger/manpage.md", 3
+
+
+### Coordinate swapping
+
+!INCLUDE "src/set/cswap/manpage.md", 3
+
+
+## Measures
+
+### Dispersion (combinatorial algorithm)
+
+!INCLUDE "src/measure/dispcombinatorial/manpage.md", 3
+
+
+### Dispersion (grow&shrink algorithm)
+
+!INCLUDE "src/measure/dispgs/manpage.md", 3
+
+
+## Optimisation
+
+### Dispersion minimisation with grow&shrink algorithm
+
+!INCLUDE "src/opt/dispoptgs/manpage.md", 3
+
+
+## Statistics
+
+### Confidence intervals, arithmetic mean
+
+!INCLUDE "src/stat/confidence/manpage.md", 3
+
+
+## Visualisation
+
+### Point set sequence (python)
+
+!INCLUDE "src/vis/psspy/manpage.md", 3
+
+
+## File format conversion
+
+### UTK adapter
+
+!INCLUDE "src/adapter/utk/manpage.md", 3

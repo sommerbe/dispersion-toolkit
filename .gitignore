@@ -4,3 +4,4 @@ build
 *.pgf
 *.pdf
 __pycache__
+*.pdf
