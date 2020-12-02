@@ -44,10 +44,10 @@ struct program_param
 
 struct problem_measures
 {
-  prec disp;
-  prec ndisp;
-  u64                    boxcount;
-  hyperbox              box_max;
+  prec     disp;
+  prec     ndisp;
+  u64      boxcount;
+  hyperbox box_max;
 };
 
 struct problem_param
@@ -55,7 +55,7 @@ struct problem_param
   pointset              pts;
   prec                  domain_bound[2];
   std::vector<hyperbox> boxes;
-  problem_measures* measures;
+  problem_measures*     measures;
   program_param*        rt;
 };
 
@@ -133,12 +133,12 @@ void dispersion_combinatorial(problem_param* p)
   box.coords.resize(2 * p->pts.dimensions);
   p->boxes.clear();
 
-  p->measures->disp      = 0;
+  p->measures->disp     = 0;
   p->measures->boxcount = 0;
-  box_max.area = 0;
-  n            = p->pts.size();
-  r_low        = &box.coords[0];
-  r_up         = &box.coords[p->pts.dimensions];
+  box_max.area          = 0;
+  n                     = p->pts.size();
+  r_low                 = &box.coords[0];
+  r_up                  = &box.coords[p->pts.dimensions];
 
   for (i32 d0low = -1; d0low < n; ++d0low) {
     set_rect_boundary(p->pts, d0low, r_low, 0, p_zero);
@@ -239,7 +239,8 @@ i32 return_partial_results(const program_param& rt, const problem_param& problem
   return EXIT_SUCCESS;
 }
 
-i32 return_partial_results(const program_param& rt, const std::vector<dptk::problem_measures>& measures)
+i32 return_partial_results(const program_param&                       rt,
+                           const std::vector<dptk::problem_measures>& measures)
 {
   if (!rt.silent) {
     *rt.os << "# point set sequence size = " << measures.size() << std::endl;
@@ -252,7 +253,7 @@ i32 return_partial_results(const program_param& rt, const std::vector<dptk::prob
           "# (low_0, low_1, ..., low_d, up_0, up_1, ..., up_d) for d+1 dimensions:",
           !rt.silent);
 
-    for (u64 i=0; i<measures.size(); ++i) {
+    for (u64 i = 0; i < measures.size(); ++i) {
       print_coords(rt.os, measures[i].box_max);
     }
     write_pointset_eos(rt.os);
@@ -260,42 +261,42 @@ i32 return_partial_results(const program_param& rt, const std::vector<dptk::prob
 
   // dispersion, boxcount
   if (rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount) {
-  if (!rt.silent) {
-    *rt.os << "# (";
-    if (rt.compute_disp) {
-      *rt.os << "dispersion";
-      if (rt.compute_ndisp || rt.compute_boxcount)
-        *rt.os << ", ";
+    if (!rt.silent) {
+      *rt.os << "# (";
+      if (rt.compute_disp) {
+        *rt.os << "dispersion";
+        if (rt.compute_ndisp || rt.compute_boxcount)
+          *rt.os << ", ";
+      }
+      if (rt.compute_ndisp) {
+        *rt.os << "n*dispersion";
+        if (rt.compute_boxcount)
+          *rt.os << ", ";
+      }
+      if (rt.compute_boxcount) {
+        *rt.os << "box count";
+      }
+      *rt.os << ")" << std::endl;
     }
-    if (rt.compute_ndisp) {
-      *rt.os << "n*dispersion";
-      if (rt.compute_boxcount)
-        *rt.os << ", ";
-    }
-    if (rt.compute_boxcount) {
-      *rt.os << "box count";
-    }
-    *rt.os << ")" << std::endl;
-  }
 
-  for (u64 i=0; i<measures.size(); ++i) {
-    if (rt.compute_disp) {
-      putsci(rt.os, measures[i].disp, 16);
-      if (rt.compute_ndisp || rt.compute_boxcount)
-        *rt.os << rt.delimiter;
+    for (u64 i = 0; i < measures.size(); ++i) {
+      if (rt.compute_disp) {
+        putsci(rt.os, measures[i].disp, 16);
+        if (rt.compute_ndisp || rt.compute_boxcount)
+          *rt.os << rt.delimiter;
+      }
+      if (rt.compute_ndisp) {
+        putsci(rt.os, measures[i].ndisp, 16);
+        if (rt.compute_boxcount)
+          *rt.os << rt.delimiter;
+      }
+      if (rt.compute_boxcount) {
+        *rt.os << measures[i].boxcount;
+      }
+      *rt.os << std::endl;
     }
-    if (rt.compute_ndisp) {
-      putsci(rt.os, measures[i].ndisp, 16);
-      if (rt.compute_boxcount)
-        *rt.os << rt.delimiter;
-    }
-    if (rt.compute_boxcount) {
-      *rt.os << measures[i].boxcount;
-    }
-    *rt.os << std::endl;
-  }
 
-  write_pointset_eos(rt.os);
+    write_pointset_eos(rt.os);
   }
 
   return EXIT_SUCCESS;
@@ -361,10 +362,10 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::problem_param problem;
-  dptk::program_param rt;
-  dptk::i32           r;
-  dptk::ipointset_read_info ipts_inf;
+  dptk::problem_param                 problem;
+  dptk::program_param                 rt;
+  dptk::i32                           r;
+  dptk::ipointset_read_info           ipts_inf;
   std::vector<dptk::problem_measures> measures;
 
   // default configuration
@@ -374,8 +375,8 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.compute_box_interior = false;
   rt.compute_boxes        = false;
   rt.compute_box_max      = false;
-  rt.delimiter    = ' ';
-  rt.del_use_ipts = true;
+  rt.delimiter            = ' ';
+  rt.del_use_ipts         = true;
   rt.silent               = false;
   rt.input                = "-";
   rt.output               = "-";
@@ -416,8 +417,8 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
     // allocate measures
-    measures.resize(measures.size()+1);
-    problem.measures = &measures.back();
+    measures.resize(measures.size() + 1);
+    problem.measures           = &measures.back();
     problem.measures->boxcount = 0;
 
     // compute dispersion
@@ -425,7 +426,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
     // store measurements
     problem.measures->ndisp = problem.pts.size() * problem.measures->disp;
-    
+
     // show result
     r = dptk::return_partial_results(rt, problem);
   }

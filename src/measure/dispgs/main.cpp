@@ -34,7 +34,7 @@ struct problem_measures
 {
   prec disp;
   prec ndisp;
-  u64                    boxcount;
+  u64  boxcount;
 };
 
 struct problem_param
@@ -43,7 +43,7 @@ struct problem_param
   u64                    pts_end_idx;
   pointset_dsorted_index idx;
   prec                   domain_bound[2];
-  problem_measures* measures;
+  problem_measures*      measures;
   program_param*         rt;
 };
 
@@ -199,7 +199,7 @@ void dispersion(dispersion_param& ga, problem_param* problem)
   }
 };
 
-i32 return_results(const program_param&    rt,
+i32 return_results(const program_param&                       rt,
                    const std::vector<dptk::problem_measures>& measures)
 {
   if (!rt.silent) {
@@ -207,42 +207,42 @@ i32 return_results(const program_param&    rt,
   }
 
   if (rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount) {
-  if (!rt.silent) {
-    *rt.os << "# (";
-    if (rt.compute_disp) {
-      *rt.os << "dispersion";
-      if (rt.compute_ndisp || rt.compute_boxcount)
-        *rt.os << ", ";
+    if (!rt.silent) {
+      *rt.os << "# (";
+      if (rt.compute_disp) {
+        *rt.os << "dispersion";
+        if (rt.compute_ndisp || rt.compute_boxcount)
+          *rt.os << ", ";
+      }
+      if (rt.compute_ndisp) {
+        *rt.os << "n*dispersion";
+        if (rt.compute_boxcount)
+          *rt.os << ", ";
+      }
+      if (rt.compute_boxcount) {
+        *rt.os << "box count";
+      }
+      *rt.os << ")" << std::endl;
     }
-    if (rt.compute_ndisp) {
-      *rt.os << "n*dispersion";
-      if (rt.compute_boxcount)
-        *rt.os << ", ";
-    }
-    if (rt.compute_boxcount) {
-      *rt.os << "box count";
-    }
-    *rt.os << ")" << std::endl;
-  }
 
-  for (u64 i=0; i<measures.size(); ++i) {
-    if (rt.compute_disp) {
-      putsci(rt.os, measures[i].disp, 16);
-      if (rt.compute_ndisp || rt.compute_boxcount)
-        *rt.os << rt.delimiter;
+    for (u64 i = 0; i < measures.size(); ++i) {
+      if (rt.compute_disp) {
+        putsci(rt.os, measures[i].disp, 16);
+        if (rt.compute_ndisp || rt.compute_boxcount)
+          *rt.os << rt.delimiter;
+      }
+      if (rt.compute_ndisp) {
+        putsci(rt.os, measures[i].ndisp, 16);
+        if (rt.compute_boxcount)
+          *rt.os << rt.delimiter;
+      }
+      if (rt.compute_boxcount) {
+        *rt.os << measures[i].boxcount;
+      }
+      *rt.os << std::endl;
     }
-    if (rt.compute_ndisp) {
-      putsci(rt.os, measures[i].ndisp, 16);
-      if (rt.compute_boxcount)
-        *rt.os << rt.delimiter;
-    }
-    if (rt.compute_boxcount) {
-      *rt.os << measures[i].boxcount;
-    }
-    *rt.os << std::endl;
-  }
 
-  write_pointset_eos(rt.os);
+    write_pointset_eos(rt.os);
   }
 
   return EXIT_SUCCESS;
@@ -297,19 +297,19 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::dispersion_param gap;
-  dptk::problem_param    problem;
-  dptk::program_param    rt;
-  dptk::i32              r;
-  dptk::ipointset_read_info ipts_inf;
+  dptk::dispersion_param              gap;
+  dptk::problem_param                 problem;
+  dptk::program_param                 rt;
+  dptk::i32                           r;
+  dptk::ipointset_read_info           ipts_inf;
   std::vector<dptk::problem_measures> measures;
 
   // default configuration
   rt.compute_boxcount     = false;
   rt.compute_disp         = false;
   rt.compute_ndisp        = false;
-  rt.delimiter    = ' ';
-  rt.del_use_ipts = true;
+  rt.delimiter            = ' ';
+  rt.del_use_ipts         = true;
   rt.silent               = false;
   rt.input                = "-";
   rt.output               = "-";
@@ -332,9 +332,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   if (!rt.silent)
     *rt.os << "# src=" << rt.input << std::endl;
-    
+
   // iterate through pointset sequence
-  while (!rt.is->eof() && r == EXIT_SUCCESS) {   
+  while (!rt.is->eof() && r == EXIT_SUCCESS) {
     // clear pointset
     problem.pts.clear();
 
@@ -353,15 +353,15 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
 
     // allocate measures
-    measures.resize(measures.size()+1);
-    problem.measures = &measures.back();
+    measures.resize(measures.size() + 1);
+    problem.measures           = &measures.back();
     problem.measures->boxcount = 0;
 
     // compute dispersion
     dptk::dispersion(gap, &problem);
 
     // store measurements
-    problem.measures->disp = gap.disp;
+    problem.measures->disp  = gap.disp;
     problem.measures->ndisp = problem.pts.size() * gap.disp;
   }
 
