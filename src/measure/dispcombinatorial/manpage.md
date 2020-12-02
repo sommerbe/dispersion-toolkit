@@ -1,6 +1,6 @@
 % DISPCOMBINATORIAL(1) 1.0.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
-% November 30, 2020
+% December 2, 2020
 
 # NAME
 
@@ -44,6 +44,38 @@ The measures are written to *standard output*, or to the file given by **\--o** 
 
 **\--silent**
 :   Suppress comments in the output stream, yielding only the computed value. The latter could be the point set or its cardinality.
+
+# RETURN FORMAT
+
+## Greatest box
+
+A point set of cardinality *m* with each axis representing a coordinate of a box,
+
+point set | low_0 | low_1 | up_0 | up_1
+--- | --- | --- | --- | ---
+P_0 | . | . | . | .
+P_1 | . | . | . | .
+... | . | . | . | .
+P_m | . | . | . | . ,
+
+where low_i is the smallest coordinate along axis i, and up_i the greatest one. Notice that the first column is not returned.
+
+## Boxes
+
+A point set sequence, where each point set is a list of the tuple (low_0 low_1 up_0 up_1).
+
+## Dispersion, number of boxes
+
+A point set of cardinality *m* with each axis representing a computed measure.
+
+point set | disp | n*disp | #boxes
+--- | --- | --- | ---
+P_0 | . | . | .
+P_1 | . | . | .
+... | . | . | .
+P_m | . | . | .
+
+Notice that the first column is not returned.
 
 # LIMITATION
 

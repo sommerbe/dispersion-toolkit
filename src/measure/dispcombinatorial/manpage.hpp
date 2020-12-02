@@ -67,12 +67,44 @@ OPTIONS
               puted value.  The latter could be the point set or its cardinal‐
               ity.
 
+RETURN FORMAT
+   Greatest box
+       A  point  set of cardinality m with each axis representing a coordinate
+       of a box,
+
+       point set   low_0   low_1   up_0   up_1
+       ────────────────────────────────────────
+       P_0         .       .       .      .
+       P_1         .       .       .      .
+       ...         .       .       .      .
+       P_m         .       .       .      .  ,
+
+       where low_i is the smallest coordinate  along  axis  i,  and  up_i  the
+       greatest one.  Notice that the first column is not returned.
+
+   Boxes
+       A  point  set  sequence,  where  each  point set is a list of the tuple
+       (low_0 low_1 up_0 up_1).
+
+   Dispersion, number of boxes
+       A point set of cardinality m with each  axis  representing  a  computed
+       measure.
+
+       point set   disp   n*disp   #boxes
+       ───────────────────────────────────
+       P_0         .      .        .
+       P_1         .      .        .
+       ...         .      .        .
+       P_m         .      .        .
+
+       Notice that the first column is not returned.
+
 LIMITATION
        The algorithm requires a two-dimensional point sets sequence.
 
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          November 30, 2020          DISPCOMBINATORIAL(1)
+1.0.0                          December 2, 2020           DISPCOMBINATORIAL(1)
 )V0G0N";
 }

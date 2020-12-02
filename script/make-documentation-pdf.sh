@@ -17,3 +17,5 @@ cat "$doc_md" | sed '/^%/d' | sed 's/^?\(.*\)/%\1/g' > "$doc_md2"
 pandoc --template="$doc_tpl" "$doc_md2" --toc --pdf-engine=$pdf_engine -o "$dst_doc_pdf"
 # remove temporary
 rm "$doc_md" "$doc_md2"
+
+echo "mkdoc $dst_doc_pdf"

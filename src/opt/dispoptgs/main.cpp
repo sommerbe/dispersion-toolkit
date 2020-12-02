@@ -32,6 +32,7 @@ struct program_param
   prec          dt;
   u64           iteration_limit;
   i8            delimiter;
+  u1            del_use_ipts;
 };
 
 struct problem_param
@@ -346,7 +347,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     } else if (s == "--delimiter") {
       if (!argparse::argval(arg, i))
         return argparse::err("missing delimiter value. Consider using -h or --help.");
-      rt.delimiter = arg[++i][0];
+      rt.delimiter    = arg[++i][0];
+      rt.del_use_ipts = false;
 
     } else if (s == "--pointset-sequence") {
       rt.compute_pointset_sequence = true;
@@ -397,6 +399,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::program_param              rt;
   std::vector<dptk::problem_param> problems;
   dptk::i32                        r;
+  dptk::ipointset_read_info        ipts_inf;
 
   // default configuration
   rt.tau                       = 2e-15;
@@ -409,6 +412,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.input                     = "-";
   rt.output                    = "-";
   rt.delimiter                 = ' ';
+  rt.del_use_ipts              = true;
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {
@@ -439,7 +443,8 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     problem.pts.clear();
 
     // retrieve point set
-    dptk::read_pointset(*rt.is, problem.pts);
+    dptk::read_pointset(*rt.is, problem.pts, &ipts_inf);
+    dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
     // skip empty point sets
     if (problem.pts.coords.empty()) {

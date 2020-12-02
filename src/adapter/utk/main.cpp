@@ -27,8 +27,8 @@ struct program_param
 
 struct problem_param
 {
-  pointset               pts;
-  program_param*         rt;
+  pointset       pts;
+  program_param* rt;
 };
 
 void read_utk_dat(std::istream& in, pointset& out)
@@ -85,8 +85,7 @@ void read_utk_dat(std::istream& in, pointset& out)
   }
 };
 
-i32 return_results(const program_param&    rt,
-                   const problem_param&    problem)
+i32 return_results(const program_param& rt, const problem_param& problem)
 {
   if (!rt.silent)
     *rt.os << "# src=" << rt.input << std::endl;
@@ -139,17 +138,17 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::problem_param    problem;
-  dptk::program_param    rt;
-  dptk::i32              r;
+  dptk::problem_param problem;
+  dptk::program_param rt;
+  dptk::i32           r;
 
   // default configuration
-  rt.silent               = false;
-  rt.delimiter   = ' ';
-  rt.input                = "-";
-  rt.output               = "-";
-  problem.rt              = &rt;
-  r                       = EXIT_SUCCESS;
+  rt.silent    = false;
+  rt.delimiter = ' ';
+  rt.input     = "-";
+  rt.output    = "-";
+  problem.rt   = &rt;
+  r            = EXIT_SUCCESS;
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {

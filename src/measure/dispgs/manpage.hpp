@@ -49,12 +49,25 @@ OPTIONS
               puted value.  The latter could be the point set or its cardinal‐
               ity.
 
+RETURN FORMAT
+       A point set of cardinality m with each  axis  representing  a  computed
+       measure.
+
+       point set   disp   n*disp   #boxes
+       ───────────────────────────────────
+       P_0         .      .        .
+       P_1         .      .        .
+       ...         .      .        .
+       P_m         .      .        .
+
+       Notice that the first column is not returned.
+
 LIMITATION
        The algorithm requires a two-dimensional point set sequence.
 
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          November 30, 2020                     DISPGS(1)
+1.0.0                          December 2, 2020                      DISPGS(1)
 )V0G0N";
 }

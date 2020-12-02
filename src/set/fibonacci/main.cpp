@@ -158,13 +158,13 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::program_param rt;
 
   // default configuration
-  rt.compute_cardinality      = false;
-  rt.compute_pointset         = true;
-  rt.silent                   = false;
-  rt.output                   = "-";
-  rt.delimiter                = ' ';
-  problem.rt                  = &rt;
-  problem.fibonacci_number    = 0;
+  rt.compute_cardinality   = false;
+  rt.compute_pointset      = true;
+  rt.silent                = false;
+  rt.output                = "-";
+  rt.delimiter             = ' ';
+  problem.rt               = &rt;
+  problem.fibonacci_number = 0;
 
   problem.pts.clear();
 

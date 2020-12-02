@@ -51,6 +51,11 @@ void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
       *os << del;
     }
   }
+  write_pointset_eos(os);
+}
+
+void write_pointset_eos(std::ostream* os)
+{
   *os << "#eos" << std::endl;
 }
 

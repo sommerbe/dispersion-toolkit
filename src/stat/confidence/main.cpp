@@ -26,6 +26,7 @@ struct program_param
   pointset      percentiles;
   pointset      pts;
   i8            delimiter;
+  u1            del_use_ipts;
   u1            compute_arithmetic_mean;
   u1            compute_iqr_box;
 };
@@ -235,15 +236,17 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::problem_param problem;
-  dptk::program_param rt;
-  dptk::i32           r;
+  dptk::problem_param       problem;
+  dptk::program_param       rt;
+  dptk::i32                 r;
+  dptk::ipointset_read_info ipts_inf;
 
   // default configuration
   // rt.axis        = 0;
   rt.compute_arithmetic_mean = false;
   rt.compute_iqr_box         = false;
   rt.delimiter               = ' ';
+  rt.del_use_ipts            = true;
   rt.silent                  = false;
   rt.input                   = "-";
   rt.output                  = "-";
@@ -263,7 +266,8 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::ostream_init(rt.output, rt.os);
 
   // retrieve point set
-  dptk::read_pointset(*rt.is, rt.pts);
+  dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);
+  dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);

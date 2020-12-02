@@ -28,6 +28,7 @@ struct program_param
   u64           count;
   prec          percentage;
   i8            delimiter;
+  u1            del_use_ipts;
   u64           repeat;
   pointset      pts;
 };
@@ -155,41 +156,6 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     } else if (s == "-h" || s == "--help") {
       std::cout << manpage;
       return false;
-      std::cout << "# NAME #" << std::endl
-                << "" << argv[0] << " - swap coordinates of given point set" << std::endl
-                << std::endl;
-      std::cout << "# SYNOPSIS #" << std::endl;
-      std::cout << "" << argv[0]
-                << " [-i FILE] [-o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER] "
-                   "[--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]"
-                << std::endl
-                << std::endl;
-      std::cout << "# DESCRIPTION #" << std::endl;
-      std::cout
-        << "Swaps pairs of coordinates, using std::mt19937_64 pseudo-random number "
-           "generator, of a given point set using -i FILE "
-           "option. If -i FILE option is missing, standard input is assumed. The result "
-           "will be "
-           "written to standard output, or to the file given by -o FILE. By default, the "
-           "algorithm swaps a singular pair. This number can be increased with the "
-           "option --count INTEGER. Also by default, the axis is chosen randomly using "
-           "--axis=-1 (or any other negative integer). An explicit axis is used with "
-           "--axis=INTEGER (in two dimensions, "
-           "INTEGER would be either 0 or 1). Alternatively, the algorithm may swap x*100 "
-           "percent of the given points (rounded down to integer) using the option "
-           "--percentage=BINARY64, where BINARY64 is in the open interval (0,1). The "
-           "option "
-           "--silent suppresses comments, yielding only the computed value."
-        << std::endl
-        << std::endl;
-      std::cout
-        << "A sequence of point sets is emitted with the option --repeat=INTEGER, "
-           "INTEGER > 0, where INTEGER is the size of this sequence."
-        << std::endl
-        << std::endl;
-      std::cout << "# LIMITATION #" << std::endl;
-      std::cout << "Given point set must be two-dimensional." << std::endl;
-      return false;
     }
   }
 
@@ -200,21 +166,24 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::problem_param problem;
-  dptk::program_param rt;
-  dptk::i32           r;
+  dptk::problem_param       problem;
+  dptk::program_param       rt;
+  dptk::i32                 r;
+  dptk::ipointset_read_info ipts_inf;
 
   // default configuration
-  rt.axis        = 0;
-  rt.axis_random = false;
-  rt.count       = 1;
-  rt.percentage  = 0;
-  rt.delimiter   = ' ';
-  rt.silent      = false;
-  rt.input       = "-";
-  rt.output      = "-";
-  problem.rt     = &rt;
-  r              = EXIT_SUCCESS;
+  rt.axis         = 0;
+  rt.axis_random  = false;
+  rt.count        = 1;
+  rt.repeat       = 1;
+  rt.percentage   = 0;
+  rt.delimiter    = ' ';
+  rt.del_use_ipts = true;
+  rt.silent       = false;
+  rt.input        = "-";
+  rt.output       = "-";
+  problem.rt      = &rt;
+  r               = EXIT_SUCCESS;
 
   rt.pts.clear();
 
@@ -232,7 +201,8 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::ostream_init(rt.output, rt.os);
 
   // retrieve point set
-  dptk::read_pointset(*rt.is, rt.pts);
+  dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);
+  dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
   assert(rt.pts.dimensions == 2);
   assert(rt.is != nullptr);

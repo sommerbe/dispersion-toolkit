@@ -35,7 +35,7 @@ void istream_close(std::istream*& is)
   is = nullptr;
 }
 
-void read_pointset(std::istream& in, regular_pointset<b64>& out)
+void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_info* inf)
 {
   std::string ln;
   i8*         b;
@@ -61,6 +61,10 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out)
     d = 0;
     while (b != y) {
       if (std::isspace(*b) != 0) {
+        // remember delimiter
+        if (out.dimensions == 0 && inf != nullptr) {
+          inf->delimiter = *b;
+        }
         ++b;
         continue;
       }
@@ -87,6 +91,13 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out)
       throw std::runtime_error(m);
     }
   }
+}
+
+void forward_delimiter(u1 predicate, const ipointset_read_info& inf, i8& delimiter)
+{
+  if (!predicate)
+    return;
+  delimiter = inf.delimiter;
 }
 
 } // namespace dptk
