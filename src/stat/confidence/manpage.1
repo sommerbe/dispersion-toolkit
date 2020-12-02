@@ -36,8 +36,8 @@ These values are ordered as shown above.
 .SH OPTIONS
 .TP
 .B \f[B]--i\f[R] \f[I]FILE\f[R], \f[B]--i\f[R]=\f[I]FILE\f[R]
-Retrieves a point set with dimension \f[I]n\f[R], not a point set
-sequence, from \f[I]FILE\f[R].
+Retrieves a point set \f[I]P\f[R] with dimension \f[I]n\f[R], not a
+point set sequence, from \f[I]FILE\f[R].
 Its absence is substituted by \f[I]stdin\f[R].
 The end of a point set, which equals the line #eos, starts the
 algorithm.
@@ -84,13 +84,14 @@ Emitted values: Q1 - 1.5 IQR, Q1, Q2, Q3, Q3 + 1.5 IQR.
 .SH RETURN FORMAT
 .PP
 A point set of dimension \f[I]n\f[R] with each axis representing the
-tuple of \f[I]m\f[R] percentiles,
+tuple of \f[I]m\f[R] statistical descriptors S_i, including percentiles
+and derived quantities,
 .PP
 .TS
 tab(@);
 l l l l l.
 T{
-percentiles
+descriptors
 T}@T{
 axis_0
 T}@T{
@@ -102,7 +103,7 @@ axis_n
 T}
 _
 T{
-Pc_0
+S_0
 T}@T{
 \&.
 T}@T{
@@ -113,7 +114,7 @@ T}@T{
 \&.
 T}
 T{
-Pc_1
+S_1
 T}@T{
 \&.
 T}@T{
@@ -135,7 +136,7 @@ T}@T{
 \&.
 T}
 T{
-Pc_m
+S_m
 T}@T{
 \&.
 T}@T{
@@ -148,6 +149,8 @@ T}@T{
 T}
 .TE
 .PP
+Therein, axis_i relates to the statistics describing axis_i of the given
+point set \f[I]P\f[R].
 Notice that the first column is not returned.
 .SH LIMITATION
 .PP

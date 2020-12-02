@@ -27,7 +27,7 @@ These statistics are estimated independently for each dimension *d* of the point
 # OPTIONS
 
 **\--i** *FILE*, **\--i**=*FILE*
-:   Retrieves a point set with dimension *n*, not a point set sequence, from *FILE*. Its absence is substituted by *stdin*. The end of a point set, which equals the line #eos, starts the algorithm. The coordinates are interpreted as *BINARY64*.
+:   Retrieves a point set *P* with dimension *n*, not a point set sequence, from *FILE*. Its absence is substituted by *stdin*. The end of a point set, which equals the line #eos, starts the algorithm. The coordinates are interpreted as *BINARY64*.
 
 **\--o** *FILE*, **\--o**=*FILE*
 :   Redirects the computed results to *FILE*, opened in overwrite mode (not appending mode). Without *FILE*, results are forwarded to *stdout*. Errors encountered during the program's execution are streamed into *stderr*, and not into either *stdout* or *FILE*.
@@ -56,16 +56,16 @@ Only one of these options may be chosen for each invocation. The values of the s
 
 # RETURN FORMAT
 
-A point set of dimension *n* with each axis representing the tuple of *m* percentiles,
+A point set of dimension *n* with each axis representing the tuple of *m* statistical descriptors S_i, including percentiles and derived quantities,
 
-percentiles | axis_0 | axis_1 | ... | axis_n
+descriptors | axis_0 | axis_1 | ... | axis_n
 --- | --- | --- | --- | ---
-Pc_0 | . | . | ... | .
-Pc_1 | . | . | ... | .
+S_0 | . | . | ... | .
+S_1 | . | . | ... | .
 ... | . | . | ... | .
-Pc_m | . | . | ... | . .
+S_m | . | . | ... | . .
 
-Notice that the first column is not returned.
+Therein, axis_i relates to the statistics describing axis_i of the given point set *P*. Notice that the first column is not returned.
 
 # LIMITATION
 

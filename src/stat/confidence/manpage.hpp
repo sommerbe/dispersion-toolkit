@@ -38,7 +38,7 @@ DESCRIPTION
 
 OPTIONS
        --i FILE, --i=FILE
-              Retrieves  a  point  set  with  dimension n, not a point set se‐
+              Retrieves  a  point  set P with dimension n, not a point set se‐
               quence, from FILE.  Its absence is substituted  by  stdin.   The
               end of a point set, which equals the line #eos, starts the algo‐
               rithm.  The coordinates are interpreted as BINARY64.
@@ -79,16 +79,18 @@ OPTIONS
 
 RETURN FORMAT
        A point set of dimension n with each axis representing the tuple  of  m
-       percentiles,
+       statistical  descriptors S_i, including percentiles and derived quanti‐
+       ties,
 
-       percentiles   axis_0   axis_1   ...   axis_n
+       descriptors   axis_0   axis_1   ...   axis_n
        ─────────────────────────────────────────────
-       Pc_0          .        .        ...   .
-       Pc_1          .        .        ...   .
+       S_0           .        .        ...   .
+       S_1           .        .        ...   .
        ...           .        .        ...   .
-       Pc_m          .        .        ...   .  .
+       S_m           .        .        ...   .  .
 
-       Notice that the first column is not returned.
+       Therein, axis_i relates to the statistics describing axis_i of the giv‐
+       en point set P.  Notice that the first column is not returned.
 
 LIMITATION
        The  algorithm requires any-dimensional point sets, while point set se‐
