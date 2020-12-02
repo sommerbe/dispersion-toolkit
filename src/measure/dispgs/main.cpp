@@ -35,6 +35,7 @@ struct problem_measures
   prec disp;
   prec ndisp;
   u64  boxcount;
+  u64 gs_spawn_count = 0;
 };
 
 struct problem_param
@@ -119,6 +120,8 @@ prec grow_shrink(grow_shrink_param& p)
       p.bound[0] = z;
       p.bound[1] = sk[o];
       ldisp      = std::max(grow_shrink(p), ldisp);
+      
+      ++ p.problem->measures->gs_spawn_count;
 
       break;
     }
@@ -226,6 +229,9 @@ i32 return_results(const program_param&                       rt,
     }
 
     for (u64 i = 0; i < measures.size(); ++i) {
+      if (!rt.silent) {
+        *rt.os << "# gs spawn count = " << measures[i].gs_spawn_count << std::endl;
+      }  
       if (rt.compute_disp) {
         putsci(rt.os, measures[i].disp, 16);
         if (rt.compute_ndisp || rt.compute_boxcount)
