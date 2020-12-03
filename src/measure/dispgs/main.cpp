@@ -188,7 +188,6 @@ void dispersion(dispersion_param& ga, problem_param* problem)
 {
   assert(problem != nullptr);
   assert(problem->pts.size() > 0);
-  // assert(problem->domain_bound[0] == 0);
   assert(problem->pts.size() <= INT64_MAX);
 
   problem->pts_end_idx = problem->pts.size() - 1;

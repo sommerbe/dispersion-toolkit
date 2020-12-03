@@ -19,17 +19,23 @@ SYNOPSIS
        [--compute-iterations] [--pointset-sequence] [--silent]
 
 DESCRIPTION
-       Seeks to reduce dispersion of a point set by using gradient  ascent  on
-       local  dispersion.   Local  dispersion  at a point p is the area of the
-       greatest empty box out of all empty boxes of the point set  which  con‐
-       tain p.
+       Seeks to reduce dispersion of a point set P with cardinality n and  di‐
+       mension  d by using gradient ascent on local dispersion.  Local disper‐
+       sion at a point p is the area of the greatest empty box out of all emp‐
+       ty boxes of this point set which contain p.
 
-       The  axis  aligned  gradient of local dispersion at each point p of the
-       point set equals the vector with which p is  moved  iteratively  during
-       the ascent.  This vector is scaled with a step size.
+       The  axis  aligned  gradient  of  local dispersion at each point p of P
+       equals the vector with which p is moved iteratively during the  ascent.
+       This vector is scaled with a step size.
 
-       The  ascent terminates as soon as the greatest gradient magnitude falls
-       below a threshold, or if upon reaching an iteration limit.
+       The  ascent terminates after t iterations, as soon as the greatest gra‐
+       dient magnitude falls below the threshold tau, or upon reaching an  it‐
+       eration limit.
+
+       Computational complexity: t * (n * n * d + n * log(n) * d).
+
+       Memory  complexity:  2  *  n  *  BINARY64 + n * d * U64 = n * (d + 2) *
+       64bit.
 
 OPTIONS
        --i FILE, --i=FILE
@@ -81,12 +87,16 @@ OPTIONS
               puted value.  The latter could be the point set or its cardinal‐
               ity.
 
-LIMITATION
-       The algorithm requires a two-dimensional point set sequence.
+RETURNS
+       · A  d dimensional point set with cardinality n resulting from the last
+         iteration.
+
+       · A sequence of d dimensional point set with  cardinality  n  resulting
+         from each iteration in the presence of option --pointset-sequence.
 
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          November 30, 2020                  DISPOPTGS(1)
+1.0.0                          December 3, 2020                   DISPOPTGS(1)
 )V0G0N";
 }

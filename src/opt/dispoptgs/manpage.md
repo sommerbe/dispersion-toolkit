@@ -1,6 +1,6 @@
 % DISPOPTGS(1) 1.0.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
-% November 30, 2020
+% December 3, 2020
 
 # NAME
 
@@ -12,11 +12,15 @@ dispoptgs - a gradient ascent to reduce dispersion based on grow&shrink strategy
 
 # DESCRIPTION
 
-Seeks to reduce dispersion of a point set by using gradient ascent on local dispersion. *Local dispersion* at a point p is the area of the greatest empty box out of all empty boxes of the point set which contain p.
+Seeks to reduce dispersion of a point set *P* with cardinality *n* and dimension *d* by using gradient ascent on local dispersion. *Local dispersion* at a point p is the area of the greatest empty box out of all empty boxes of this point set which contain p.
 
-The axis aligned gradient of local dispersion at each point p of the point set equals the vector with which p is moved iteratively during the ascent. This vector is scaled with a step size.
+The axis aligned gradient of local dispersion at each point p of *P* equals the vector with which p is moved iteratively during the ascent. This vector is scaled with a step size.
 
-The ascent terminates as soon as the greatest gradient magnitude falls below a threshold, or if upon reaching an iteration limit.
+The ascent terminates after *t* iterations, as soon as the greatest gradient magnitude falls below the threshold *tau*, or upon reaching an iteration limit.
+
+Computational complexity: t * (n * n * d + n * log(n) * d).
+
+Memory complexity: 2 * n * BINARY64 + n * d * U64 = n * (d + 2) * 64bit.
 
 # OPTIONS
 
@@ -50,6 +54,7 @@ The ascent terminates as soon as the greatest gradient magnitude falls below a t
 **\--silent**
 :   Suppress comments in the output stream, yielding only the computed value. The latter could be the point set or its cardinality.
 
-# LIMITATION
+# RETURNS
 
-The algorithm requires a two-dimensional point set sequence.
+* A *d* dimensional point set with cardinality *n* resulting from the last iteration. 
+* A sequence of *d* dimensional point sets each with cardinality *n* resulting from each iteration in the presence of option **\--pointset-sequence**.
