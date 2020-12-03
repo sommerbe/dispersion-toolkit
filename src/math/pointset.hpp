@@ -12,6 +12,9 @@ struct regular_pointset
   u64               dimensions;
   std::vector<prec> coords;
 
+  // format bound: (low_0 ... low_(d-1) up_0 ... up_(d-1))
+  std::vector<prec> domain_bound;
+
   void allocate(u64 num_points, u64 num_dimensions);
   void clear();
 

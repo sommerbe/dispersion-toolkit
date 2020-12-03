@@ -219,6 +219,37 @@ void dispersion_combinatorial(problem_param* p)
   }
 };
 
+void return_bound(const program_param& rt)
+{
+  i8 ndel = ' ';
+
+  *rt.os << "#d";
+
+  if (rt.compute_disp) {
+    *rt.os << ndel << 0;
+    ndel = rt.delimiter;
+  }
+  if (rt.compute_ndisp) {
+    *rt.os << ndel << 0;
+    ndel = rt.delimiter;
+  }
+  if (rt.compute_boxcount) {
+    *rt.os << ndel << 0;
+    ndel = rt.delimiter;
+  }
+
+  if (rt.compute_disp) {
+    *rt.os << ndel << INFINITY;
+  }
+  if (rt.compute_ndisp) {
+    *rt.os << ndel << INFINITY;
+  }
+  if (rt.compute_boxcount) {
+    *rt.os << ndel << INFINITY;
+  }
+  *rt.os << std::endl;
+}
+
 i32 return_partial_results(const program_param& rt, const problem_param& problem)
 {
   if (rt.compute_boxes) {
@@ -262,22 +293,23 @@ i32 return_partial_results(const program_param&                       rt,
   // dispersion, boxcount
   if (rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount) {
     if (!rt.silent) {
-      *rt.os << "# (";
+      i8 ndel = '(';
+      *rt.os << "# ";
       if (rt.compute_disp) {
-        *rt.os << "dispersion";
-        if (rt.compute_ndisp || rt.compute_boxcount)
-          *rt.os << ", ";
+        *rt.os << ndel << "dispersion";
+        ndel = ',';
       }
       if (rt.compute_ndisp) {
-        *rt.os << "n*dispersion";
-        if (rt.compute_boxcount)
-          *rt.os << ", ";
+        *rt.os << ndel << "n*dispersion";
+        ndel = ',';
       }
       if (rt.compute_boxcount) {
-        *rt.os << "box count";
+        *rt.os << ndel << "number of boxes";
       }
       *rt.os << ")" << std::endl;
     }
+
+    return_bound(rt);
 
     for (u64 i = 0; i < measures.size(); ++i) {
       if (rt.compute_disp) {

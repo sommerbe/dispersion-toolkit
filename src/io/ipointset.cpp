@@ -49,12 +49,35 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
     if (ln.empty()) {
       continue;
     }
+
+    // end of point set: #eos
     if (ln == "#eos") {
       break;
     }
+
+    // point set domain: #d low_0 low_1 ... low_(d-1) up_0 ... up_(d-1)
+    if (ln.size() > 3 && ln[0] == '#' && ln[1] == 'd' && ln[2] == ' ') {
+      b = (i8*)ln.data() + 3;
+      y = &ln[ln.size()];
+      while (b != y) {
+        if (std::isspace(*b) != 0) {
+          ++b;
+          continue;
+        }
+        c = std::strtod(b, &e);
+        out.domain_bound.push_back(c);
+        b = e;
+      }
+      out.domain_bound.shrink_to_fit();
+      continue;
+    }
+
+    // comment: # ...
     if (ln[0] == '#') {
       continue;
     }
+
+    // coordinates
     z = (i8*)ln.data();
     y = &ln[ln.size()];
     b = z;

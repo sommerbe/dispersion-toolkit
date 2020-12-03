@@ -46,6 +46,11 @@ void fibonacci(u64 kmax, u64& fkm2, u64& fkm1, u64& fkm0)
   }
 };
 
+void init_domain(pointset& pts)
+{
+  pts.domain_bound = { 0., 0., 1., 1. };
+}
+
 void fibonacci_lattice(problem_param* problem)
 {
   assert(problem != nullptr);
@@ -57,6 +62,9 @@ void fibonacci_lattice(problem_param* problem)
   prec  Fm_inv;
   prec* pt;
   prec  integral_part;
+
+  // store problem domain
+  init_domain(problem->pts);
 
   // compute last 3 Fibonacci numbers
   fibonacci(problem->rt->fibonacci_index, Fm2, Fm1, Fm);

@@ -38,6 +38,18 @@ void ostream_close(std::ostream*& os)
 
 void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
 {
+  assert(pts.domain_bound.size() > 1);
+
+  // write pointset domain
+  *os << "#d ";
+  ensure_precision(os, pts.domain_bound[0]);
+  *os << pts.domain_bound[0];
+  for (u64 i = 1; i < pts.domain_bound.size(); ++i) {
+    *os << del << pts.domain_bound[i];
+  }
+  *os << std::endl;
+
+  // write coordinates
   if (pts.coords.empty()) {
     return;
   }

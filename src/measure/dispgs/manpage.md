@@ -12,7 +12,11 @@ dispgs - compute dispersion using a grow&shrink algorithm
 
 # DESCRIPTION
 
-Computes dispersion, *n* * dispersion and/or the number of empty boxes of a given point set with cardinality *n*.
+Computes dispersion, *n* * dispersion and/or the number of empty boxes of a given point set with cardinality *n* and dimension *d*.
+
+Computational complexity: n * n * d + n * log(n) * d.
+
+Memory complexity: n * BINARY64 + n * d * U64 = n * (d + 1) * 64bit.
 
 The measures are written to *standard output*, or to the file given by **\--o** *FILE*.
 
@@ -48,7 +52,3 @@ P_1 | . | . | .
 P_m | . | . | .
 
 Notice that the first column is not returned.
-
-# LIMITATION
-
-The algorithm requires a two-dimensional point set sequence.
