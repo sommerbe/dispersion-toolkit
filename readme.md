@@ -79,6 +79,53 @@ runs 8 builds in parallel.
 
 In Windows, this build directory contains a Visual Studio solution file to be opened.
 
+## File format of a point set sequence
+
+An n-dimensional point set P_i with cardinality k, having points p_j with coordinates c_{i,j,s} is serialised with ASCII encoding according to the format
+
+````
+c_{i,0,0} c_{i,0,1} ... c_{i,0,n}
+c_{i,1,0} c_{i,1,1} ... c_{i,1,n}
+                     .
+                     .
+                     .
+c_{i,k,0} c_{i,k,1} ... c_{i,k,n}
+#eos
+````
+
+where columns are separated by an ASCII character named *delimiter*, here
+
+````
+' '.
+````
+
+Each line of the serialised result may additionally contain a commenting line,
+
+````
+# this is a comment.
+````
+
+A point set sequence of length m is the concatenation of serialised point sets, i.e.
+
+````
+c_{0,0,0} c_{0,0,1} ... c_{0,0,n}
+                     .
+c_{0,k,0} c_{0,k,1} ... c_{0,k,n}
+#eos
+c_{1,0,0} c_{1,0,1} ... c_{1,0,n}
+                     .
+c_{1,k,0} c_{1,k,1} ... c_{1,k,n}
+#eos
+                     .
+                     .
+c_{m,0,0} c_{m,0,1} ... c_{m,0,n}
+                     .
+c_{m,k,0} c_{m,k,1} ... c_{m,k,n}
+#eos
+````
+
+Notice that both k and n have to remain constant within a point set, while they are allowed to vary across point sets.
+
 ## Examples
 
 The following examples assume the parent working directy to be the above mentioned build directory, and that the build completed without errors.
