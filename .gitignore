@@ -5,3 +5,4 @@ build
 *.pdf
 __pycache__
 *.pdf
+**/dispgs/main-2d.cpp

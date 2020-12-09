@@ -225,28 +225,14 @@ void return_bound(const program_param& rt)
 
   *rt.os << "#d";
 
-  if (rt.compute_disp) {
-    *rt.os << ndel << 0;
-    ndel = rt.delimiter;
-  }
-  if (rt.compute_ndisp) {
-    *rt.os << ndel << 0;
-    ndel = rt.delimiter;
-  }
-  if (rt.compute_boxcount) {
-    *rt.os << ndel << 0;
-    ndel = rt.delimiter;
-  }
+  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_disp);
+  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_ndisp);
+  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_boxcount);
 
-  if (rt.compute_disp) {
-    *rt.os << ndel << INFINITY;
-  }
-  if (rt.compute_ndisp) {
-    *rt.os << ndel << INFINITY;
-  }
-  if (rt.compute_boxcount) {
-    *rt.os << ndel << INFINITY;
-  }
+  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_disp);
+  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_ndisp);
+  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_boxcount);
+
   *rt.os << std::endl;
 }
 
@@ -293,19 +279,11 @@ i32 return_partial_results(const program_param&                       rt,
   // dispersion, boxcount
   if (rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount) {
     if (!rt.silent) {
-      i8 ndel = '(';
       *rt.os << "# ";
-      if (rt.compute_disp) {
-        *rt.os << ndel << "dispersion";
-        ndel = ',';
-      }
-      if (rt.compute_ndisp) {
-        *rt.os << ndel << "n*dispersion";
-        ndel = ',';
-      }
-      if (rt.compute_boxcount) {
-        *rt.os << ndel << "number of boxes";
-      }
+      i8 ndel = '(';
+      put_header_column(rt.os, "dispersion", ndel, ',', rt.compute_disp);
+      put_header_column(rt.os, "n*dispersion", ndel, ',', rt.compute_ndisp);
+      put_header_column(rt.os, "number of boxes", ndel, ',', rt.compute_boxcount);
       *rt.os << ")" << std::endl;
     }
 
