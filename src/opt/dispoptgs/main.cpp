@@ -40,7 +40,6 @@ struct problem_param
   pointset               pts;
   u64                    pts_end_idx;
   pointset_dsorted_index idx;
-  prec                   domain_bound[2];
   std::stringstream*     os;
   const program_param*   rt;
   dptk::i32              r;
@@ -48,24 +47,24 @@ struct problem_param
 
 struct grow_shrink_param
 {
-  u64            base_idx;
-  i64            head_idx;
-  i64            end_idx;
-  prec           bound[2];
-  u32            axis;
-  i32            dir;
-  problem_param* problem;
+  u64               base_idx;
+  i64               head_idx;
+  i64               end_idx;
+  std::vector<prec> bound;
+  u32               axis;
+  i32               dir;
+  problem_param*    problem;
 };
 
 struct ascent_param
 {
-  prec tau;
-  prec dt;
-  u64  i;
-  u64  i_end;
-  prec disp;
-  prec grad[2];
-  prec grad_len;
+  prec              tau;
+  prec              dt;
+  u64               i;
+  u64               i_end;
+  prec              disp;
+  std::vector<prec> grad;
+  prec              grad_len;
 };
 
 void msg(const ascent_param& a, const problem_param* p)
@@ -78,7 +77,7 @@ void msg(const ascent_param& a, const problem_param* p)
   if (!p->rt->silent) {
     *p->os << "# " << a.i << " grad=" << std::scientific << std::setprecision(16)
            << a.grad_len << " ndisp=" << std::scientific << std::setprecision(16)
-           << ((p->pts.size() - 1) * a.disp) << std::endl;
+           << (p->pts.size() * a.disp) << std::endl;
   }
 }
 
@@ -104,11 +103,11 @@ prec grow_shrink(grow_shrink_param& p)
   prec* sk;
   prec  ldisp = 0;
   prec  z;
-  u32   o;
+  u64   d;
 
   b  = p.problem->idx.at(p.base_idx, p.axis);
   sb = &p.problem->pts[b];
-  o  = 1 - p.axis;
+  d  = p.problem->pts.dimensions;
 
   while (p.head_idx != p.end_idx) {
     // lookup index of head
@@ -118,39 +117,48 @@ prec grow_shrink(grow_shrink_param& p)
     // prepare for next iteration
     p.head_idx += p.dir;
 
-    // skip out-of-bounds (along axis=o)
-    if (sk[o] > p.bound[1] || sk[o] < p.bound[0])
+    // skip out-of-bounds (along axis xs != p.axis)
+    u1 outside = false;
+    for (u64 xs = 0; xs < d && !outside; ++xs) {
+      if (xs == p.axis)
+        continue;
+      outside |= sk[xs] < p.bound[xs] || sk[xs] > p.bound[d + xs];
+    }
+    if (outside) {
       continue;
+    }
 
     // grow the bound (along axis=p.axis)
-    z     = (p.bound[1] - p.bound[0]) * std::abs(sk[p.axis] - sb[p.axis]);
+    z = std::abs(sk[p.axis] - sb[p.axis]);
+    for (u64 xs = 0; xs < d; ++xs) {
+      if (xs == p.axis)
+        continue;
+      z *= p.bound[d + xs] - p.bound[xs];
+    }
     ldisp = std::max(z, ldisp);
 
-    // shrink the bound (potentially; along axis=o)
-    if (sk[o] > sb[o]) {
-      p.bound[1] = sk[o];
-    } else if (sk[o] < sb[o]) {
-      p.bound[0] = sk[o];
-    } else {
-      // proceed above
-      k          = p.head_idx;
-      z          = p.bound[0];
-      p.bound[0] = sk[o];
-      ldisp      = std::max(grow_shrink(p), ldisp);
-
-      // proceed below
-      p.head_idx = k;
-      p.bound[0] = z;
-      p.bound[1] = sk[o];
-      ldisp      = std::max(grow_shrink(p), ldisp);
-
-      break;
+    // shrink the bound (along axis xs != p.axis)
+    for (u64 xs = 0; xs < d; ++xs) {
+      if (xs == p.axis)
+        continue;
+      if (sk[xs] > sb[xs]) {
+        p.bound[d + xs] = sk[xs];
+      } else if (sk[xs] < sb[xs]) {
+        p.bound[xs] = sk[xs];
+      } else {
+        p.bound[xs] = sk[xs];
+      }
     }
   }
 
   // include the box aligned to the edge
-  z = (p.bound[1] - p.bound[0]);
-  z *= std::abs(p.problem->domain_bound[(p.dir + 1) / 2] - sb[p.axis]);
+  k = ((p.dir + 1) / 2) * d + p.axis;
+  z = std::abs(p.problem->pts.domain_bound[k] - sb[p.axis]);
+  for (u64 xs = 0; xs < d; ++xs) {
+    if (xs == p.axis)
+      continue;
+    z *= p.bound[d + xs] - p.bound[xs];
+  }
   ldisp = std::max(z, ldisp);
 
   return ldisp;
@@ -160,8 +168,7 @@ prec sided_local_disp(u64 pt, grow_shrink_param& p)
 {
   assert(p.dir == -1 || p.dir == 1);
 
-  p.bound[0] = p.problem->domain_bound[0];
-  p.bound[1] = p.problem->domain_bound[1];
+  p.bound = p.problem->pts.domain_bound;
 
   p.base_idx = p.problem->idx.search(pt, p.axis);
   p.head_idx = p.base_idx + p.dir;
@@ -174,36 +181,37 @@ prec sided_local_disp(u64 pt, grow_shrink_param& p)
   return grow_shrink(p);
 };
 
-void local_disp(u64 pt, problem_param* problem, prec& disp)
+// void local_disp(u64 pt, problem_param* problem, prec& disp)
+// {
+//   assert(problem != nullptr);
+
+//   prec              ldisp;
+//   grow_shrink_param gsp;
+
+//   gsp.problem = problem;
+
+//   for (i32 axis = 0; axis < problem->pts.dimensions; ++axis) {
+//     for (i32 dir = 0; dir < 3; dir += 2) {
+//       gsp.axis = axis;
+//       gsp.dir  = dir - 1;
+//       ldisp    = sided_local_disp(pt, gsp);
+//       disp     = std::max(ldisp, disp);
+//       assert(ldisp >= 0);
+//     }
+//   }
+// };
+
+void gradient_local_disp(std::size_t    pt,
+                         problem_param* problem,
+                         prec&          disp,
+                         prec*          grad,
+                         prec&          lgrad_max)
 {
   assert(problem != nullptr);
-  assert(problem->pts.dimensions == 2);
-
-  prec              ldisp;
-  grow_shrink_param gsp;
-
-  gsp.problem = problem;
-
-  for (i32 axis = 0; axis < 2; ++axis) {
-    for (i32 dir = 0; dir < 3; dir += 2) {
-      gsp.axis = axis;
-      gsp.dir  = dir - 1;
-      ldisp    = sided_local_disp(pt, gsp);
-      disp     = std::max(ldisp, disp);
-      assert(ldisp >= 0);
-    }
-  }
-};
-
-void gradient_local_disp(std::size_t pt, problem_param* problem, prec& disp, prec* grad)
-{
-  assert(problem != nullptr);
-  assert(problem->pts.dimensions == 2);
 
   prec              ldisp;
   prec              lgrad;
   prec              lgrad_abs;
-  prec              lgrad_max;
   grow_shrink_param gsp;
 
   disp        = 0;
@@ -215,7 +223,7 @@ void gradient_local_disp(std::size_t pt, problem_param* problem, prec& disp, pre
     grad[i] = 0;
 
   // grow and shrink along each axis forward and backward
-  for (u32 axis = 0; axis < 2; ++axis) {
+  for (u64 axis = 0; axis < problem->pts.dimensions; ++axis) {
     lgrad = 0;
     for (i32 dir = 0; dir < 3; dir += 2) {
       gsp.axis = axis;
@@ -239,18 +247,22 @@ void gradient_ascent(ascent_param& ga, problem_param* problem)
 {
   assert(problem != nullptr);
   assert(problem->pts.size() > 0);
-  assert(problem->domain_bound[0] == 0);
   assert(problem->pts.size() <= INT64_MAX);
+  assert(problem->pts.domain_bound.size() == 2 * problem->pts.dimensions);
+  assert(ga.grad.size() == problem->pts.dimensions);
 
   pointset pts;
   prec*    bd;
   prec*    pt;
+  u64      d;
+  prec     lgrad_max;
 
   ga.i                 = 0;
-  bd                   = problem->domain_bound;
   pts                  = problem->pts;
+  bd                   = &problem->pts.domain_bound[0];
   ga.grad_len          = ga.tau;
   problem->pts_end_idx = problem->pts.size() - 1;
+  d                    = problem->pts.dimensions;
 
   while (ga.grad_len >= ga.tau && ga.i < ga.i_end) {
     // stream intermediate pointsets to ostream
@@ -268,20 +280,20 @@ void gradient_ascent(ascent_param& ga, problem_param* problem)
       pt = pts.at(j, 0);
 
       // compute gradient
-      gradient_local_disp(j, problem, ga.disp, ga.grad);
+      gradient_local_disp(j, problem, ga.disp, &ga.grad[0], lgrad_max);
 
-      // move point by iteration scheme
-      pt[0] += ga.dt * ga.grad[0];
-      pt[1] += ga.dt * ga.grad[1];
+      for (u64 x = 0; x < d; ++x) {
+        // move point by iteration scheme
+        pt[x] += ga.dt * ga.grad[x];
 
-      // check: out-of-boundary -> apply fmod
-      pt[0] = std::fmod(pt[0] + bd[1], bd[1]);
-      pt[1] = std::fmod(pt[1] + bd[1], bd[1]);
+        // check: out-of-boundary
+        // pt[x] = std::fmod(pt[0] + bd[1], bd[1]);
+        pt[x] = std::max(bd[x], std::min(pt[x], bd[d + x]));
+      }
 
       // accumulate maximum gradient magnitude as termination criteria
       // - axis-aligned gradients, so max( along each axis) is justified
-      ga.grad_len
-        = std::max(ga.grad_len, std::max(std::abs(ga.grad[0]), std::abs(ga.grad[1])));
+      ga.grad_len = std::max(ga.grad_len, lgrad_max);
     }
     // move temporary points
     problem->pts = pts;
@@ -299,9 +311,6 @@ i32 return_results(const program_param& rt,
                    const problem_param& problem,
                    const ascent_param&  ga)
 {
-  if (!rt.silent)
-    *problem.os << "# src=" << rt.input << std::endl;
-
   if (rt.compute_sequence_size) {
     putln(problem.os, "# sequence size of gradient ascent steps:", !rt.silent);
     putln(problem.os, ga.i);
@@ -368,14 +377,13 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
 
     } else if (s == "-h" || s == "--help") {
-      std::cout << manpage;
+      std::cout << manpage << std::endl;
 
-      std::cout << "# DEFAULT PARAMETERS #" << std::endl;
+      std::cout << "# CURRENT PARAMETERS #" << std::endl;
       std::cout << "--iteration-limit=" << rt.iteration_limit << std::endl
                 << "--tau=" << rt.tau << std::endl
                 << "--stepsize=" << rt.dt << std::endl
-                << "--delimiter='" << rt.delimiter << "'" << std::endl
-                << std::endl;
+                << "--delimiter='" << rt.delimiter << "'" << std::endl;
       return false;
     }
   }
@@ -431,14 +439,15 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);
 
+  if (!rt.silent)
+    *rt.os << "# src=" << rt.input << std::endl;
+
   // iterate through point set sequence
   while (!rt.is->eof()) {
     // allocate problem
     dptk::problem_param problem;
 
-    problem.rt              = &rt;
-    problem.domain_bound[0] = 0;
-    problem.domain_bound[1] = 1;
+    problem.rt = &rt;
 
     problem.pts.clear();
 
@@ -471,6 +480,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     // need local copies to ensure performance
     dptk::problem_param* p   = &problems[i];
     dptk::ascent_param   gap = ga;
+
+    // allocate vectors
+    gap.grad.resize(p->pts.dimensions);
 
     // compute optimisation
     dptk::gradient_ascent(gap, p);

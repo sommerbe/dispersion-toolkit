@@ -35,7 +35,7 @@ struct problem_measures
   prec disp;
   prec ndisp;
   u64  boxcount;
-  u64 gs_spawn_count = 0;
+  u64  gs_diverge_count = 0;
 };
 
 struct problem_param
@@ -43,20 +43,19 @@ struct problem_param
   pointset               pts;
   u64                    pts_end_idx;
   pointset_dsorted_index idx;
-  prec                   domain_bound[2];
   problem_measures*      measures;
   program_param*         rt;
 };
 
 struct grow_shrink_param
 {
-  u64            base_idx;
-  i64            head_idx;
-  i64            end_idx;
-  prec           bound[2];
-  u32            axis;
-  i32            dir;
-  problem_param* problem;
+  u64               base_idx;
+  i64               head_idx;
+  i64               end_idx;
+  std::vector<prec> bound;
+  u32               axis;
+  i32               dir;
+  problem_param*    problem;
 };
 
 struct dispersion_param
@@ -76,11 +75,11 @@ prec grow_shrink(grow_shrink_param& p)
   prec* sk;
   prec  ldisp = 0;
   prec  z;
-  u32   o;
+  u64   d;
 
   b  = p.problem->idx.at(p.base_idx, p.axis);
   sb = &p.problem->pts[b];
-  o  = 1 - p.axis;
+  d  = p.problem->pts.dimensions;
 
   while (p.head_idx != p.end_idx) {
     // lookup index of head
@@ -90,12 +89,24 @@ prec grow_shrink(grow_shrink_param& p)
     // prepare for next iteration
     p.head_idx += p.dir;
 
-    // skip out-of-bounds (along axis=o)
-    if (sk[o] > p.bound[1] || sk[o] < p.bound[0])
+    // skip out-of-bounds (along axis xs != p.axis)
+    u1 outside = false;
+    for (u64 xs = 0; xs < d && !outside; ++xs) {
+      if (xs == p.axis)
+        continue;
+      outside |= sk[xs] < p.bound[xs] || sk[xs] > p.bound[d + xs];
+    }
+    if (outside) {
       continue;
+    }
 
     // grow the bound (along axis=p.axis)
-    z     = (p.bound[1] - p.bound[0]) * std::abs(sk[p.axis] - sb[p.axis]);
+    z = std::abs(sk[p.axis] - sb[p.axis]);
+    for (u64 xs = 0; xs < d; ++xs) {
+      if (xs == p.axis)
+        continue;
+      z *= p.bound[d + xs] - p.bound[xs];
+    }
     ldisp = std::max(z, ldisp);
 
     // update counting
@@ -103,33 +114,29 @@ prec grow_shrink(grow_shrink_param& p)
       ++p.problem->measures->boxcount;
     }
 
-    // shrink the bound (potentially; along axis=o)
-    if (sk[o] > sb[o]) {
-      p.bound[1] = sk[o];
-    } else if (sk[o] < sb[o]) {
-      p.bound[0] = sk[o];
-    } else {
-      // proceed above
-      k          = p.head_idx;
-      z          = p.bound[0];
-      p.bound[0] = sk[o];
-      ldisp      = std::max(grow_shrink(p), ldisp);
-
-      // proceed below
-      p.head_idx = k;
-      p.bound[0] = z;
-      p.bound[1] = sk[o];
-      ldisp      = std::max(grow_shrink(p), ldisp);
-      
-      ++ p.problem->measures->gs_spawn_count;
-
-      break;
+    // shrink the bound (along axis xs != p.axis)
+    for (u64 xs = 0; xs < d; ++xs) {
+      if (xs == p.axis)
+        continue;
+      if (sk[xs] > sb[xs]) {
+        p.bound[d + xs] = sk[xs];
+      } else if (sk[xs] < sb[xs]) {
+        p.bound[xs] = sk[xs];
+      } else {
+        ++p.problem->measures->gs_diverge_count;
+        p.bound[xs] = sk[xs];
+      }
     }
   }
 
   // include the box aligned to the edge
-  z = (p.bound[1] - p.bound[0]);
-  z *= std::abs(p.problem->domain_bound[(p.dir + 1) / 2] - sb[p.axis]);
+  k = ((p.dir + 1) / 2) * d + p.axis;
+  z = std::abs(p.problem->pts.domain_bound[k] - sb[p.axis]);
+  for (u64 xs = 0; xs < d; ++xs) {
+    if (xs == p.axis)
+      continue;
+    z *= p.bound[d + xs] - p.bound[xs];
+  }
   ldisp = std::max(z, ldisp);
 
   // update counting
@@ -144,8 +151,7 @@ prec sided_local_disp(u64 pt, grow_shrink_param& p)
 {
   assert(p.dir == -1 || p.dir == 1);
 
-  p.bound[0] = p.problem->domain_bound[0];
-  p.bound[1] = p.problem->domain_bound[1];
+  p.bound = p.problem->pts.domain_bound;
 
   p.base_idx = p.problem->idx.search(pt, p.axis);
   p.head_idx = p.base_idx + p.dir;
@@ -161,14 +167,13 @@ prec sided_local_disp(u64 pt, grow_shrink_param& p)
 void local_disp(u64 pt, problem_param* problem, prec& disp)
 {
   assert(problem != nullptr);
-  assert(problem->pts.dimensions == 2);
 
   prec              ldisp;
   grow_shrink_param gsp;
 
   gsp.problem = problem;
 
-  for (i32 axis = 0; axis < 2; ++axis) {
+  for (i32 axis = 0; axis < problem->pts.dimensions; ++axis) {
     for (i32 dir = 0; dir < 3; dir += 2) {
       gsp.axis = axis;
       gsp.dir  = dir - 1;
@@ -183,13 +188,8 @@ void dispersion(dispersion_param& ga, problem_param* problem)
 {
   assert(problem != nullptr);
   assert(problem->pts.size() > 0);
-  assert(problem->domain_bound[0] == 0);
   assert(problem->pts.size() <= INT64_MAX);
 
-  prec  percentile[3];
-  prec* bd;
-
-  bd                   = problem->domain_bound;
   problem->pts_end_idx = problem->pts.size() - 1;
   ga.disp              = 0;
 
@@ -202,6 +202,37 @@ void dispersion(dispersion_param& ga, problem_param* problem)
   }
 };
 
+void return_bound(const program_param& rt)
+{
+  i8 ndel = ' ';
+
+  *rt.os << "#d";
+
+  if (rt.compute_disp) {
+    *rt.os << ndel << 0;
+    ndel = rt.delimiter;
+  }
+  if (rt.compute_ndisp) {
+    *rt.os << ndel << 0;
+    ndel = rt.delimiter;
+  }
+  if (rt.compute_boxcount) {
+    *rt.os << ndel << 0;
+    ndel = rt.delimiter;
+  }
+
+  if (rt.compute_disp) {
+    *rt.os << ndel << INFINITY;
+  }
+  if (rt.compute_ndisp) {
+    *rt.os << ndel << INFINITY;
+  }
+  if (rt.compute_boxcount) {
+    *rt.os << ndel << INFINITY;
+  }
+  *rt.os << std::endl;
+}
+
 i32 return_results(const program_param&                       rt,
                    const std::vector<dptk::problem_measures>& measures)
 {
@@ -211,27 +242,30 @@ i32 return_results(const program_param&                       rt,
 
   if (rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount) {
     if (!rt.silent) {
-      *rt.os << "# (";
+      for (u64 i = 0; i < measures.size(); ++i) {
+        *rt.os << "# gs diverges = " << measures[i].gs_diverge_count << std::endl;
+      }
+    }
+    if (!rt.silent) {
+      i8 ndel = '(';
+      *rt.os << "# ";
       if (rt.compute_disp) {
-        *rt.os << "dispersion";
-        if (rt.compute_ndisp || rt.compute_boxcount)
-          *rt.os << ", ";
+        *rt.os << ndel << "dispersion";
+        ndel = ',';
       }
       if (rt.compute_ndisp) {
-        *rt.os << "n*dispersion";
-        if (rt.compute_boxcount)
-          *rt.os << ", ";
+        *rt.os << ndel << "n*dispersion";
+        ndel = ',';
       }
       if (rt.compute_boxcount) {
-        *rt.os << "box count";
+        *rt.os << ndel << "number of boxes";
       }
       *rt.os << ")" << std::endl;
     }
 
+    return_bound(rt);
+
     for (u64 i = 0; i < measures.size(); ++i) {
-      if (!rt.silent) {
-        *rt.os << "# gs spawn count = " << measures[i].gs_spawn_count << std::endl;
-      }  
       if (rt.compute_disp) {
         putsci(rt.os, measures[i].disp, 16);
         if (rt.compute_ndisp || rt.compute_boxcount)
@@ -311,18 +345,16 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   std::vector<dptk::problem_measures> measures;
 
   // default configuration
-  rt.compute_boxcount     = false;
-  rt.compute_disp         = false;
-  rt.compute_ndisp        = false;
-  rt.delimiter            = ' ';
-  rt.del_use_ipts         = true;
-  rt.silent               = false;
-  rt.input                = "-";
-  rt.output               = "-";
-  problem.rt              = &rt;
-  problem.domain_bound[0] = 0;
-  problem.domain_bound[1] = 1;
-  r                       = EXIT_SUCCESS;
+  rt.compute_boxcount = false;
+  rt.compute_disp     = false;
+  rt.compute_ndisp    = false;
+  rt.delimiter        = ' ';
+  rt.del_use_ipts     = true;
+  rt.silent           = false;
+  rt.input            = "-";
+  rt.output           = "-";
+  problem.rt          = &rt;
+  r                   = EXIT_SUCCESS;
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {

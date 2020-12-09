@@ -12,6 +12,9 @@ struct regular_pointset
   u64               dimensions;
   std::vector<prec> coords;
 
+  // format bound: (low_0 ... low_(d-1) up_0 ... up_(d-1))
+  std::vector<prec> domain_bound;
+
   void allocate(u64 num_points, u64 num_dimensions);
   void clear();
 
@@ -22,6 +25,8 @@ struct regular_pointset
   inline prec&       operator[](u64 pidx);
 
   void extract(u64 axis, regular_pointset<prec>& pts) const;
+
+  prec domain_extent(u64 axis) const;
 };
 
 template<typename prec>
@@ -76,6 +81,12 @@ void regular_pointset<prec>::extract(u64 axis, regular_pointset<prec>& pts) cons
   for (u64 i = 0; i < points; ++i) {
     pts.coords[i] = *at(i, axis);
   }
+}
+
+template<typename prec>
+prec regular_pointset<prec>::domain_extent(u64 axis) const
+{
+  return domain_bound[dimensions + axis] - domain_bound[axis];
 }
 
 } // namespace dptk

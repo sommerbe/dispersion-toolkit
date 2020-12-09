@@ -77,6 +77,11 @@ prec fn_L(u64 Fm2, u64 Fm)
   return fn_x(Fm, Fm2, Fm);
 }
 
+void init_domain(pointset& pts)
+{
+  pts.domain_bound = { 0., 0., 1., 1. };
+}
+
 void kritzinger_lattice(problem_param* problem)
 {
   assert(problem != nullptr);
@@ -90,6 +95,9 @@ void kritzinger_lattice(problem_param* problem)
   prec  integral_part;
   prec  L;
   prec  L_inv;
+
+  // store problem domain
+  init_domain(problem->pts);
 
   // compute last 3 Fibonacci numbers
   fibonacci(problem->rt->fibonacci_index, Fm2, Fm1, Fm);

@@ -7,53 +7,45 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(KRITZINGERLATTICE(1)      Dispersion Toolkit Manuals      KRITZINGERLATTICE(1)
+  = R"V0G0N(KRITZINGERLATTICE(1)                         Dispersion Toolkit Manuals                         KRITZINGERLATTICE(1)
 
 NAME
-       kritzingerlattice  -  compute a modified Fibonacci lattice according to
-       Kritzinger and Lachmann, 2020 (arxiv preprint)
+       kritzingerlattice  -  compute  a modified Fibonacci lattice according to Kritzinger and Lachmann, 2020 (arxiv
+       preprint)
 
 SYNOPSIS
-       kritzingerlattice --fibonacci-index|--i=INTEGER [--o FILE]  [--compute-
-       fibonacci-number|–cardinality]  [--no-pointset] [--delimiter=CHARACTER]
-       [--silent]
+       kritzingerlattice --fibonacci-index|--i=INTEGER [--o FILE]  [--compute-fibonacci-number|–cardinality]  [--no-
+       pointset] [--delimiter=CHARACTER] [--silent]
 
 DESCRIPTION
-       Computes the modified Fibonacci lattice  according  to  Kritzinger  and
-       Lachmann,  2020  (https://arxiv.org/abs/2007.02297) given the Fibonacci
-       index --fibonacci-index INTEGER, which needs to be >= 2.
+       Computes   the   modified  Fibonacci  lattice  according  to  Kritzinger  and  Lachmann,  2020  (https://arx‐
+       iv.org/abs/2007.02297) given the Fibonacci index --fibonacci-index INTEGER, which needs to be >= 2.
 
-       Unless the option --no-pointset is  given,  the  resulting  lattice  is
-       written to standard output, or to the file given by --o FILE.
+       Unless the option --no-pointset is given, the resulting lattice is written to standard output, or to the file
+       given by --o FILE.
 
 MANDATORY ARGUMENTS
        --fibonacci-index=INTEGER, --i=INTEGER, --i INTEGER
-              The INTEGER equals the Fibonacci index m of the Fibonacci number
-              F_m.  The cardinality of the resulting  point  set  equals  F_m.
-              Boundary condition: m > 2.
+              The  INTEGER equals the Fibonacci index m of the Fibonacci number F_m.  The cardinality of the result‐
+              ing point set equals F_m.  Boundary condition: m > 2.
 
 OPTIONS
        --o FILE, --o=FILE
-              Redirects the computed results to FILE, opened in overwrite mode
-              (not appending mode).  Without FILE, results  are  forwarded  to
-              stdout.   Errors  encountered during the program’s execution are
-              streamed into stderr, and not into either stdout or FILE.
+              Redirects the computed results to FILE, opened in overwrite mode (not appending mode).  Without  FILE,
+              results  are forwarded to stdout.  Errors encountered during the program’s execution are streamed into
+              stderr, and not into either stdout or FILE.
 
        --compute-fibonacci-number, --cardinality
-              Computes the point set’s cardinality and feeds it to the  output
-              stream.   In the case of the Fibonacci lattice, this cardinality
-              equals the Fibonacci number F_m, where m is the Fibonacci  index
-              (see above).
+              Computes the point set’s cardinality and feeds it to the output stream.  In the case of the  Fibonacci
+              lattice, this cardinality equals the Fibonacci number F_m, where m is the Fibonacci index (see above).
 
        --delimiter=CHARACTER
-              Define  a delimiter character to separate coordinates of a point
-              in the resulting output.  A usual CHARACTER  could  be  '  '  or
-              '\t', for instance.
+              Define  a  delimiter  character  to  separate coordinates of a point in the resulting output.  A usual
+              CHARACTER could be ' ' or '\t', for instance.
 
        --silent
-              Suppress  comments  in the output stream, yielding only the com‐
-              puted value.  The latter could be the point set or its cardinal‐
-              ity.
+              Suppress comments in the output stream, yielding only the computed value.  The  latter  could  be  the
+              point set or its cardinality.
 
 LIMITATION
        The modified Fibonacci lattice will be two-dimensional, only.
@@ -61,6 +53,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          November 30, 2020          KRITZINGERLATTICE(1)
+1.0.0                                             November 30, 2020                             KRITZINGERLATTICE(1)
 )V0G0N";
 }

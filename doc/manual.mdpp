@@ -39,6 +39,11 @@ subject: My Favorite Subject
 
 ## Measures
 
+### Dispersion (Naamad et. al. 1984)
+
+!INCLUDE "src/measure/dispnaamad/manpage.md", 3
+
+
 ### Dispersion (combinatorial algorithm)
 
 !INCLUDE "src/measure/dispcombinatorial/manpage.md", 3
