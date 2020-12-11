@@ -118,5 +118,4 @@ u64 regular_pointset<prec>::domain_idx_up(u64 axis) const
   return dimensions + axis;
 }
 
-
 } // namespace dptk

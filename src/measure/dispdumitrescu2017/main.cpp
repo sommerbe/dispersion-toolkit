@@ -33,7 +33,7 @@ struct program_param
   std::ostream* os;
   std::istream* is;
   u1            silent;
-  prec epsilon;
+  prec          epsilon;
   i8            delimiter;
   u1            del_use_ipts;
   u1            compute_disp;
@@ -57,11 +57,11 @@ struct problem_param
   pointset               pts;
   pointset_dsorted_index idx;
   // std::vector<hyperbox>  boxes;
-  prec subdomain_low;
-  prec subdomain_up;
-  prec subdomain_disp;
-  problem_measures*      measures;
-  program_param*         rt;
+  prec              subdomain_low;
+  prec              subdomain_up;
+  prec              subdomain_disp;
+  problem_measures* measures;
+  program_param*    rt;
 };
 
 void print_coords(std::ostream* os, const hyperbox& box, u8 del = ' ')
@@ -80,7 +80,6 @@ u1 outside_slab(prec* pt, problem_param* p)
 {
   return pt[2] < p->subdomain_low || p->subdomain_up < pt[2];
 }
-
 
 void dispersion_naamad_subdomain(problem_param* p)
 {
@@ -231,7 +230,7 @@ void dispersion_naamad_subdomain(problem_param* p)
 //     if (outside_slab(p1, p)) {
 //       continue;
 //     }
-    
+
 //     // first hole to left boundary (low of 0-axis)
 //     if (p0 == nullptr) {
 //       p0 = p1;
@@ -351,16 +350,16 @@ void dispersion_dumitrescu2017(problem_param* p)
 {
   assert(p->pts.dimensions == 3);
 
-  u64 planes;
-  prec norm;
-  prec base;
-  prec expon;
-  prec slab;
-  prec disp;
-  prec vol;
-  prec extent;
+  u64      planes;
+  prec     norm;
+  prec     base;
+  prec     expon;
+  prec     slab;
+  prec     disp;
+  prec     vol;
+  prec     extent;
   pointset pts_base;
-  prec* p0;
+  prec*    p0;
 
   // init
   p->measures->disp = 0;
@@ -371,27 +370,27 @@ void dispersion_dumitrescu2017(problem_param* p)
   // determine number of planes
   // - slab size is defined in [0,1]^3 domain
   // - implementation allows any bounded 3-dimensional domain => scaling needed
-  expon = 1.0 / pts_base.dimensions;
-  slab = 0.5 * p->rt->epsilon *  std::pow(pts_base.points, expon);
+  expon  = 1.0 / pts_base.dimensions;
+  slab   = 0.5 * p->rt->epsilon * std::pow(pts_base.points, expon);
   planes = 1.0 / slab + 1;
-  norm = pts_base.domain_extent(2) / prec(planes - 1);
-  base = pts_base.domain_bound[2];
+  norm   = pts_base.domain_extent(2) / prec(planes - 1);
+  base   = pts_base.domain_bound[2];
 
   assert(planes > 0);
 
   // quantise cube domain along 2-axis (out of 0-axis, 1-axis)
   // - and iterate through all pairs of parallel planes (orthogonal to 2-axis)
-  for (u64 i=0; i<planes; ++i) {
+  for (u64 i = 0; i < planes; ++i) {
     p->subdomain_low = i * norm + base;
-    for (u64 j=i+1; i<planes; ++j) {
-      p->subdomain_up = j * norm + base; 
-      extent = p->subdomain_up - p->subdomain_low;
+    for (u64 j = i + 1; i < planes; ++j) {
+      p->subdomain_up = j * norm + base;
+      extent          = p->subdomain_up - p->subdomain_low;
 
       // clear memory
       p->pts.clear();
 
       // reduce pointset to slab extent
-      for (u64 k=0; k<pts_base.size(); ++k) {
+      for (u64 k = 0; k < pts_base.size(); ++k) {
         p0 = pts_base.at(k, 0);
         if (outside_slab(p0, p)) {
           continue;
@@ -405,12 +404,12 @@ void dispersion_dumitrescu2017(problem_param* p)
       p->pts.domain_bound.push_back(pts_base.domain_low(1));
       p->pts.domain_bound.push_back(pts_base.domain_up(0));
       p->pts.domain_bound.push_back(pts_base.domain_up(1));
-      
+
       // find greatest empty rectangle within [low, up] (2-axis)
       dispersion_naamad_subdomain(p);
 
       // expand rectangle into 3rd dimension
-      vol = p->subdomain_disp * extent;
+      vol               = p->subdomain_disp * extent;
       p->measures->disp = std::max(vol, p->measures->disp);
     }
   }
@@ -509,8 +508,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.epsilon = std::strtod(arg[++i].c_str(), nullptr);
       if (rt.epsilon <= 0 || rt.epsilon > 1)
         return argparse::err("invalid argument: 0 < epsilon <= 1");
-
-    } if (s == "--disp") {
+    }
+    if (s == "--disp") {
       rt.compute_disp = true;
     } else if (s == "--ndisp") {
       rt.compute_ndisp = true;
@@ -537,7 +536,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   }
 
   if (!(rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount)) {
-    return argparse::err("fatal error: unsupported output option. Consider program option -h or --help.");
+    return argparse::err(
+      "fatal error: unsupported output option. Consider program option -h or --help.");
   }
 
   if (rt.epsilon == 0.) {
@@ -558,7 +558,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   std::vector<dptk::problem_measures> measures;
 
   // default configuration
-  rt.epsilon = 0;
+  rt.epsilon          = 0;
   rt.compute_boxcount = false;
   rt.compute_disp     = false;
   rt.compute_ndisp    = false;
