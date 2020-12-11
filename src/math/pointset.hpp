@@ -27,6 +27,11 @@ struct regular_pointset
   void extract(u64 axis, regular_pointset<prec>& pts) const;
 
   prec domain_extent(u64 axis) const;
+  prec domain_low(u64 axis) const;
+  prec domain_up(u64 axis) const;
+
+  u64 domain_idx_low(u64 axis) const;
+  u64 domain_idx_up(u64 axis) const;
 };
 
 template<typename prec>
@@ -88,5 +93,30 @@ prec regular_pointset<prec>::domain_extent(u64 axis) const
 {
   return domain_bound[dimensions + axis] - domain_bound[axis];
 }
+
+template<typename prec>
+prec regular_pointset<prec>::domain_low(u64 axis) const
+{
+  return domain_bound[axis];
+}
+
+template<typename prec>
+prec regular_pointset<prec>::domain_up(u64 axis) const
+{
+  return domain_bound[dimensions + axis];
+}
+
+template<typename prec>
+u64 regular_pointset<prec>::domain_idx_low(u64 axis) const
+{
+  return axis;
+}
+
+template<typename prec>
+u64 regular_pointset<prec>::domain_idx_up(u64 axis) const
+{
+  return dimensions + axis;
+}
+
 
 } // namespace dptk

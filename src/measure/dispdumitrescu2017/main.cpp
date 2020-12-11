@@ -33,6 +33,7 @@ struct program_param
   std::ostream* os;
   std::istream* is;
   u1            silent;
+  prec epsilon;
   i8            delimiter;
   u1            del_use_ipts;
   u1            compute_disp;
@@ -55,7 +56,10 @@ struct problem_param
 {
   pointset               pts;
   pointset_dsorted_index idx;
-  std::vector<hyperbox>  boxes;
+  // std::vector<hyperbox>  boxes;
+  prec subdomain_low;
+  prec subdomain_up;
+  prec subdomain_disp;
   problem_measures*      measures;
   program_param*         rt;
 };
@@ -72,13 +76,18 @@ void print_coords(std::ostream* os, const hyperbox& box, u8 del = ' ')
   *os << std::endl;
 }
 
-void dispersion_naamad(problem_param* p)
+u1 outside_slab(prec* pt, problem_param* p)
+{
+  return pt[2] < p->subdomain_low || p->subdomain_up < pt[2];
+}
+
+
+void dispersion_naamad_subdomain(problem_param* p)
 {
   assert(p != nullptr);
   assert(p->pts.size() > 0);
   assert(p->pts.domain_bound.size() == 4);
   assert(p->measures != nullptr);
-  assert(p->measures->boxcount == 0);
 
   prec*    p0;
   prec*    p1;
@@ -186,11 +195,228 @@ void dispersion_naamad(problem_param* p)
   }
 
   // update computation tasks
-  p->measures->disp = box_max.area;
+  p->subdomain_disp = box_max.area;
 
   // if (p->rt->compute_box_max) {
   //   p->measures->box_max = box_max;
   // }
+};
+
+// void dispersion_naamad_subdomain(problem_param* p)
+// {
+//   assert(p != nullptr);
+//   assert(p->pts.size() > 0);
+//   assert(p->pts.domain_bound.size() == 6);
+//   assert(p->measures != nullptr);
+
+//   prec*    p0;
+//   prec*    p1;
+//   prec*    p2;
+//   prec*    pj;
+//   hyperbox box;
+//   hyperbox box_max;
+//   prec     dist;
+//   prec     dist_max;
+//   prec     extent_up;
+//   prec     extent_low;
+//   u64      dist_idx;
+
+//   // initialise
+//   dist_max = 0.0;
+
+//   // find greatest empty distance along 0-axis
+//   p0 = nullptr;
+//   for (u64 i = 0; i < p->pts.size(); ++i) {
+//     p1   = p->pts.at(p->idx.at(i, 0), 0);
+//     if (outside_slab(p1, p)) {
+//       continue;
+//     }
+    
+//     // first hole to left boundary (low of 0-axis)
+//     if (p0 == nullptr) {
+//       p0 = p1;
+//       dist_max = p0[0] - p->pts.domain_low(0);
+//     ++p->measures->boxcount;
+//       continue;
+//     }
+
+//     // interiour holes along 0-axis
+//     dist = p1[0] - p0[0];
+//     assert(dist >= 0.);
+//     dist_max = std::max(dist_max, dist);
+//     p0       = p1;
+//     ++p->measures->boxcount;
+//   }
+//   // last hole to right boundary (up of 0-axis)
+//   dist_max     = std::max(dist_max, p->pts.domain_up(0) - p0[0]);
+//   box_max.area = dist_max * p->pts.domain_extent(1);
+
+//   // find greatest empty rectangle (quasi interior) iterating along 0-axis
+//   // - sorted along 1-axis descending order (aka reverse ascending order)
+//   // - p0 is above p1 along 1-axis
+//   // - extent_low = T_l (left); extent_up = T_r (right) (in the official paper)
+//   // - p0[0] = X_i, p1[0] = X_j; p0[1] = Y_i, p1[1] = Y_j (official paper)
+//   extent_low = p->pts.domain_low(0);
+//   extent_up  = p->pts.domain_up(0);
+//   assert(extent_up >= extent_low);
+//   for (u64 i = p->pts.size(); i > 0;) {
+//     p0         = p->pts.at(p->idx.at(--i, 1), 0);
+//     if (outside_slab(p0, p)) {
+//       continue;
+//     }
+//     for (u64 j = i; j > 0;) {
+//       p1 = p->pts.at(p->idx.at(--j, 1), 0);
+//       if (outside_slab(p1, p) || p1[0] <= extent_low || p1[0] >= extent_up) {
+//         continue;
+//       }
+//       dist = p0[1] - p1[1];
+//       assert(dist >= 0.);
+//       box.area     = (extent_up - extent_low) * dist;
+//       box_max.area = std::max(box_max.area, box.area);
+
+//       // shrink extent along 0-axis
+//       if (p1[0] > p0[0]) {
+//         extent_up = p1[0];
+//       } else {
+//         extent_low = p1[0];
+//       }
+//       ++p->measures->boxcount;
+//     }
+//     dist         = p0[1] - p->pts.domain_low(1);
+//     box.area     = (extent_up - extent_low) * dist;
+//     box_max.area = std::max(box_max.area, box.area);
+//     ++p->measures->boxcount;
+//   }
+
+//   // find greatest empty rectangle which is
+//   // a) bounded by point i
+//   // b) bounded by top domain boundary
+//   // - sorted along 0-axis (for efficiency)
+//   // - find next (0-axis) neighbour of point i being above i (along 1-axis)
+//   for (u64 i = 0; i < p->pts.size(); ++i) {
+//     p0 = p->pts.at(p->idx.at(i, 0), 0);
+//     p1 = nullptr;
+//     p2 = nullptr;
+
+//     if (outside_slab(p0, p)) {
+//       continue;
+//     }
+
+//     // find next right neighour (greater 0-axis coord)
+//     for (u64 j = i + 1; j < p->pts.size(); ++j) {
+//       pj = p->pts.at(p->idx.at(j, 0), 0);
+//       if (outside_slab(pj, p)) {
+//         continue;
+//       }
+//       if (pj[0] > p0[0] && pj[1] > p0[1]) {
+//         p2 = pj;
+//         break;
+//       }
+//     }
+//     if (p2 == nullptr) {
+//       p2 = &p->pts.domain_bound[p->pts.domain_idx_up(0)];
+//     }
+
+//     // find next left neighbour (smaller 0-axis coord)
+//     for (u64 j = i; j > 0;) {
+//       pj = p->pts.at(p->idx.at(--j, 0), 0);
+//       if (outside_slab(pj, p)) {
+//         continue;
+//       }
+//       if (pj[0] < p0[0] && pj[1] > p0[1]) {
+//         p1 = pj;
+//         break;
+//       }
+//     }
+//     if (p1 == nullptr) {
+//       p1 = &p->pts.domain_bound[p->pts.domain_idx_low(0)];
+//     }
+
+//     // accumulate empty box area
+//     box.area = (p2[0] - p1[0]) * (p->pts.domain_up(1) - p0[1]);
+//     assert(box.area >= 0.);
+//     box_max.area = std::max(box_max.area, box.area);
+//     ++p->measures->boxcount;
+//   }
+
+//   // update computation tasks
+//   p->subdomain_disp = box_max.area;
+
+//   // if (p->rt->compute_box_max) {
+//   //   p->measures->box_max = box_max;
+//   // }
+// };
+
+void dispersion_dumitrescu2017(problem_param* p)
+{
+  assert(p->pts.dimensions == 3);
+
+  u64 planes;
+  prec norm;
+  prec base;
+  prec expon;
+  prec slab;
+  prec disp;
+  prec vol;
+  prec extent;
+  pointset pts_base;
+  prec* p0;
+
+  // init
+  p->measures->disp = 0;
+
+  // remember entire point set
+  pts_base = p->pts;
+
+  // determine number of planes
+  // - slab size is defined in [0,1]^3 domain
+  // - implementation allows any bounded 3-dimensional domain => scaling needed
+  expon = 1.0 / pts_base.dimensions;
+  slab = 0.5 * p->rt->epsilon *  std::pow(pts_base.points, expon);
+  planes = 1.0 / slab + 1;
+  norm = pts_base.domain_extent(2) / prec(planes - 1);
+  base = pts_base.domain_bound[2];
+
+  assert(planes > 0);
+
+  // quantise cube domain along 2-axis (out of 0-axis, 1-axis)
+  // - and iterate through all pairs of parallel planes (orthogonal to 2-axis)
+  for (u64 i=0; i<planes; ++i) {
+    p->subdomain_low = i * norm + base;
+    for (u64 j=i+1; i<planes; ++j) {
+      p->subdomain_up = j * norm + base; 
+      extent = p->subdomain_up - p->subdomain_low;
+
+      // clear memory
+      p->pts.clear();
+
+      // reduce pointset to slab extent
+      for (u64 k=0; k<pts_base.size(); ++k) {
+        p0 = pts_base.at(k, 0);
+        if (outside_slab(p0, p)) {
+          continue;
+        }
+        p->pts.coords.push_back(p0[0]);
+        p->pts.coords.push_back(p0[1]);
+        ++p->pts.points;
+      }
+      p->pts.dimensions = 2;
+      p->pts.domain_bound.push_back(pts_base.domain_low(0));
+      p->pts.domain_bound.push_back(pts_base.domain_low(1));
+      p->pts.domain_bound.push_back(pts_base.domain_up(0));
+      p->pts.domain_bound.push_back(pts_base.domain_up(1));
+      
+      // find greatest empty rectangle within [low, up] (2-axis)
+      dispersion_naamad_subdomain(p);
+
+      // expand rectangle into 3rd dimension
+      vol = p->subdomain_disp * extent;
+      p->measures->disp = std::max(vol, p->measures->disp);
+    }
+  }
+
+  // restore pointset
+  p->pts = pts_base;
 };
 
 void return_bound(const program_param& rt)
@@ -277,18 +503,19 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   for (u64 i = 0; i < arg.size(); ++i) {
     const std::string& s = arg[i];
 
-    if (s == "--disp") {
+    if (s == "--epsilon" || s == "--e") {
+      if (!argparse::argval(arg, i))
+        return argparse::err("missing --epsilon value. Consider using -h or --help.");
+      rt.epsilon = std::strtod(arg[++i].c_str(), nullptr);
+      if (rt.epsilon <= 0 || rt.epsilon > 1)
+        return argparse::err("invalid argument: 0 < epsilon <= 1");
+
+    } if (s == "--disp") {
       rt.compute_disp = true;
     } else if (s == "--ndisp") {
       rt.compute_ndisp = true;
     } else if (s == "--count-boxes") {
       rt.compute_boxcount = true;
-      // } else if (s == "--interior-boxes") {
-      //   rt.compute_box_interior = true;
-      // } else if (s == "--greatest-box") {
-      //   rt.compute_box_max = true;
-      // } else if (s == "--boxes") {
-      //   rt.compute_boxes = true;
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "--i") {
@@ -310,10 +537,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   }
 
   if (!(rt.compute_disp || rt.compute_ndisp || rt.compute_boxcount)) {
-    std::cerr
-      << "fatal error: unsupported output option. Consider program option -h or --help."
-      << std::endl;
-    return false;
+    return argparse::err("fatal error: unsupported output option. Consider program option -h or --help.");
+  }
+
+  if (rt.epsilon == 0.) {
+    return argparse::err("missing option --epsilon");
   }
 
   return true;
@@ -330,6 +558,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   std::vector<dptk::problem_measures> measures;
 
   // default configuration
+  rt.epsilon = 0;
   rt.compute_boxcount = false;
   rt.compute_disp     = false;
   rt.compute_ndisp    = false;
@@ -372,7 +601,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
       continue;
     }
 
-    assert(problem.pts.dimensions == 2);
+    assert(problem.pts.dimensions == 3);
     dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
     // allocate index
@@ -384,7 +613,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     problem.measures->boxcount = 0;
 
     // compute dispersion
-    dptk::dispersion_naamad(&problem);
+    dptk::dispersion_dumitrescu2017(&problem);
 
     // store measurements
     problem.measures->ndisp = problem.pts.size() * problem.measures->disp;

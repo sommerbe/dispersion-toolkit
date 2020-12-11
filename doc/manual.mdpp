@@ -1,20 +1,6 @@
 ? Dispersion Toolkit Manual
 ? Benjamin Sommer
-? December 1, 2020
-
----
-documentclass: extarticle
-fontsize: 12pt
-papersize: a4
-title-meta: 'META Title'
-author-meta: 'The Author'
-date-meta: '1. Juni, 2020'
-keywords:
-- 'keyword1'
-- 'keyword2'
-- 'keyword3'
-subject: My Favorite Subject
----
+? December 11, 2020
 
 !INCLUDE "readme.md"
 
@@ -42,6 +28,11 @@ subject: My Favorite Subject
 ### Dispersion (Naamad et. al. 1984)
 
 !INCLUDE "src/measure/dispnaamad/manpage.md", 3
+
+
+### Dispersion (Dumitrescu and Jiang 2017)
+
+!INCLUDE "src/measure/dispdumitrescu2017/manpage.md", 3
 
 
 ### Dispersion (combinatorial algorithm)
