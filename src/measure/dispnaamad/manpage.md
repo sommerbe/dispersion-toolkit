@@ -12,7 +12,7 @@ dispnaamad - compute dispersion with algorithm of Naamad et. al. 1984
 
 # DESCRIPTION
 
-Computes dispersion, *n* * dispersion, and/or the number of RRs considered of a given point set with cardinality *n*, according to Naamad et. al. 1984 (...URL...)
+Computes dispersion, *n* * dispersion, and/or the number of restricted rectangles (RRs) considered of a given point set with cardinality *n*, according to Naamad et. al. 1984 (https://doi.org/10.1016/0166-218X(84)90124-0)
 
 Computational complexity: O(n^2),
 
@@ -35,18 +35,18 @@ The measures are written to *standard output*, or to the file given by **\--o** 
 :   Computes dispersion of *P_i*, multiplied by the cardinality *n* of *P_i*.
 
 **\--count-boxes**
-:   Counts all empty boxes of *P_i*, considered as RRs in the publication.
+:   Counts all empty RRs of *P_i*, considered as RRs in the publication.
 
 **\--silent**
 :   Suppress comments in the output stream, yielding only the computed value. The latter could be the point set or its cardinality.
 
 # RETURN FORMAT
 
-## Dispersion, number of boxes
+## Dispersion, number of RRs
 
 A point set of cardinality *m* with each axis representing a computed measure.
 
-point set | disp | n*disp | #RR boxes
+point set | disp | n*disp | #RRs
 --- | --- | --- | ---
 P_0 | . | . | .
 P_1 | . | . | .

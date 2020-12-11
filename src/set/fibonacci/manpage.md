@@ -8,11 +8,11 @@ fibonaccilattice - compute a Fibonacci lattice
 
 # SYNOPSIS
 
-**fibonaccilattice** **\--fibonacci-index|\--i**=*INTEGER* [**\--o** *FILE*] [**\--compute-fibonacci-number|--cardinality**] [**\--no-pointset**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**fibonaccilattice** **\--fibonacci-index|\--i**=*INTEGER* [**\--o** *FILE*] [**\--compute-fibonacci-number**|**\--cardinality**] [**\--no-pointset**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 
-Computes the Fibonacci lattice given the Fibonacci index **\--fibonacci-index** *INTEGER*, which needs to be >= 2. 
+Computes the Fibonacci lattice given the Fibonacci index **\--fibonacci-index** *INTEGER*, which needs to be >= 3. 
 
 Unless the option **\--no-pointset** is given, the resulting lattice is written to *standard output*, or to the file given by **\--o** *FILE*. 
 

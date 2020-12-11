@@ -14,10 +14,10 @@ al.\ 1984
 [\f[B]--count-boxes\f[R]] [\f[B]--silent\f[R]]
 .SH DESCRIPTION
 .PP
-Computes dispersion, \f[I]n\f[R] * dispersion, and/or the number of RRs
-considered of a given point set with cardinality \f[I]n\f[R], according
-to Naamad et.
-al.\ 1984 (\&...URL\&...)
+Computes dispersion, \f[I]n\f[R] * dispersion, and/or the number of
+restricted rectangles (RRs) considered of a given point set with
+cardinality \f[I]n\f[R], according to Naamad et.
+al.\ 1984 (https://doi.org/10.1016/0166-218X(84)90124-0)
 .PP
 Computational complexity: O(n\[ha]2),
 .PP
@@ -50,7 +50,7 @@ Computes dispersion of \f[I]P_i\f[R], multiplied by the cardinality
 \f[I]n\f[R] of \f[I]P_i\f[R].
 .TP
 .B \f[B]--count-boxes\f[R]
-Counts all empty boxes of \f[I]P_i\f[R], considered as RRs in the
+Counts all empty RRs of \f[I]P_i\f[R], considered as RRs in the
 publication.
 .TP
 .B \f[B]--silent\f[R]
@@ -58,7 +58,7 @@ Suppress comments in the output stream, yielding only the computed
 value.
 The latter could be the point set or its cardinality.
 .SH RETURN FORMAT
-.SS Dispersion, number of boxes
+.SS Dispersion, number of RRs
 .PP
 A point set of cardinality \f[I]m\f[R] with each axis representing a
 computed measure.
@@ -73,7 +73,7 @@ disp
 T}@T{
 n*disp
 T}@T{
-#RR boxes
+#RRs
 T}
 _
 T{

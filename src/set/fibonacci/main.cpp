@@ -142,7 +142,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return false;
       }
       rt.output = arg[i];
-    } else if (s == "-h" || s == "--help") {
+    } else if (s == "-h") {      
+      std::cout << extract_range(manpage, "NAME", "MANDATORY");
+      std::cout << "Option --help expands this manual." << std::endl;
+      return false;
+    } else if (s == "--help") {
       std::cout << manpage;
       return false;
     }
@@ -153,6 +157,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       << "fatal error: unsupported output option. Consider program option -h or --help."
       << std::endl;
     return false;
+  }
+
+  if (rt.fibonacci_index < 3) {
+    return argparse::err(
+          "missing argument: value to --fibonacci-index needs to be >= 3.");
   }
 
   return true;
@@ -171,6 +180,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.silent                = false;
   rt.output                = "-";
   rt.delimiter             = ' ';
+  rt.fibonacci_index = 0;
   problem.rt               = &rt;
   problem.fibonacci_number = 0;
 

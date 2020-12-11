@@ -29,6 +29,8 @@ void put_header_column(std::ostream* os,
                        i8            delimiter_next,
                        u1            predicate_column = true);
 
+std::string extract_range(const std::string& s, const std::string& begin, const std::string& end);
+
 //
 // implementation
 //
