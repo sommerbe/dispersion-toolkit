@@ -1,5 +1,5 @@
 
-set(NAME "readutk")
+set(NAME "readmatrix")
 
 set(SOURCES
   ${src}/io/argparse.cpp

@@ -55,10 +55,12 @@ void percentiles(problem_param* problem)
   // ..
   // p_i                  ...
   problem->percentiles.allocate(rt->percentiles.coords.size(), rt->pts.dimensions);
+  problem->percentiles.reset_inf_bound();
 
   // allocate statistics: arithmetic mean
   if (rt->compute_arithmetic_mean) {
     problem->arithmetic_mean.allocate(1, rt->pts.dimensions);
+    problem->arithmetic_mean.reset_inf_bound();
   }
 
   // compute percentiles for each dimension
@@ -125,10 +127,6 @@ void compute_iqr_box(problem_param* problem)
 
 i32 return_results(const program_param& rt, const problem_param& problem)
 {
-  if (!rt.silent) {
-    *rt.os << "# src = " << rt.input << std::endl;
-  }
-
   if (rt.percentiles.coords.size() > 0) {
     putln(rt.os, "# percentiles:", !rt.silent);
     if (!rt.silent) {
@@ -271,6 +269,12 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);
+
+  // show parameters
+  dptk::putparam(rt.os, "compute IQR box", rt.compute_iqr_box, !rt.silent);
+  dptk::putparam(rt.os, "compute arithmetic mean", rt.compute_arithmetic_mean, !rt.silent);
+  dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+  dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
   // estimate percentiles; and optionally the arithmetic mean
   dptk::percentiles(&problem);

@@ -4,11 +4,11 @@
 
 # NAME
 
-utkadapter - transform a point set sequence from UTK framework
+readutk - transform a point set sequence from UTK framework
 
 # SYNOPSIS
 
-**utkadapter** [**\--i** *FILE*] [**\--o** *FILE*] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**readutk** [**\--i** *FILE*] [**\--o** *FILE*] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 

@@ -28,7 +28,7 @@ A manpage is located in the directory of each C++11 main.cpp source file.
 * cmake 3.4 or more recent (tested until 3.19)
 * C++11
 * visualisation: python3, numpy, matplotlib
-* optional (dispoptgs): OpenMP
+* optional (mindispgs): OpenMP
 
 ### Developers
 
@@ -152,7 +152,7 @@ Compute point set's cardinality, n, multiplied by dispersion of a Fibonacci latt
 Optimise a Fibonacci lattice w.r.t. minimising dispersion using gradient ascent and obtain its dispersion:
 
 ``
-./bin/fibonaccilattice --fibonacci-index=10 | ./bin/dispoptgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp
+./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp
 ``
 
 Randomise the Fibonacci lattice using coordinate swapping to emit a point set sequence, compute dispersion of each point set and estimate the inter quartile range statistics with upper and lower whiskers used to generate statistical box plots along with the arithmetic mean:
@@ -164,30 +164,30 @@ Randomise the Fibonacci lattice using coordinate swapping to emit a point set se
 In addition, try to minimise dispersion:
 
 ``
-./bin/fibonaccilattice --fibonacci-index=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/dispoptgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
+./bin/fibonaccilattice --fibonacci-index=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
 ``
 
-Notice that dispoptgs retrieves a point set sequence greater 1. If the cmake build configuration found OpenMP, dispoptgs optimises each point set with maximum parallelism supported by the actual hardware. Although being optional, using multi threading is highly recommended.
+Notice that mindispgs retrieves a point set sequence greater 1. If the cmake build configuration found OpenMP, mindispgs optimises each point set with maximum parallelism supported by the actual hardware. Although being optional, using multi threading is highly recommended.
 
 Visualise how points are moved by the dispersion optimisation:
 
 ``
-./bin/fibonaccilattice --fibonacci-index=10 | ./bin/dispoptgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py
+./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py
 ``
 
-While dispoptgs handles point set sequences, using --pointset-sequence to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by pss.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, pss.py would show points of an unoptimised set.
+While mindispgs handles point set sequences, using --pointset-sequence to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by pss.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, pss.py would show points of an unoptimised set.
 
 During this visualisation, each frame may be exported to permanent storage:
 
 ``
-./bin/fibonaccilattice --fibonacci-index=10 | ./bin/dispoptgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py --image-path='seq-{i}.png' --image-ppi=300
+./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py --image-path='seq-{i}.png' --image-ppi=300
 ``
 
 The result is a sequence of images, (seq-{0}.png, seq-{1}.png, ..., seq-{n}.png).
 
 ### Recommendation
 
-Although IO piping is a powerful feature, offering a wide range of flexibility, a long command with many pipes might be difficult to follow, and at least to debug. Instead, keeping the number of pipes small while splitting the command into multiple commands, and using a script, for instance a bash script, increases both readability and detail of the protocol, academic or technical. For instance, dispoptgs generates a log of how the gradient ascent progresses. This information may become important. However, these comment like logs are lost as soon as its entire output is piped into another program of this toolkit, such as dispgs.
+Although IO piping is a powerful feature, offering a wide range of flexibility, a long command with many pipes might be difficult to follow, and at least to debug. Instead, keeping the number of pipes small while splitting the command into multiple commands, and using a script, for instance a bash script, increases both readability and detail of the protocol, academic or technical. For instance, mindispgs generates a log of how the gradient ascent progresses. This information may become important. However, these comment like logs are lost as soon as its entire output is piped into another program of this toolkit, such as dispgs.
 
 ## License
 

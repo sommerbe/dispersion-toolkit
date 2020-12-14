@@ -209,6 +209,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.silent                = false;
   rt.output                = "-";
   rt.delimiter             = ' ';
+  rt.fibonacci_index = 10;
   problem.rt               = &rt;
   problem.fibonacci_number = 0;
 
@@ -222,6 +223,10 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   // initialize io streams
   dptk::ostream_init(rt.output, rt.os);
   assert(rt.os != nullptr);
+
+  // show parameters
+    dptk::putparam(rt.os, "fibonacci index", rt.fibonacci_index, !rt.silent);
+    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
 
   // compute dispersion
   dptk::kritzinger_lattice(&problem);

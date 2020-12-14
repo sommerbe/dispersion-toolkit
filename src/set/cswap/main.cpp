@@ -86,10 +86,6 @@ void swap_coordinates(problem_param* problem, std::mt19937_64& rengine)
 
 i32 return_results(const program_param& rt, const problem_param& problem)
 {
-  if (!rt.silent) {
-    *rt.os << "# src = " << rt.input << std::endl;
-  }
-
   putln(rt.os, "# coordinates of points:", !rt.silent);
   putln(rt.os, "# (coord_0 coord_1):", !rt.silent);
   write_pointset(rt.os, problem.pts, rt.delimiter);
@@ -199,6 +195,15 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   // initialize io streams
   dptk::istream_init(rt.input, rt.is);
   dptk::ostream_init(rt.output, rt.os);
+
+  // show parameters
+    dptk::putparam(rt.os, "axis", rt.axis, !rt.silent);
+    dptk::putparam(rt.os, "random axis", rt.axis_random, !rt.silent);
+    dptk::putparam(rt.os, "count", rt.count, !rt.silent);
+    dptk::putparam(rt.os, "repeat", rt.repeat, !rt.silent);
+    dptk::putparam(rt.os, "percentage", rt.percentage, !rt.silent);
+    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+    dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
   // retrieve point set
   dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);

@@ -20,6 +20,9 @@ void putlnsci(std::ostream* os, d& data, u32 precision, u1 predicate = true);
 template<typename d>
 void putsci(std::ostream* os, d& data, u32 precision, u1 predicate = true);
 
+template<typename d>
+void putparam(std::ostream* os, const std::string& name, const d& data, u1 predicate = true);
+
 void ensure_precision(std::ostream* os, const b64& data);
 
 template<typename d>
@@ -72,6 +75,17 @@ void putsci(std::ostream* os, d& data, u32 precision, u1 predicate)
 
   if (predicate) {
     *os << std::scientific << std::setprecision(precision) << data;
+  }
+}
+
+
+template<typename d>
+void putparam(std::ostream* os, const std::string& name, const d& data, u1 predicate)
+{
+  assert(os != nullptr);
+
+  if (predicate) {
+    *os << "# " << name << " = (" << data << ")" << std::endl;
   }
 }
 

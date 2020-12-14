@@ -1,14 +1,14 @@
-% DISPOPTGS(1) 1.0.0 | Dispersion Toolkit Manuals
+% MINDISPGS(1) 1.0.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
-% December 3, 2020
+% December 14, 2020
 
 # NAME
 
-dispoptgs - a gradient ascent to reduce dispersion based on grow&shrink strategy
+mindispgs - a gradient ascent to reduce dispersion based on grow&shrink strategy
 
 # SYNOPSIS
 
-**dispoptgs** [**\--i** *FILE*] [**\--o** *FILE*] [**\--iteration-limit**=*INTEGER*] [**\--tau**=*BINARY64*] [**\--stepsize**=*BINARY64*] [**\--delimiter**=*CHARACTER*] [**\--no-pointset**] [**\--compute-iterations**] [**\--pointset-sequence**] [**\--silent**]
+**mindispgs** [**\--i** *FILE*] [**\--o** *FILE*] [**\--iteration-limit**=*INTEGER*] [**\--tau**=*BINARY64*] [**\--stepsize**=*BINARY64*] [**\--delimiter**=*CHARACTER*] [**\--no-pointset**] [**\--compute-iterations**] [**\--pointset-sequence**] [**\--silent**]
 
 # DESCRIPTION
 

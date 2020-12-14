@@ -439,9 +439,7 @@ void return_bound(const program_param& rt)
 i32 return_results(const program_param&                       rt,
                    const std::vector<dptk::problem_measures>& measures)
 {
-  if (!rt.silent) {
-    *rt.os << "# point set sequence size = " << measures.size() << std::endl;
-  }
+  putparam(rt.os, "point set sequence size", measures.size(), !rt.silent);
 
   // greatest box
   // if (rt.compute_box_max) {
@@ -585,8 +583,12 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);
 
-  if (!rt.silent)
-    *rt.os << "# src=" << rt.input << std::endl;
+  // show parameters
+    dptk::putparam(rt.os, "compute disp", rt.compute_disp, !rt.silent);
+    dptk::putparam(rt.os, "compute n*disp", rt.compute_ndisp, !rt.silent);
+    dptk::putparam(rt.os, "compute number of boxes", rt.compute_boxcount, !rt.silent);
+    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+    dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
   // iterate through pointset sequence
   while (!rt.is->eof() && r == EXIT_SUCCESS) {

@@ -56,7 +56,7 @@ mk_manpage_pre "src/measure/dispnaamad" 1
 mk_manpage_pre "src/measure/dispdomitrescu2017" 1
 mk_manpage_pre "src/measure/dispcombinatorial" 1
 mk_manpage_pre "src/measure/dispgs" 1
-mk_manpage_pre "src/opt/dispoptgs" 1
+mk_manpage_pre "src/opt/mindispgs" 1
 mk_manpage_pre "src/stat/confidence" 1
 mk_manpage_pre "src/vis/psspy" 1
 mk_manpage_pre "src/adapter/utk" 1

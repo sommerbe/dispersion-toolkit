@@ -49,7 +49,7 @@
 
 ### Dispersion minimisation with grow&shrink algorithm
 
-!INCLUDE "src/opt/dispoptgs/manpage.md", 3
+!INCLUDE "src/opt/mindispgs/manpage.md", 3
 
 
 ## Statistics
@@ -66,7 +66,12 @@
 !INCLUDE "src/vis/psspy/manpage.md", 3
 
 
-## File format conversion
+## File format readers and conversions
+
+### Matrices
+
+!INCLUDE "src/adapter/matrix/manpage.md", 3
+
 
 ### UTK adapter
 
