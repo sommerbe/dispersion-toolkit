@@ -6,7 +6,9 @@ void ensure_precision(std::ostream* os, const b64& data)
   *os << std::scientific << std::setprecision(16);
 }
 
-std::string extract_range(const std::string& s, const std::string& begin, const std::string& end)
+std::string extract_range(const std::string& s,
+                          const std::string& begin,
+                          const std::string& end)
 {
   u64 b;
   u64 e;
@@ -16,7 +18,7 @@ std::string extract_range(const std::string& s, const std::string& begin, const 
     b = 0;
   e = s.find(end, b);
 
-  return s.substr(b, e-b);
+  return s.substr(b, e - b);
 }
 
 } // namespace dptk

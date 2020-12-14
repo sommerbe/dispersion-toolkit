@@ -440,14 +440,15 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   assert(rt.os != nullptr);
 
   // show parameters
-    dptk::putparam(rt.os, "tau", rt.tau, !rt.silent);
-    dptk::putparam(rt.os, "iteration limit", rt.iteration_limit, !rt.silent);
-    dptk::putparam(rt.os, "stepsize, dt", rt.dt, !rt.silent);
-    dptk::putparam(rt.os, "compute pointet sequence", rt.compute_pointset_sequence, !rt.silent);
-    dptk::putparam(rt.os, "compute pointset", rt.compute_pointset, !rt.silent);
-    dptk::putparam(rt.os, "compute sequence size", rt.compute_sequence_size, !rt.silent);
-    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
-    dptk::putparam(rt.os, "source", rt.input, !rt.silent);
+  dptk::putparam(rt.os, "tau", rt.tau, !rt.silent);
+  dptk::putparam(rt.os, "iteration limit", rt.iteration_limit, !rt.silent);
+  dptk::putparam(rt.os, "stepsize, dt", rt.dt, !rt.silent);
+  dptk::putparam(
+    rt.os, "compute pointet sequence", rt.compute_pointset_sequence, !rt.silent);
+  dptk::putparam(rt.os, "compute pointset", rt.compute_pointset, !rt.silent);
+  dptk::putparam(rt.os, "compute sequence size", rt.compute_sequence_size, !rt.silent);
+  dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+  dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
   // iterate through point set sequence
   while (!rt.is->eof()) {

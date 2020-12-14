@@ -46,7 +46,8 @@ void read_matrix(std::istream& in, pointset& out)
       continue;
     }
     if (ln[0] == '#') {
-      std::cerr << "error: input is not allowed to contain lines starting with #" << std::endl;
+      std::cerr << "error: input is not allowed to contain lines starting with #"
+                << std::endl;
       break;
     }
     z = (i8*)ln.data();
@@ -120,7 +121,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
-    } else if (s == "-h") {      
+    } else if (s == "-h") {
       std::cout << extract_range(manpage, "NAME", "OPTIONS");
       std::cout << "Option --help expands this manual." << std::endl;
       return false;

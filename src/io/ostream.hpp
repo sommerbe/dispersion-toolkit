@@ -21,7 +21,10 @@ template<typename d>
 void putsci(std::ostream* os, d& data, u32 precision, u1 predicate = true);
 
 template<typename d>
-void putparam(std::ostream* os, const std::string& name, const d& data, u1 predicate = true);
+void putparam(std::ostream*      os,
+              const std::string& name,
+              const d&           data,
+              u1                 predicate = true);
 
 void ensure_precision(std::ostream* os, const b64& data);
 
@@ -32,7 +35,9 @@ void put_header_column(std::ostream* os,
                        i8            delimiter_next,
                        u1            predicate_column = true);
 
-std::string extract_range(const std::string& s, const std::string& begin, const std::string& end);
+std::string extract_range(const std::string& s,
+                          const std::string& begin,
+                          const std::string& end);
 
 //
 // implementation
@@ -77,7 +82,6 @@ void putsci(std::ostream* os, d& data, u32 precision, u1 predicate)
     *os << std::scientific << std::setprecision(precision) << data;
   }
 }
-
 
 template<typename d>
 void putparam(std::ostream* os, const std::string& name, const d& data, u1 predicate)

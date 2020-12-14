@@ -1,6 +1,10 @@
 #!/bin/bash -v
 # run from project root directory; NOT THIS DIRECTORY
 
+# requires: markdown-pp
+# install markdown-pp:
+# pip install --user MarkdownPP
+
 doc_mdpp="doc/manual.mdpp"
 doc_md="doc/manual.md"
 doc_md2="doc/manual2.md"

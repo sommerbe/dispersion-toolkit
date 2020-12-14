@@ -349,7 +349,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return false;
       }
       rt.output = arg[i];
-    } else if (s == "-h" || s == "--help") {
+    } else if (s == "-h") {
+      std::cout << extract_range(manpage, "NAME", "OPTIONS");
+      std::cout << "Option --help expands this manual." << std::endl;
+      return false;
+    } else if (s == "--help") {
       std::cout << manpage;
       return false;
     }
@@ -406,14 +410,14 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   assert(rt.os != nullptr);
 
   // show parameters
-    dptk::putparam(rt.os, "compute disp", rt.compute_disp, !rt.silent);
-    dptk::putparam(rt.os, "compute n*disp", rt.compute_ndisp, !rt.silent);
-    dptk::putparam(rt.os, "compute number of boxes", rt.compute_boxcount, !rt.silent);
-    dptk::putparam(rt.os, "compute interior boxes", rt.compute_box_interior, !rt.silent);
-    dptk::putparam(rt.os, "compute boxes", rt.compute_boxes, !rt.silent);
-    dptk::putparam(rt.os, "compute greatest box", rt.compute_box_max, !rt.silent);
-    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
-    dptk::putparam(rt.os, "source", rt.input, !rt.silent);
+  dptk::putparam(rt.os, "compute disp", rt.compute_disp, !rt.silent);
+  dptk::putparam(rt.os, "compute n*disp", rt.compute_ndisp, !rt.silent);
+  dptk::putparam(rt.os, "compute number of boxes", rt.compute_boxcount, !rt.silent);
+  dptk::putparam(rt.os, "compute interior boxes", rt.compute_box_interior, !rt.silent);
+  dptk::putparam(rt.os, "compute boxes", rt.compute_boxes, !rt.silent);
+  dptk::putparam(rt.os, "compute greatest box", rt.compute_box_max, !rt.silent);
+  dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+  dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
   // iterate through pointset sequence
   while (!rt.is->eof() && r == EXIT_SUCCESS) {

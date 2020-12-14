@@ -17,7 +17,7 @@ struct regular_pointset
 
   void allocate(u64 num_points, u64 num_dimensions);
   void clear();
-  
+
   void reset_inf_bound();
 
   u64 size() const;
@@ -84,10 +84,10 @@ void regular_pointset<prec>::clear()
 template<typename prec>
 void regular_pointset<prec>::reset_inf_bound()
 {
-  domain_bound.resize(2*dimensions);
-  for (u64 i=0; i<dimensions; ++i) {
-    domain_bound[i] = -INFINITY;
-    domain_bound[i+dimensions] = +INFINITY;
+  domain_bound.resize(2 * dimensions);
+  for (u64 i = 0; i < dimensions; ++i) {
+    domain_bound[i]              = -INFINITY;
+    domain_bound[i + dimensions] = +INFINITY;
   }
 }
 
@@ -129,6 +129,5 @@ u64 regular_pointset<prec>::domain_idx_up(u64 axis) const
 {
   return dimensions + axis;
 }
-
 
 } // namespace dptk

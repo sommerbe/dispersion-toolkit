@@ -142,7 +142,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return false;
       }
       rt.output = arg[i];
-    } else if (s == "-h") {      
+    } else if (s == "-h") {
       std::cout << extract_range(manpage, "NAME", "MANDATORY");
       std::cout << "Option --help expands this manual." << std::endl;
       return false;
@@ -153,12 +153,13 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
   }
 
   if (!(rt.compute_cardinality || rt.compute_pointset)) {
-    return argparse::err("fatal error: unsupported output option. Consider program option -h or --help.");
+    return argparse::err(
+      "fatal error: unsupported output option. Consider program option -h or --help.");
   }
 
   if (rt.fibonacci_index < 3) {
     return argparse::err(
-          "missing argument: value to --fibonacci-index needs to be >= 3.");
+      "missing argument: value to --fibonacci-index needs to be >= 3.");
   }
 
   return true;
@@ -177,7 +178,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.silent                = false;
   rt.output                = "-";
   rt.delimiter             = ' ';
-  rt.fibonacci_index = 10;
+  rt.fibonacci_index       = 10;
   problem.rt               = &rt;
   problem.fibonacci_number = 0;
 
@@ -193,9 +194,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   assert(rt.os != nullptr);
 
   // show parameters
-    dptk::putparam(rt.os, "fibonacci index", rt.fibonacci_index, !rt.silent);
-    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
-  
+  dptk::putparam(rt.os, "fibonacci index", rt.fibonacci_index, !rt.silent);
+  dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+
   // compute dispersion
   dptk::fibonacci_lattice(&problem);
 

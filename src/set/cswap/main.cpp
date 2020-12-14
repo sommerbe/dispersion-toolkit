@@ -149,7 +149,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
-    } else if (s == "-h" || s == "--help") {
+    } else if (s == "-h") {
+      std::cout << extract_range(manpage, "NAME", "OPTIONS");
+      std::cout << "Option --help expands this manual." << std::endl;
+      return false;
+    } else if (s == "--help") {
       std::cout << manpage;
       return false;
     }
@@ -197,13 +201,13 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::ostream_init(rt.output, rt.os);
 
   // show parameters
-    dptk::putparam(rt.os, "axis", rt.axis, !rt.silent);
-    dptk::putparam(rt.os, "random axis", rt.axis_random, !rt.silent);
-    dptk::putparam(rt.os, "count", rt.count, !rt.silent);
-    dptk::putparam(rt.os, "repeat", rt.repeat, !rt.silent);
-    dptk::putparam(rt.os, "percentage", rt.percentage, !rt.silent);
-    dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
-    dptk::putparam(rt.os, "source", rt.input, !rt.silent);
+  dptk::putparam(rt.os, "axis", rt.axis, !rt.silent);
+  dptk::putparam(rt.os, "random axis", rt.axis_random, !rt.silent);
+  dptk::putparam(rt.os, "count", rt.count, !rt.silent);
+  dptk::putparam(rt.os, "repeat", rt.repeat, !rt.silent);
+  dptk::putparam(rt.os, "percentage", rt.percentage, !rt.silent);
+  dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
+  dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
   // retrieve point set
   dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);

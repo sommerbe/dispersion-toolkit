@@ -214,7 +214,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
-    } else if (s == "-h" || s == "--help") {
+    } else if (s == "-h") {
+      std::cout << extract_range(manpage, "NAME", "OPTIONS");
+      std::cout << "Option --help expands this manual." << std::endl;
+      return false;
+    } else if (s == "--help") {
       std::cout << manpage;
       return false;
     }
@@ -272,7 +276,8 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   // show parameters
   dptk::putparam(rt.os, "compute IQR box", rt.compute_iqr_box, !rt.silent);
-  dptk::putparam(rt.os, "compute arithmetic mean", rt.compute_arithmetic_mean, !rt.silent);
+  dptk::putparam(
+    rt.os, "compute arithmetic mean", rt.compute_arithmetic_mean, !rt.silent);
   dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
   dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
