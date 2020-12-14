@@ -13,9 +13,7 @@ cmake_minimum_required(VERSION 3.4)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Set additional project information
-set(COMPANY "Benjamin Sommer")
-set(COPYRIGHT "Copyright (c) 2020 Benjamin Sommer. All rights reserved.")
-set(IDENTIFIER "benjaminsommer@mailbox.org")
+set(COPYRIGHT "2020 Benjamin Sommer")
 
 ##############################################################
 # Options
@@ -116,7 +114,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 # elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 #   include(msvc)
 else()
-  message(FATAL_ERROR "Unknown compiler specified: " ${COMPILER})
+  # message(FATAL_ERROR "Unknown compiler specified: " ${COMPILER})
+  message(WARNING "Unknown compiler specified: " ${COMPILER} ${CMAKE_CXX_COMPILER_ID})
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -128,7 +127,6 @@ set(CMAKE_VERBOSE_MAKEFILE true CACHE BOOL "Enables verbose mode.")
 ##############################################################
 # Dependencies
 ##############################################################
-# find_package(glfw REQUIRED)
 find_package(OpenMP)
 
 ##############################################################
