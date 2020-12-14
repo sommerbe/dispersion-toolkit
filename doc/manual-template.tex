@@ -3,6 +3,10 @@
 \usepackage[colorlinks]{hyperref}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\usepackage{listings}
+\usepackage{xcolor}
 
 \def\tightlist{}
 
@@ -24,6 +28,31 @@ $endif$
     {}
     {0pt}
     {}
+
+% \makeatletter
+% \renewenvironment{verbatim}{}{}
+% \makeatother
+\let\verbatim\someundefinedcommand
+% \lstnewenvironment{verbatim}{}{}
+% \lstnewenvironment{verbatim}{\lstset{numbers=left}}{}
+% \lstnewenvironment{verbatim}[1][]%
+% {\lstset{numbers=left,numberstyle=\tiny,float,#1}}%
+% {}
+
+\DefineVerbatimEnvironment{verbatim}{Verbatim}{%
+  %gobble=4,
+  %numbers=left,
+  frame=leftline,
+  framerule=1mm,
+  framesep=2mm,
+  xleftmargin=4mm,
+  breaklines=true,
+  rulecolor=\color{gray},
+  boxwidth=100mm
+}
+
+
+%\let\\figure
 
 \hypersetup{
   bookmarks=true,         % show bookmarks bar?

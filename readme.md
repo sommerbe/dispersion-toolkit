@@ -1,19 +1,21 @@
 # Dispersion toolkit
 
-## Purpose
+## Introduction
+
+### Purpose
 
 * compute dispersion of a given point set
 * compute empty boxes (interior, exterior, all) of a given point set
 * optimise a point set w.r.t. minimising its dispersion
 * visualise a sequence of a point set
 
-## Documentation
+### Documentation
 
 A manpage exists for each executable. After build configuration, these are to be found in ./build/man/, for convenience, or in a chosen directory after installing the build, for instance {CMAKE_BUILD_PREFIX}/share/man/.
 
 A manpage is located in the directory of each C++11 main.cpp source file.
 
-## Usability
+### Usability
 
 * easy to build, low maintenance => minimal dependencies
 * executable in UNIX, Mac?, Windows?
@@ -21,63 +23,97 @@ A manpage is located in the directory of each C++11 main.cpp source file.
 * proper use of IO pipes and argument passing (standard in UNIX)
 * interoperable with 3rd party toolkits: UTK (using scripts, file IO)
 
-## Dependencies
+### Dependencies
 
-### Users
+There are two classes (sorry) of those using this toolkit. Those who simply use this toolkit without further developing it, without maintaining its code are **users**. All others are **developers**.
+
+#### Users
+
+The least amount of requirements in order to build this toolkit to use it are:
 
 * cmake 3.4 or more recent (tested until 3.19)
 * C++11
-* visualisation: python3, numpy, matplotlib
-* optional (mindispgs): OpenMP
+* visualisation (optional): python3, numpy, matplotlib
+* mindispgs (optional): OpenMP
 
-### Developers
+#### Developers
+
+If you plan on developing this toolkit, for instance by extending it with programs or modifying existing ones, you need these requirements:
 
 * manual generation: bash, pandoc
 
-## Building
+It is assumed that you know what you are doing here.
+
+## Getting started
+
+### Building for using it
 
 The following commands assume that the parent working directory equals this project's root directory.
 
 Create an out-of-source build directory
-
 ````
 mkdir build
 cd build
 ````
-
 and prepare the build using
-
-``
+````
 cmake ../ -DCMAKE_BUILD_TYPE=Debug
-``
-
+````
 or using
 
-``
+````
 cmake ../ -DCMAKE_BUILD_TYPE=Release
-``
+````
 
 Its output shows which dependencies are used, along with their current version. If either of the dependencies, GLFW or OpenGL, is missing or is expected to be incompatible, modules depending on these will be omitted from the build. Installing these dependencies following your operating system's standard practices should resolve this issue as long as compatibility is to be expected (technically).
 
-### UNIX
+#### UNIX
 
 In UNIX operating systems, a build parallelised among {P} threads is started with
 
-``
+````
 make -j{P}
-``
+````
 
 For instance,
 
-``
+````
 make -j8
-``
+````
 
 runs 8 builds in parallel.
 
-### Windows
+#### Windows
 
 In Windows, this build directory contains a Visual Studio solution file to be opened.
+
+### Building for further development
+
+In addition to "Building for using it", you will have to maintain the documentation and the integrated manual pages. The latter is done with the script
+
+````
+bash ./script/configure-manual.sh
+````
+
+The entire documentation in the singular PDF is generated using
+
+````
+bash ./script/make-documentation-pdf.sh
+````
+
+which requires the **MarkdownPP** python module to be installed locally with
+
+````
+pip install --user MarkdownPP
+````
+
+The resulting manual is stored to
+
+```
+doc/manual.pdf
+```
+
+Its template in markdown syntax is at ``doc/manual.mdpp`` which is used to glue all the separate manuals (readme and executable man pages) together.
 
 ## File format of a point set sequence
 
@@ -139,51 +175,54 @@ The following examples assume the parent working directy to be the above mention
 
 Compute dispersion of a Fibonacci lattice:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/dispgs --disp
-``
+````
 
 Compute point set's cardinality, n, multiplied by dispersion of a Fibonacci lattice:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/dispgs --ndisp
-``
+````
 
 Optimise a Fibonacci lattice w.r.t. minimising dispersion using gradient ascent and obtain its dispersion:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp
-``
+````
 
 Randomise the Fibonacci lattice using coordinate swapping to emit a point set sequence, compute dispersion of each point set and estimate the inter quartile range statistics with upper and lower whiskers used to generate statistical box plots along with the arithmetic mean:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
-``
+````
 
 In addition, try to minimise dispersion:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
-``
+````
 
 Notice that mindispgs retrieves a point set sequence greater 1. If the cmake build configuration found OpenMP, mindispgs optimises each point set with maximum parallelism supported by the actual hardware. Although being optional, using multi threading is highly recommended.
 
 Visualise how points are moved by the dispersion optimisation:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py
-``
+````
 
 While mindispgs handles point set sequences, using --pointset-sequence to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by pss.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, pss.py would show points of an unoptimised set.
 
 During this visualisation, each frame may be exported to permanent storage:
 
-``
+````
 ./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py --image-path='seq-{i}.png' --image-ppi=300
-``
+````
 
-The result is a sequence of images, (seq-{0}.png, seq-{1}.png, ..., seq-{n}.png).
+The result is a sequence of images, 
+````
+(seq-{0}.png, seq-{1}.png, ..., seq-{n}.png)
+````
 
 ### Recommendation
 
