@@ -79,7 +79,7 @@ RETURN FORMAT
        Notice that the first column is not returned.
 
 LIMITATION
-       The algorithm requires a two-dimensional point sets sequence.
+       The algorithm requires a 3-dimensional point sets sequence.
 
 AUTHORS
        Benjamin Sommer.

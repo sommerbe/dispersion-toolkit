@@ -13,7 +13,7 @@ NAME
        fibonaccilattice - compute a Fibonacci lattice
 
 SYNOPSIS
-       fibonaccilattice  --fibonacci-index|--i=INTEGER  [--o FILE] [--compute-
+       fibonaccilattice  --fibonacci-index|--m=INTEGER  [--o FILE] [--compute-
        fibonacci-number|--cardinality] [--no-pointset] [--delimiter=CHARACTER]
        [--silent]
 
@@ -25,7 +25,7 @@ DESCRIPTION
        written to standard output, or to the file given by --o FILE.
 
 MANDATORY ARGUMENTS
-       --fibonacci-index=INTEGER, --i=INTEGER, --i INTEGER
+       --fibonacci-index=INTEGER, --m=INTEGER, --m INTEGER
               The INTEGER equals the Fibonacci index m of the Fibonacci number
               F_m.  The cardinality of the resulting  point  set  equals  F_m.
               Boundary condition: m > 2.
