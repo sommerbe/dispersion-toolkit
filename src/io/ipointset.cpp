@@ -44,6 +44,9 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
   i8*         z;
   u64         d;
   b64         c;
+  u1          eos;
+
+  eos = false;
 
   while (std::getline(in, ln) && !in.fail()) {
     if (ln.empty()) {
@@ -52,6 +55,7 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
 
     // end of point set: #eos
     if (ln == "#eos") {
+      eos = true;
       break;
     }
 
@@ -113,6 +117,11 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
       m += ".";
       throw std::runtime_error(m);
     }
+  }
+
+  // implicitly assume matrix as input
+  if (!eos && out.domain_bound.empty()) {
+    out.reset_inf_bound();
   }
 }
 
