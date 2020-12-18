@@ -61,3 +61,4 @@ mk_manpage_pre "src/stat/confidence" 1
 mk_manpage_pre "src/vis/psspy" 1
 mk_manpage_pre "src/adapter/utk" 1
 mk_manpage_pre "src/adapter/readmatrix" 1
+mk_manpage_pre "src/adapter/writematrix" 1

@@ -68,9 +68,14 @@
 
 ## File format readers and conversions
 
-### Matrices
+### Matrices (read)
 
 !INCLUDE "src/adapter/readmatrix/manpage.md", 3
+
+
+### Matrices (write)
+
+!INCLUDE "src/adapter/writematrix/manpage.md", 3
 
 
 ### UTK adapter

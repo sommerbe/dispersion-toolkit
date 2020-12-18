@@ -1,0 +1,8 @@
+# current
+
+* new program: writematrix
+* pointset reader may implicitly assume matrix input (no error without #eos)
+
+# 1.0.0
+
+* initial release
