@@ -70,7 +70,7 @@
 
 ### Matrices
 
-!INCLUDE "src/adapter/matrix/manpage.md", 3
+!INCLUDE "src/adapter/readmatrix/manpage.md", 3
 
 
 ### UTK adapter
