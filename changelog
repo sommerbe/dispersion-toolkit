@@ -1,5 +1,7 @@
 # current
 
+* adding script: package.sh <version> <directory>
+
 # 1.1.0
 
 * new program: writematrix
