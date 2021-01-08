@@ -77,6 +77,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          December 9, 2020                  DISPNAAMAD(1)
+1.1.0                          December 9, 2020                  DISPNAAMAD(1)
 )V0G0N";
 }

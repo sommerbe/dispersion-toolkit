@@ -1,4 +1,4 @@
-% DISPGS(1) 1.0.0 | Dispersion Toolkit Manuals
+% DISPGS(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 3, 2020
 

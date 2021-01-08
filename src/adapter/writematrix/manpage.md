@@ -1,4 +1,4 @@
-% WRITEMATRIX(1) 1.0.0 | Dispersion Toolkit Manuals
+% WRITEMATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 18, 2020
 

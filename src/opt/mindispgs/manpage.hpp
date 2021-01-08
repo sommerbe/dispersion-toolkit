@@ -98,6 +98,6 @@ RETURNS
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          December 14, 2020                  MINDISPGS(1)
+1.1.0                          December 14, 2020                  MINDISPGS(1)
 )V0G0N";
 }

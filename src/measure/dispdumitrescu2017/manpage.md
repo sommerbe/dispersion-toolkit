@@ -1,4 +1,4 @@
-% DISPDUMITRESCU2017(1) 1.0.0 | Dispersion Toolkit Manuals
+% DISPDUMITRESCU2017(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 9, 2020
 

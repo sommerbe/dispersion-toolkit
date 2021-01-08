@@ -59,6 +59,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          November 29, 2020           FIBONACCILATTICE(1)
+1.1.0                          November 29, 2020           FIBONACCILATTICE(1)
 )V0G0N";
 }

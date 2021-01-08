@@ -1,4 +1,4 @@
-% FIBONACCILATTICE(1) 1.0.0 | Dispersion Toolkit Manuals
+% FIBONACCILATTICE(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 29, 2020
 

@@ -71,6 +71,6 @@ RETURN FORMAT
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          December 3, 2020                      DISPGS(1)
+1.1.0                          December 3, 2020                      DISPGS(1)
 )V0G0N";
 }

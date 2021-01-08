@@ -63,6 +63,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.0.0                          November 30, 2020                     PSS.PY(1)
+1.1.0                          November 30, 2020                     PSS.PY(1)
 )V0G0N";
 }

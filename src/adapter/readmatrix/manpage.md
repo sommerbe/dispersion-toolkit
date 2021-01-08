@@ -1,4 +1,4 @@
-% READMATRIX(1) 1.0.0 | Dispersion Toolkit Manuals
+% READMATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 14, 2020
 

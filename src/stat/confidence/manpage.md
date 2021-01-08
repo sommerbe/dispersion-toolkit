@@ -1,4 +1,4 @@
-% CONFIDENCE(1) 1.0.0 | Dispersion Toolkit Manuals
+% CONFIDENCE(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 30, 2020
 

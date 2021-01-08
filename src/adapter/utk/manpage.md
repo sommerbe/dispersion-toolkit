@@ -1,4 +1,4 @@
-% UTKADAPTER(1) 1.0.0 | Dispersion Toolkit Manuals
+% UTKADAPTER(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 1, 2020
 

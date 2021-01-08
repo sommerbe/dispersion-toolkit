@@ -1,4 +1,4 @@
-% DISPCOMBINATORIAL(1) 1.0.0 | Dispersion Toolkit Manuals
+% DISPCOMBINATORIAL(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 2, 2020
 
