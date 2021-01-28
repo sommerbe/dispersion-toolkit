@@ -1,14 +1,14 @@
-% FIBONACCILATTICE(1) 1.1.0 | Dispersion Toolkit Manuals
+% SET-FIBONACCI(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 29, 2020
 
 # NAME
 
-fibonaccilattice - compute a Fibonacci lattice
+set-fibonacci - compute a Fibonacci lattice
 
 # SYNOPSIS
 
-**fibonaccilattice** **\--fibonacci-index|\--m**=*INTEGER* [**\--o** *FILE*] [**\--compute-fibonacci-number**|**\--cardinality**] [**\--no-pointset**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**set-fibonacci** **\--fibonacci-index|\--m**=*INTEGER* [**\--o** *FILE*] [**\--compute-fibonacci-number**|**\--cardinality**] [**\--no-pointset**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 

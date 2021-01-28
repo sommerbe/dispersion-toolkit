@@ -19,6 +19,8 @@ set(COPYRIGHT "2020 Benjamin Sommer")
 # Options
 ##############################################################
 
+set(PROGRAM_DELIMITER "-" CACHE BOOL "Program name delimiter")
+
 # set(CMAKE_INSTALL_PATH_APPS "/usr/share/applications/" CACHE PATH "Application Desktop File install directory")
 
 # Find includes in corresponding build directories

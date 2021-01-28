@@ -7,14 +7,14 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(CSWAP(1)                  Dispersion Toolkit Manuals                  CSWAP(1)
+  = R"V0G0N(SET-CSWAP(1)              Dispersion Toolkit Manuals              SET-CSWAP(1)
 
 NAME
-       cswap - swap coordinates of a given point set
+       set-cswap - swap coordinates of a given point set
 
 SYNOPSIS
-       cswap  [--i  FILE] [--o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER]
-       [--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]
+       set-cswap  [--i FILE] [--o FILE] [--count|--c=INTEGER] [--axis=-1|INTE‐
+       GER] [--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]
 
 DESCRIPTION
        Swaps  pairs  of  coordinates  pseudo-randomly  using  an   alternative
@@ -76,6 +76,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          November 30, 2020                      CSWAP(1)
+1.1.0                          November 30, 2020                  SET-CSWAP(1)
 )V0G0N";
 }

@@ -1,14 +1,14 @@
-% DISPCOMBINATORIAL(1) 1.1.0 | Dispersion Toolkit Manuals
+% DISP-COMBINATORIAL(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 2, 2020
 
 # NAME
 
-dispcombinatorial - compute dispersion with a combinatorial algorithm (exhaustive search)
+disp-combinatorial - compute dispersion with a combinatorial algorithm (exhaustive search)
 
 # SYNOPSIS
 
-**dispcombinatorial** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--boxes**] [**\--interior-boxes**] [**\--greatest-box**] [**\--silent**]
+**disp-combinatorial** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--boxes**] [**\--interior-boxes**] [**\--greatest-box**] [**\--silent**]
 
 # DESCRIPTION
 

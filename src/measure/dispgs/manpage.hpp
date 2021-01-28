@@ -7,13 +7,13 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(DISPGS(1)                 Dispersion Toolkit Manuals                 DISPGS(1)
+  = R"V0G0N(DISP-GS(1)                Dispersion Toolkit Manuals                DISP-GS(1)
 
 NAME
-       dispgs - compute dispersion using a grow&shrink algorithm
+       disp-gs - compute dispersion using a grow&shrink algorithm
 
 SYNOPSIS
-       dispgs   [--i  FILE]  [--o  FILE]  [--disp]  [--ndisp]  [--count-boxes]
+       disp-gs  [--i  FILE]  [--o  FILE]  [--disp]  [--ndisp]  [--count-boxes]
        [--silent]
 
 DESCRIPTION
@@ -71,6 +71,6 @@ RETURN FORMAT
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 3, 2020                      DISPGS(1)
+1.1.0                          December 3, 2020                     DISP-GS(1)
 )V0G0N";
 }

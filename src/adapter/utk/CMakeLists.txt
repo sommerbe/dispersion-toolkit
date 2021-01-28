@@ -1,5 +1,5 @@
 
-set(NAME "readutk")
+set(NAME "read${PROGRAM_DELIMITER}utk")
 
 set(SOURCES
   ${src}/io/argparse.cpp

@@ -1,5 +1,5 @@
 
-set(NAME "fibonaccilattice")
+set(NAME "set${PROGRAM_DELIMITER}fibonacci")
 
 set(SOURCES
   ${src}/io/argparse.cpp

@@ -1,5 +1,5 @@
 
-set(NAME "cswap")
+set(NAME "set${PROGRAM_DELIMITER}cswap")
 
 set(SOURCES
   ${src}/io/argparse.cpp

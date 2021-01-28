@@ -8,14 +8,14 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(DISPCOMBINATORIAL(1)      Dispersion Toolkit Manuals      DISPCOMBINATORIAL(1)
+  = R"V0G0N(DISP-COMBINATORIAL(1)     Dispersion Toolkit Manuals     DISP-COMBINATORIAL(1)
 
 NAME
-       dispcombinatorial  -  compute dispersion with a combinatorial algorithm
+       disp-combinatorial  - compute dispersion with a combinatorial algorithm
        (exhaustive search)
 
 SYNOPSIS
-       dispcombinatorial [--i FILE] [--o FILE]  [--disp]  [--ndisp]  [--count-
+       disp-combinatorial [--i FILE] [--o FILE] [--disp]  [--ndisp]  [--count-
        boxes] [--boxes] [--interior-boxes] [--greatest-box] [--silent]
 
 DESCRIPTION
@@ -108,6 +108,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 2, 2020           DISPCOMBINATORIAL(1)
+1.1.0                          December 2, 2020          DISP-COMBINATORIAL(1)
 )V0G0N";
 }

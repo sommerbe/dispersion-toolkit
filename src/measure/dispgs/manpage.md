@@ -1,14 +1,14 @@
-% DISPGS(1) 1.1.0 | Dispersion Toolkit Manuals
+% DISP-GS(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 3, 2020
 
 # NAME
 
-dispgs - compute dispersion using a grow&shrink algorithm
+disp-gs - compute dispersion using a grow&shrink algorithm
 
 # SYNOPSIS
 
-**dispgs** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
+**disp-gs** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
 
 # DESCRIPTION
 

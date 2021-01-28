@@ -1,14 +1,14 @@
-% KRITZINGERLATTICE(1) 1.1.0 | Dispersion Toolkit Manuals
+% SET-KRITZINGER(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 30, 2020
 
 # NAME
 
-kritzingerlattice - compute a modified Fibonacci lattice according to Kritzinger and Lachmann, 2020 (arxiv preprint)
+set-kritzinger - compute a modified Fibonacci lattice according to Kritzinger and Lachmann, 2020 (arxiv preprint)
 
 # SYNOPSIS
 
-**kritzingerlattice** **\--fibonacci-index|\--m**=*INTEGER* [**\--o** *FILE*] [**\--compute-fibonacci-number|--cardinality**] [**\--no-pointset**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**set-kritzinger** **\--fibonacci-index|\--m**=*INTEGER* [**\--o** *FILE*] [**\--compute-fibonacci-number|--cardinality**] [**\--no-pointset**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 

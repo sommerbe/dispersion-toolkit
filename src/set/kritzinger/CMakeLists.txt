@@ -1,5 +1,5 @@
 
-set(NAME "kritzingerlattice")
+set(NAME "set${PROGRAM_DELIMITER}kritzinger")
 
 set(SOURCES
   ${src}/io/argparse.cpp

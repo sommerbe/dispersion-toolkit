@@ -7,17 +7,18 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(CONFIDENCE(1)             Dispersion Toolkit Manuals             CONFIDENCE(1)
+  = R"V0G0N(STAT-CONFIDENCE(1)        Dispersion Toolkit Manuals        STAT-CONFIDENCE(1)
 
 NAME
-       confidence - estimate confidence intervals, median and arithmetic mean
+       stat-confidence  - estimate confidence intervals, median and arithmetic
+       mean
 
 SYNOPSIS
-       confidence  [--i FILE] [--o FILE] [--percentiles=BINARY64 BINARY64 ...]
-       [--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]
+       stat-confidence [--i FILE] [--o FILE] [--percentiles=BINARY64  BINARY64
+       ...] [--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]
 
 DESCRIPTION
-       Estimates a confidence statistics of a given point set, usually  values
+       Estimates  a confidence statistics of a given point set, usually values
        of a measure.
 
        Supported statistics:
@@ -32,54 +33,54 @@ DESCRIPTION
 
        · arithmetic mean
 
-       These  statistics  are  estimated independently for each dimension d of
-       the point set, with the values of the statistics being  coordinates  of
+       These statistics are estimated independently for each  dimension  d  of
+       the  point  set, with the values of the statistics being coordinates of
        points, along the axis d.  These values are ordered as shown above.
 
 OPTIONS
        --i FILE, --i=FILE
-              Retrieves  a  point  set P with dimension n, not a point set se‐
-              quence, from FILE.  Its absence is substituted  by  stdin.   The
+              Retrieves a point set P with dimension n, not a  point  set  se‐
+              quence,  from  FILE.   Its absence is substituted by stdin.  The
               end of a point set, which equals the line #eos, starts the algo‐
               rithm.  The coordinates are interpreted as BINARY64.
 
        --o FILE, --o=FILE
               Redirects the computed results to FILE, opened in overwrite mode
-              (not  appending  mode).   Without FILE, results are forwarded to
-              stdout.  Errors encountered during the program’s  execution  are
+              (not appending mode).  Without FILE, results  are  forwarded  to
+              stdout.   Errors  encountered during the program’s execution are
               streamed into stderr, and not into either stdout or FILE.
 
        --mean Additionally compute the arithmetic mean along each axis.
 
        --silent
-              Suppress  comments  in the output stream, yielding only the com‐
+              Suppress comments in the output stream, yielding only  the  com‐
               puted value.  The latter could be the point set or its cardinal‐
               ity.
 
    Statistics
-       Only  one of these options may be chosen for each invocation.  The val‐
+       Only one of these options may be chosen for each invocation.  The  val‐
        ues of the statistic are fed to the output in order, for each axis.
 
        --percentiles=BINARY64 BINARY64 ..., --p=BINARY64 BINARY64 ...
-              A list of percentiles BINARY64 separated by whitespace.   Bound‐
+              A  list of percentiles BINARY64 separated by whitespace.  Bound‐
               ary condition: 0 <= BINARY64 <= 1.
 
        --2sigma
               The two-sigma rule with the median, i.e. -2 sigma, Q2, +2 sigma.
               Emitted percentiles: 0.02275, 0.5, 1 - 0.02275.
 
-       --iqr  Values to compute the IQR = Q3 - Q1, along with the  median  Q2.
+       --iqr  Values  to  compute the IQR = Q3 - Q1, along with the median Q2.
               Emitted percentiles: Q1 = 0.25, Q2 = 5, Q3 = 0.75.
 
        --iqr-box
-              In  addition  to  --iqr,  both upper and lower whiskers used for
-              stistical box plots,  are  computed.   Common  practice  employs
-              whiskers  to determine statistical outliers.  Emitted values: Q1
+              In addition to --iqr, both upper and  lower  whiskers  used  for
+              stistical  box  plots,  are  computed.   Common practice employs
+              whiskers to determine statistical outliers.  Emitted values:  Q1
               - 1.5 IQR, Q1, Q2, Q3, Q3 + 1.5 IQR.
 
 RETURN FORMAT
-       A point set of dimension n with each axis representing the tuple  of  m
-       statistical  descriptors S_i, including percentiles and derived quanti‐
+       A  point  set of dimension n with each axis representing the tuple of m
+       statistical descriptors S_i, including percentiles and derived  quanti‐
        ties,
 
        descriptors   axis_0   axis_1   ...   axis_n
@@ -93,12 +94,12 @@ RETURN FORMAT
        en point set P.  Notice that the first column is not returned.
 
 LIMITATION
-       The  algorithm requires any-dimensional point sets, while point set se‐
+       The algorithm requires any-dimensional point sets, while point set  se‐
        quences remain unsupported.
 
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          November 30, 2020                 CONFIDENCE(1)
+1.1.0                          November 30, 2020            STAT-CONFIDENCE(1)
 )V0G0N";
 }

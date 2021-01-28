@@ -1,14 +1,14 @@
-% DISPNAAMAD(1) 1.1.0 | Dispersion Toolkit Manuals
+% DISP-NAAMAD(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 9, 2020
 
 # NAME
 
-dispnaamad - compute dispersion with algorithm of Naamad et. al. 1984
+disp-naamad - compute dispersion with algorithm of Naamad et. al. 1984
 
 # SYNOPSIS
 
-**dispnaamad** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
+**disp-naamad** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
 
 # DESCRIPTION
 

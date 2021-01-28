@@ -7,14 +7,14 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(FIBONACCILATTICE(1)       Dispersion Toolkit Manuals       FIBONACCILATTICE(1)
+  = R"V0G0N(SET-FIBONACCI(1)          Dispersion Toolkit Manuals          SET-FIBONACCI(1)
 
 NAME
-       fibonaccilattice - compute a Fibonacci lattice
+       set-fibonacci - compute a Fibonacci lattice
 
 SYNOPSIS
-       fibonaccilattice  --fibonacci-index|--m=INTEGER  [--o FILE] [--compute-
-       fibonacci-number|--cardinality] [--no-pointset] [--delimiter=CHARACTER]
+       set-fibonacci  --fibonacci-index|--m=INTEGER  [--o FILE] [--compute-fi‐
+       bonacci-number|--cardinality]  [--no-pointset]  [--delimiter=CHARACTER]
        [--silent]
 
 DESCRIPTION
@@ -59,6 +59,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          November 29, 2020           FIBONACCILATTICE(1)
+1.1.0                          November 29, 2020              SET-FIBONACCI(1)
 )V0G0N";
 }

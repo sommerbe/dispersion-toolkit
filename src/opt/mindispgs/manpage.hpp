@@ -7,14 +7,14 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(MINDISPGS(1)              Dispersion Toolkit Manuals              MINDISPGS(1)
+  = R"V0G0N(MINDISP-GS(1)             Dispersion Toolkit Manuals             MINDISP-GS(1)
 
 NAME
-       mindispgs - a gradient ascent to reduce dispersion based on grow&shrink
-       strategy
+       mindisp-gs   -   a  gradient  ascent  to  reduce  dispersion  based  on
+       grow&shrink strategy
 
 SYNOPSIS
-       mindispgs [--i FILE] [--o FILE] [--iteration-limit=INTEGER]  [--tau=BI‐
+       mindisp-gs [--i FILE] [--o FILE] [--iteration-limit=INTEGER] [--tau=BI‐
        NARY64]  [--stepsize=BINARY64]  [--delimiter=CHARACTER] [--no-pointset]
        [--compute-iterations] [--pointset-sequence] [--silent]
 
@@ -98,6 +98,6 @@ RETURNS
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 14, 2020                  MINDISPGS(1)
+1.1.0                          December 14, 2020                 MINDISP-GS(1)
 )V0G0N";
 }

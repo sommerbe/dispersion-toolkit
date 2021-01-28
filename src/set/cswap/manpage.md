@@ -1,14 +1,14 @@
-% CSWAP(1) 1.1.0 | Dispersion Toolkit Manuals
+% SET-CSWAP(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 30, 2020
 
 # NAME
 
-cswap - swap coordinates of a given point set
+set-cswap - swap coordinates of a given point set
 
 # SYNOPSIS
 
-**cswap** [**\--i** *FILE*] [**\--o** *FILE*]  [**\--count**|**\--c**=*INTEGER*] [**\--axis**=-1|*INTEGER*] [**\--percentage**|**\--p**=*BINARY64*] [**\--repeat**|**\--r**=*INTEGER*] [**\--silent**]
+**set-cswap** [**\--i** *FILE*] [**\--o** *FILE*]  [**\--count**|**\--c**=*INTEGER*] [**\--axis**=-1|*INTEGER*] [**\--percentage**|**\--p**=*BINARY64*] [**\--repeat**|**\--r**=*INTEGER*] [**\--silent**]
 
 # DESCRIPTION
 

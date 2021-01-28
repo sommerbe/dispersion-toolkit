@@ -1,14 +1,14 @@
-% READMATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
+% READ-MATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 14, 2020
 
 # NAME
 
-readmatrix - reads a matrix of points
+read-matrix - reads a matrix of points
 
 # SYNOPSIS
 
-**readmatrix** [**\--i** *FILE*] [**\--o** *FILE*] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**read-matrix** [**\--i** *FILE*] [**\--o** *FILE*] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 

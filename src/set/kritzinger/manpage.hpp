@@ -7,15 +7,15 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(KRITZINGERLATTICE(1)      Dispersion Toolkit Manuals      KRITZINGERLATTICE(1)
+  = R"V0G0N(SET-KRITZINGER(1)         Dispersion Toolkit Manuals         SET-KRITZINGER(1)
 
 NAME
-       kritzingerlattice  -  compute a modified Fibonacci lattice according to
+       set-kritzinger  -  compute  a  modified  Fibonacci lattice according to
        Kritzinger and Lachmann, 2020 (arxiv preprint)
 
 SYNOPSIS
-       kritzingerlattice --fibonacci-index|--m=INTEGER [--o FILE]  [--compute-
-       fibonacci-number|–cardinality]  [--no-pointset] [--delimiter=CHARACTER]
+       set-kritzinger --fibonacci-index|--m=INTEGER [--o FILE]  [--compute-fi‐
+       bonacci-number|–cardinality]   [--no-pointset]  [--delimiter=CHARACTER]
        [--silent]
 
 DESCRIPTION
@@ -61,6 +61,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          November 30, 2020          KRITZINGERLATTICE(1)
+1.1.0                          November 30, 2020             SET-KRITZINGER(1)
 )V0G0N";
 }

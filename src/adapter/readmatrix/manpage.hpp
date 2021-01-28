@@ -7,13 +7,13 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(READMATRIX(1)             Dispersion Toolkit Manuals             READMATRIX(1)
+  = R"V0G0N(READ-MATRIX(1)            Dispersion Toolkit Manuals            READ-MATRIX(1)
 
 NAME
-       readmatrix - reads a matrix of points
+       read-matrix - reads a matrix of points
 
 SYNOPSIS
-       readmatrix [--i FILE] [--o FILE] [--delimiter=CHARACTER] [--silent]
+       read-matrix [--i FILE] [--o FILE] [--delimiter=CHARACTER] [--silent]
 
 DESCRIPTION
        Reads  a  matrix of points, where each column corresponds to a distinct
@@ -49,6 +49,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 14, 2020                 READMATRIX(1)
+1.1.0                          December 14, 2020                READ-MATRIX(1)
 )V0G0N";
 }

@@ -1,5 +1,5 @@
 
-set(NAME "dispdumitrescu2017")
+set(NAME "disp${PROGRAM_DELIMITER}dumitrescu2017")
 
 set(SOURCES
   ${src}/index/pointset_dsorted.cpp

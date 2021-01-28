@@ -1,14 +1,14 @@
-% UTKADAPTER(1) 1.1.0 | Dispersion Toolkit Manuals
+% UTK-ADAPTER(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 1, 2020
 
 # NAME
 
-readutk - transform a point set sequence from UTK framework
+read-utk - transform a point set sequence from UTK framework
 
 # SYNOPSIS
 
-**readutk** [**\--i** *FILE*] [**\--o** *FILE*] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**read-utk** [**\--i** *FILE*] [**\--o** *FILE*] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 

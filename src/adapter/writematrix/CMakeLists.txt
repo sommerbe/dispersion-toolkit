@@ -1,5 +1,5 @@
 
-set(NAME "writematrix")
+set(NAME "write${PROGRAM_DELIMITER}matrix")
 
 set(SOURCES
   ${src}/io/argparse.cpp

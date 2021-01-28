@@ -1,14 +1,14 @@
-% DISPDUMITRESCU2017(1) 1.1.0 | Dispersion Toolkit Manuals
+% DISP-DUMITRESCU2017(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 9, 2020
 
 # NAME
 
-dispdumitrescu2017 - compute dispersion with algorithm of Dumitrescu and Jiang, 2017
+disp-dumitrescu2017 - compute dispersion with algorithm of Dumitrescu and Jiang, 2017
 
 # SYNOPSIS
 
-**dispdumitrescu2017** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
+**disp-dumitrescu2017** [**\--i** *FILE*] [**\--o** *FILE*] [**\--disp**] [**\--ndisp**] [**\--count-boxes**] [**\--silent**]
 
 # DESCRIPTION
 

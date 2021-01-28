@@ -1,5 +1,5 @@
 
-set(NAME "readmatrix")
+set(NAME "read${PROGRAM_DELIMITER}matrix")
 
 set(SOURCES
   ${src}/io/argparse.cpp

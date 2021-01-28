@@ -1,5 +1,5 @@
 
-set(NAME "mindispgs")
+set(NAME "mindisp${PROGRAM_DELIMITER}gs")
 
 set(SOURCES
   ${src}/index/pointset_dsorted.cpp

@@ -8,14 +8,14 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(DISPDUMITRESCU2017(1)     Dispersion Toolkit Manuals     DISPDUMITRESCU2017(1)
+  = R"V0G0N(DISP-DUMITRESCU2017(1)    Dispersion Toolkit Manuals    DISP-DUMITRESCU2017(1)
 
 NAME
-       dispdumitrescu2017  -  compute  dispersion with algorithm of Dumitrescu
+       disp-dumitrescu2017  -  compute dispersion with algorithm of Dumitrescu
        and Jiang, 2017
 
 SYNOPSIS
-       dispdumitrescu2017 [--i FILE] [--o FILE] [--disp]  [--ndisp]  [--count-
+       disp-dumitrescu2017 [--i FILE] [--o FILE] [--disp] [--ndisp]  [--count-
        boxes] [--silent]
 
 DESCRIPTION
@@ -84,6 +84,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 9, 2020          DISPDUMITRESCU2017(1)
+1.1.0                          December 9, 2020         DISP-DUMITRESCU2017(1)
 )V0G0N";
 }

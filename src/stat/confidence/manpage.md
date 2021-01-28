@@ -1,14 +1,14 @@
-% CONFIDENCE(1) 1.1.0 | Dispersion Toolkit Manuals
+% STAT-CONFIDENCE(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 30, 2020
 
 # NAME
 
-confidence - estimate confidence intervals, median and arithmetic mean
+stat-confidence - estimate confidence intervals, median and arithmetic mean
 
 # SYNOPSIS
 
-**confidence** [**\--i** *FILE*] [**\--o** *FILE*] [**\--percentiles**=*BINARY64* *BINARY64* ...] [**\--2sigma**] [**\--iqr**] [**\--iqr-box**] [**\--mean**] [**\--silent**]
+**stat-confidence** [**\--i** *FILE*] [**\--o** *FILE*] [**\--percentiles**=*BINARY64* *BINARY64* ...] [**\--2sigma**] [**\--iqr**] [**\--iqr-box**] [**\--mean**] [**\--silent**]
 
 # DESCRIPTION
 

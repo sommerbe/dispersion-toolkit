@@ -1,14 +1,14 @@
-% WRITEMATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
+% WRITE-MATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 18, 2020
 
 # NAME
 
-writematrix - writes as a matrix of points
+write-matrix - writes as a matrix of points
 
 # SYNOPSIS
 
-**writematrix** [**\-ts**] [**\--i** *FILE*] [**\--o** *FILE*] [**\--transpose**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
+**write-matrix** [**\-ts**] [**\--i** *FILE*] [**\--o** *FILE*] [**\--transpose**] [**\--delimiter**=*CHARACTER*] [**\--silent**]
 
 # DESCRIPTION
 

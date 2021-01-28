@@ -1,5 +1,5 @@
 
-set(NAME "dispcombinatorial")
+set(NAME "disp${PROGRAM_DELIMITER}combinatorial")
 
 set(SOURCES
   ${src}/io/argparse.cpp

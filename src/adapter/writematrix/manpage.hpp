@@ -7,13 +7,13 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(WRITEMATRIX(1)            Dispersion Toolkit Manuals            WRITEMATRIX(1)
+  = R"V0G0N(WRITE-MATRIX(1)           Dispersion Toolkit Manuals           WRITE-MATRIX(1)
 
 NAME
-       writematrix - writes as a matrix of points
+       write-matrix - writes as a matrix of points
 
 SYNOPSIS
-       writematrix   [-ts]  [--i  FILE]  [--o  FILE]  [--transpose]  [--delim‐
+       write-matrix  [-ts]  [--i  FILE]  [--o  FILE]  [--transpose]  [--delim‐
        iter=CHARACTER] [--silent]
 
 DESCRIPTION
@@ -50,6 +50,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 18, 2020                WRITEMATRIX(1)
+1.1.0                          December 18, 2020               WRITE-MATRIX(1)
 )V0G0N";
 }

@@ -1,5 +1,5 @@
 
-set(NAME "confidence")
+set(NAME "stat${PROGRAM_DELIMITER}confidence")
 
 set(SOURCES
   ${src}/io/argparse.cpp

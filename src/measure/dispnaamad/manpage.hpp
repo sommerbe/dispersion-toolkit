@@ -7,13 +7,13 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(DISPNAAMAD(1)             Dispersion Toolkit Manuals             DISPNAAMAD(1)
+  = R"V0G0N(DISP-NAAMAD(1)            Dispersion Toolkit Manuals            DISP-NAAMAD(1)
 
 NAME
-       dispnaamad - compute dispersion with algorithm of Naamad et.  al. 1984
+       disp-naamad - compute dispersion with algorithm of Naamad et.  al. 1984
 
 SYNOPSIS
-       dispnaamad  [--i  FILE]  [--o  FILE] [--disp] [--ndisp] [--count-boxes]
+       disp-naamad  [--i  FILE]  [--o FILE] [--disp] [--ndisp] [--count-boxes]
        [--silent]
 
 DESCRIPTION
@@ -77,6 +77,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 9, 2020                  DISPNAAMAD(1)
+1.1.0                          December 9, 2020                 DISP-NAAMAD(1)
 )V0G0N";
 }

@@ -7,13 +7,13 @@
 
 namespace dptk {
 std::string manpage
-  = R"V0G0N(UTKADAPTER(1)             Dispersion Toolkit Manuals             UTKADAPTER(1)
+  = R"V0G0N(UTK-ADAPTER(1)            Dispersion Toolkit Manuals            UTK-ADAPTER(1)
 
 NAME
-       readutk - transform a point set sequence from UTK framework
+       read-utk - transform a point set sequence from UTK framework
 
 SYNOPSIS
-       readutk [--i FILE] [--o FILE] [--delimiter=CHARACTER] [--silent]
+       read-utk [--i FILE] [--o FILE] [--delimiter=CHARACTER] [--silent]
 
 DESCRIPTION
        Converts a point set sequence in the .dat format as produced by the UTK
@@ -50,6 +50,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 1, 2020                  UTKADAPTER(1)
+1.1.0                          December 1, 2020                 UTK-ADAPTER(1)
 )V0G0N";
 }
