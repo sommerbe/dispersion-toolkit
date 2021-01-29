@@ -2,6 +2,7 @@
 
 * adding script: package.sh <version> <directory>
 * new program: pdisp-permute
+* fixes: missing delete* if file open fails
 
 # 1.1.0
 

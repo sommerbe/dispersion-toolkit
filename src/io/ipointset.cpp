@@ -15,6 +15,7 @@ void istream_init(const std::string& in, std::istream*& is)
       is = fs;
     } else {
       is = nullptr;
+      delete fs;
     }
   }
 }

@@ -16,6 +16,7 @@ void ostream_init(const std::string& in, std::ostream*& os)
       os = fs;
     } else {
       os = nullptr;
+      delete fs;
     }
   }
 }
