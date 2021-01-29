@@ -16,6 +16,7 @@ void istream_init(const std::string& in, std::istream*& is)
     } else {
       is = nullptr;
       delete fs;
+      throw std::invalid_argument("a non-existing or non-readable file can not be read from, and the following file was defined: " + in);
     }
   }
 }
