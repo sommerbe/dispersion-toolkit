@@ -9,12 +9,6 @@
 * optimise a point set w.r.t. minimising its dispersion
 * visualise a sequence of a point set
 
-### Documentation
-
-A manpage exists for each executable. After build configuration, these are to be found in ./build/man/, for convenience, or in a chosen directory after installing the build, for instance {CMAKE_BUILD_PREFIX}/share/man/.
-
-A manpage is located in the directory of each C++11 main.cpp source file.
-
 ### Usability
 
 * easy to build, low maintenance => minimal dependencies
@@ -23,11 +17,21 @@ A manpage is located in the directory of each C++11 main.cpp source file.
 * proper use of IO pipes and argument passing (standard in UNIX)
 * interoperable with 3rd party toolkits: UTK (using scripts, file IO)
 
+### Documentation
+
+Each executable accepts the program argument
+
+````
+--help or -h
+````
+
+to print a very simple list of valid arguments. A detailed explanation is available in the secondary repository
+
+````
+dispersion-toolkit-manpages.git
+````
+
 ### Dependencies
-
-There are two classes (sorry) of those using this toolkit. Those who simply use this toolkit without further developing it, without maintaining its code are **users**. All others are **developers**.
-
-#### Users
 
 The least amount of requirements in order to build this toolkit to use it are:
 
@@ -36,17 +40,10 @@ The least amount of requirements in order to build this toolkit to use it are:
 * visualisation (optional): python3, numpy, matplotlib
 * mindispgs (optional): OpenMP
 
-#### Developers
-
-If you plan on developing this toolkit, for instance by extending it with programs or modifying existing ones, you need these requirements:
-
-* manual generation: bash, pandoc
-
-It is assumed that you know what you are doing here.
 
 ## Getting started
 
-### Building for using it
+### Building on UNIX systems
 
 The following commands assume that the parent working directory equals this project's root directory.
 
@@ -67,8 +64,6 @@ cmake ../ -DCMAKE_BUILD_TYPE=Release
 
 Its output shows which dependencies are used, along with their current version. If either of the dependencies, GLFW or OpenGL, is missing or is expected to be incompatible, modules depending on these will be omitted from the build. Installing these dependencies following your operating system's standard practices should resolve this issue as long as compatibility is to be expected (technically).
 
-#### UNIX
-
 In UNIX operating systems, a build parallelised among {P} threads is started with
 
 ````
@@ -83,37 +78,9 @@ make -j8
 
 runs 8 builds in parallel.
 
-#### Windows
+### Windows systems
 
-In Windows, this build directory contains a Visual Studio solution file to be opened.
-
-### Building for further development
-
-In addition to "Building for using it", you will have to maintain the documentation and the integrated manual pages. The latter is done with the script
-
-````
-bash ./script/configure-manual.sh
-````
-
-The entire documentation in the singular PDF is generated using
-
-````
-bash ./script/make-documentation-pdf.sh
-````
-
-which requires the **MarkdownPP** python module to be installed locally with
-
-````
-pip install --user MarkdownPP
-````
-
-The resulting manual is stored to
-
-```
-doc/manual.pdf
-```
-
-Its template in markdown syntax is at ``doc/manual.mdpp`` which is used to glue all the separate manuals (readme and executable man pages) together.
+In Windows, create an out-of-source build directory and configure it using CMAKE. Build the source, usually with Visual Studio.
 
 
 ## Conventions for developers

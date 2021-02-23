@@ -4,7 +4,6 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
-#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -315,12 +314,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
-    } else if (s == "-h") {
-      std::cout << extract_range(manpage, "NAME", "OPTIONS");
-      std::cout << "Option --help expands this manual." << std::endl;
-      return false;
-    } else if (s == "--help") {
-      std::cout << manpage;
+    } else if (s == "-h" || s == "--help") {
+      std::cout << "NAME: compute dispersion using a grow&shrink algorithm" << std::endl;
+      std::cout << "SYNOPSIS: [--i  FILE]  [--o  FILE]  [--disp]  [--ndisp]  [--count-boxes] [--silent]" << std::endl;
       return false;
     }
   }

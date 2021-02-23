@@ -3,7 +3,6 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
-#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -323,12 +322,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return false;
       }
       rt.output = arg[i];
-    } else if (s == "-h") {
-      std::cout << extract_range(manpage, "NAME", "OPTIONS");
-      std::cout << "Option --help expands this manual." << std::endl;
-      return false;
-    } else if (s == "--help") {
-      std::cout << manpage;
+    } else if (s == "-h" || s == "--help") {
+      std::cout << "NAME: compute p-dispersion with a permutation algorithm (exhaustive search)" << std::endl;
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--p=2] [--disp] [--ndisp] [--count-boxes] [--boxes] [--interior-boxes] [--greatest-box] [--silent]" << std::endl;
       return false;
     }
   }

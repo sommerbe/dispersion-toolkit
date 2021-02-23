@@ -4,7 +4,6 @@
 #include "../../io/ostream.hpp"
 #include "../../math/arithmetic.hpp"
 #include "../../math/pointset.hpp"
-#include "manpage.hpp"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -214,12 +213,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
-    } else if (s == "-h") {
-      std::cout << extract_range(manpage, "NAME", "OPTIONS");
-      std::cout << "Option --help expands this manual." << std::endl;
-      return false;
-    } else if (s == "--help") {
-      std::cout << manpage;
+    } else if (s == "-h" || s == "--help") {
+      std::cout << "NAME: estimate confidence intervals, median and arithmetic mean" << std::endl;
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--percentiles=BINARY64  BINARY64...] [--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]" << std::endl;
       return false;
     }
   }

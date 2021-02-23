@@ -3,7 +3,6 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
-#include "manpage.hpp"
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -149,12 +148,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (++i == arg.size())
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
-    } else if (s == "-h") {
-      std::cout << extract_range(manpage, "NAME", "OPTIONS");
-      std::cout << "Option --help expands this manual." << std::endl;
-      return false;
-    } else if (s == "--help") {
-      std::cout << manpage;
+    } else if (s == "-h" || s == "--help") {
+      std::cout << "NAME: swap coordinates of a given point set" << std::endl;
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER] [--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]" << std::endl;
       return false;
     }
   }
