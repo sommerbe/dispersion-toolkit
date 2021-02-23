@@ -30,30 +30,30 @@ struct program_param
   std::string   output;
   std::ostream* os;
   std::istream* is;
-  u64 p;
+  u64           p;
   u1            silent;
   i8            delimiter;
   u1            del_use_ipts;
   u1            compute_pdisp;
   u1            compute_npdisp;
-  u1 debug_permutations;
-  u1 precompute_distances;
+  u1            debug_permutations;
+  u1            precompute_distances;
 };
 
 struct problem_measures
 {
-  prec     disp;
-  prec     ndisp;
+  prec disp;
+  prec ndisp;
 };
 
 struct problem_param
 {
-  pointset              pts;
-  prec                  domain_bound[2];
-  std::vector<u64> permute;
+  pointset          pts;
+  prec              domain_bound[2];
+  std::vector<u64>  permute;
   std::vector<prec> distance_matrix;
-  problem_measures*     measures;
-  program_param*        rt;
+  problem_measures* measures;
+  program_param*    rt;
 };
 
 void print_coords(std::ostream* os, const hyperbox& box, u8 del = ' ')
@@ -71,7 +71,7 @@ void print_coords(std::ostream* os, const hyperbox& box, u8 del = ' ')
 void print_permute_indices(std::ostream* os, const std::vector<u64>& p, u8 del = ',')
 {
   *os << "# ";
-  for (u64 i=0; i<p.size(); ++i) {
+  for (u64 i = 0; i < p.size(); ++i) {
     if (i > 0) {
       *os << del;
     }
@@ -87,7 +87,7 @@ prec compute_distance(prec* a, prec* b, u32 dimensions)
 
   for (u32 d = 0; d < dimensions; ++d) {
     s = a[d] - b[d];
-    v += s*s;
+    v += s * s;
   }
   v = std::sqrt(v);
   return v;
@@ -95,27 +95,27 @@ prec compute_distance(prec* a, prec* b, u32 dimensions)
 
 u64 distance_matrix_index(u64 n, u64 i, u64 j)
 {
-  return i*n + j;
+  return i * n + j;
 }
 
 void precompute_distance_matrix(problem_param* pb)
 {
-  u64 n = pb->pts.size();
-  u64 k;
+  u64   n = pb->pts.size();
+  u64   k;
   prec* a;
   prec* b;
-  prec d;
+  prec  d;
 
-  pb->distance_matrix.resize(n*n);
+  pb->distance_matrix.resize(n * n);
 
-  for (u64 i=0; i<n; ++i) {
-    for (u64 j=i+1; j<n; ++j) {
-      a = pb->pts.at(i, 0);
-      b = pb->pts.at(j, 0);
-      d = compute_distance(a, b, pb->pts.dimensions);
-      k = distance_matrix_index(n, i, j);
+  for (u64 i = 0; i < n; ++i) {
+    for (u64 j = i + 1; j < n; ++j) {
+      a                      = pb->pts.at(i, 0);
+      b                      = pb->pts.at(j, 0);
+      d                      = compute_distance(a, b, pb->pts.dimensions);
+      k                      = distance_matrix_index(n, i, j);
       pb->distance_matrix[k] = d;
-      k = distance_matrix_index(n, j, i);
+      k                      = distance_matrix_index(n, j, i);
       pb->distance_matrix[k] = d;
     }
   }
@@ -127,22 +127,22 @@ void pdispersion_permute(problem_param* pb)
   assert(pb->pts.size() > 0);
 
   std::vector<u64> permute;
-  u64 n = 4; // pb->pts.size();
-  u64 p = 2; // pb->rt->p;
-  u64 e = n - p;
+  u64              n = 4; // pb->pts.size();
+  u64              p = 2; // pb->rt->p;
+  u64              e = n - p;
 
   // allocate an array of permutation indices
   permute.resize(p);
 
   // initialise permutation list with (0,1,2,...,p-1) indices
-  for (u64 i=0; i<permute.size(); ++i) {
+  for (u64 i = 0; i < permute.size(); ++i) {
     permute[i] = i;
   }
 
   // move permute indices (increasing order) up to end of point set array
   // so 4 pts: (0,1) > (0,2) > (0,3) > (1,2) > (1,3) > (2,3)
   while (true) {
-    // 
+    //
 
     // debug
     if (pb->rt->debug_permutations)
@@ -157,28 +157,28 @@ void pdispersion_permute(problem_param* pb)
 
 void pdispersion_permute_stack_leaf(problem_param* pb)
 {
-  prec dist = MAXFLOAT;
+  prec  dist = MAXFLOAT;
   prec* a;
   prec* b;
-  prec d;
-  u64 e = pb->permute.size() - 1;
-  u64 n = pb->pts.size();
-  u64 k;
+  prec  d;
+  u64   e = pb->permute.size() - 1;
+  u64   n = pb->pts.size();
+  u64   k;
 
   if (pb->rt->precompute_distances) {
-    for (u64 i=0; i<e; ++i) {
-      for (u64 j=i+1; j<=e; ++j) {
-        k = distance_matrix_index(n, pb->permute[i], pb->permute[j]);
-        d = pb->distance_matrix[k];
+    for (u64 i = 0; i < e; ++i) {
+      for (u64 j = i + 1; j <= e; ++j) {
+        k    = distance_matrix_index(n, pb->permute[i], pb->permute[j]);
+        d    = pb->distance_matrix[k];
         dist = std::min(d, dist);
       }
     }
   } else {
-    for (u64 i=0; i<e; ++i) {
-      for (u64 j=i+1; j<=e; ++j) {
-        a = pb->pts.at(pb->permute[i], 0);
-        b = pb->pts.at(pb->permute[j], 0);
-        d = compute_distance(a, b, pb->pts.dimensions);
+    for (u64 i = 0; i < e; ++i) {
+      for (u64 j = i + 1; j <= e; ++j) {
+        a    = pb->pts.at(pb->permute[i], 0);
+        b    = pb->pts.at(pb->permute[j], 0);
+        d    = compute_distance(a, b, pb->pts.dimensions);
         dist = std::min(d, dist);
       }
     }
@@ -196,8 +196,8 @@ void pdispersion_permute_stack_loop(problem_param* pb, u32 pos, u32 i)
   pb->permute[pos] = i;
 
   if (pos > 0) {
-    for (u64 j=i+1; j<pb->pts.size(); ++j) {
-      pdispersion_permute_stack_loop(pb, pos-1, j);
+    for (u64 j = i + 1; j < pb->pts.size(); ++j) {
+      pdispersion_permute_stack_loop(pb, pos - 1, j);
     }
   } else {
     pdispersion_permute_stack_leaf(pb);
@@ -208,7 +208,7 @@ void pdispersion_permute_stack(problem_param* pb)
 {
   assert(pb != nullptr);
   assert(pb->pts.size() > 0);
-  
+
   u64 p = std::min(pb->rt->p, pb->pts.size());
 
   pb->measures->disp = 0;
@@ -218,8 +218,8 @@ void pdispersion_permute_stack(problem_param* pb)
     precompute_distance_matrix(pb);
   }
 
-  for (u64 i=0; i<pb->pts.size(); ++i) {
-    pdispersion_permute_stack_loop(pb, p-1, i);
+  for (u64 i = 0; i < pb->pts.size(); ++i) {
+    pdispersion_permute_stack_loop(pb, p - 1, i);
   }
 
   pb->measures->ndisp = pb->pts.size() * pb->measures->disp;
@@ -250,7 +250,6 @@ i32 return_partial_results(const program_param&                       rt,
                            const std::vector<dptk::problem_measures>& measures)
 {
   putparam(rt.os, "point set sequence size", measures.size(), !rt.silent);
-
 
   // dispersion, boxcount
   if (rt.compute_pdisp || rt.compute_npdisp) {
@@ -302,7 +301,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     } else if (s == "--debug-permute") {
       rt.debug_permutations = true;
     } else if (s == "--p") {
-     if (!argparse::argval(arg, i))
+      if (!argparse::argval(arg, i))
         return argparse::err("missing p value. Consider using -h or --help.");
       rt.p = std::strtol(arg[++i].c_str(), nullptr, 10);
       if (arg[i][0] == '-' || rt.p < 2)
@@ -323,8 +322,13 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       }
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "NAME: compute p-dispersion with a permutation algorithm (exhaustive search)" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--p=2] [--disp] [--ndisp] [--count-boxes] [--boxes] [--interior-boxes] [--greatest-box] [--silent]" << std::endl;
+      std::cout
+        << "NAME: compute p-dispersion with a permutation algorithm (exhaustive search)"
+        << std::endl;
+      std::cout
+        << "SYNOPSIS: [--i FILE] [--o FILE] [--p=2] [--disp] [--ndisp] [--count-boxes] "
+           "[--boxes] [--interior-boxes] [--greatest-box] [--silent]"
+        << std::endl;
       return false;
     }
   }
@@ -342,7 +346,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 } // namespace dptk
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
-{  
+{
   dptk::problem_param                 problem;
   dptk::program_param                 rt;
   dptk::i32                           r;
@@ -350,15 +354,15 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   std::vector<dptk::problem_measures> measures;
 
   // default configuration
-  rt.compute_pdisp         = false;
-  rt.compute_npdisp        = false;
+  rt.compute_pdisp        = false;
+  rt.compute_npdisp       = false;
   rt.delimiter            = ' ';
   rt.del_use_ipts         = true;
   rt.silent               = false;
   rt.input                = "-";
   rt.output               = "-";
-  rt.p = 2;
-  rt.debug_permutations = false;
+  rt.p                    = 2;
+  rt.debug_permutations   = false;
   rt.precompute_distances = true;
   problem.rt              = &rt;
   problem.domain_bound[0] = 0;
@@ -402,7 +406,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
     // allocate measures
     measures.resize(measures.size() + 1);
-    problem.measures           = &measures.back();
+    problem.measures = &measures.back();
 
     // compute dispersion
     // dptk::pdispersion_permute(&problem);

@@ -349,8 +349,12 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       }
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "NAME: compute dispersion with a combinatorial algorithm  (exhaustive search)" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--disp]  [--ndisp]  [--count-boxes] [--boxes] [--interior-boxes] [--greatest-box] [--silent]" << std::endl;
+      std::cout
+        << "NAME: compute dispersion with a combinatorial algorithm  (exhaustive search)"
+        << std::endl;
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--disp]  [--ndisp]  [--count-boxes] "
+                   "[--boxes] [--interior-boxes] [--greatest-box] [--silent]"
+                << std::endl;
       return false;
     }
   }

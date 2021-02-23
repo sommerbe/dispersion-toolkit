@@ -143,7 +143,10 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: compute a Fibonacci lattice" << std::endl;
-      std::cout << "SYNOPSIS: --fibonacci-index|--m=INTEGER  [--o FILE] [--compute-fibonacci-number|--cardinality]  [--no-pointset]  [--delimiter=CHARACTER] [--silent]" << std::endl;
+      std::cout << "SYNOPSIS: --fibonacci-index|--m=INTEGER  [--o FILE] "
+                   "[--compute-fibonacci-number|--cardinality]  [--no-pointset]  "
+                   "[--delimiter=CHARACTER] [--silent]"
+                << std::endl;
       return false;
     }
   }

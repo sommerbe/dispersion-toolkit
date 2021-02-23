@@ -214,8 +214,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return argparse::err("invalid argument: -o misses a mandatory parameter");
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "NAME: estimate confidence intervals, median and arithmetic mean" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--percentiles=BINARY64  BINARY64...] [--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]" << std::endl;
+      std::cout << "NAME: estimate confidence intervals, median and arithmetic mean"
+                << std::endl;
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--percentiles=BINARY64  "
+                   "BINARY64...] [--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]"
+                << std::endl;
       return false;
     }
   }

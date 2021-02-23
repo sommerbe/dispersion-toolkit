@@ -301,8 +301,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       }
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
-      std::cout << "NAME: compute dispersion with algorithm of Naamad et al. 1984" << std::endl;
-      std::cout << "SYNOPSIS: [--i  FILE]  [--o FILE] [--disp] [--ndisp] [--count-boxes] [--silent]" << std::endl;
+      std::cout << "NAME: compute dispersion with algorithm of Naamad et al. 1984"
+                << std::endl;
+      std::cout << "SYNOPSIS: [--i  FILE]  [--o FILE] [--disp] [--ndisp] [--count-boxes] "
+                   "[--silent]"
+                << std::endl;
       return false;
     }
   }

@@ -150,7 +150,10 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: swap coordinates of a given point set" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER] [--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]" << std::endl;
+      std::cout
+        << "SYNOPSIS: [--i FILE] [--o FILE] [--count|--c=INTEGER] [--axis=-1|INTEGER] "
+           "[--percentage|--p=BINARY64] [--repeat|--r=INTEGER] [--silent]"
+        << std::endl;
       return false;
     }
   }

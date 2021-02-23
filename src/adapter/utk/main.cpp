@@ -126,7 +126,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: transform a point set sequence from UTK framework" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--delimiter=CHARACTER] [--silent]" << std::endl;
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--delimiter=CHARACTER] [--silent]"
+                << std::endl;
       return false;
     }
   }

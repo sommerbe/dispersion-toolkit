@@ -376,8 +376,14 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
 
     } else if (s == "-h" || s == "--help") {
-      std::cout << "NAME: a gradient ascent to reduce dispersion based on grow&shrink strategy" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--iteration-limit=INTEGER] [--tau=BINARY64] [--stepsize=BINARY64] [--delimiter=CHARACTER] [--no-pointset] [--compute-iterations] [--pointset-sequence] [--silent]" << std::endl;
+      std::cout
+        << "NAME: a gradient ascent to reduce dispersion based on grow&shrink strategy"
+        << std::endl;
+      std::cout
+        << "SYNOPSIS: [--i FILE] [--o FILE] [--iteration-limit=INTEGER] [--tau=BINARY64] "
+           "[--stepsize=BINARY64] [--delimiter=CHARACTER] [--no-pointset] "
+           "[--compute-iterations] [--pointset-sequence] [--silent]"
+        << std::endl;
 
       std::cout << "# CURRENT PARAMETERS #" << std::endl;
       std::cout << "--iteration-limit=" << rt.iteration_limit << std::endl
