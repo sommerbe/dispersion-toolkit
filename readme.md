@@ -281,7 +281,7 @@ cat pts-fibonacci-mindisp.dat | python ./bin/pss.py --image-path='seq-{i}.png' -
 
 The result is a sequence of images, 
 ````
-(seq-{0}.png, seq-{1}.png, ..., seq-{n}.png)
+(seq-0.png, seq-1.png, ..., seq-n.png)
 ````
 
 ### Recommendation
