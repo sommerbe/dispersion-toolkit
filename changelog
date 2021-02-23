@@ -1,12 +1,14 @@
 # current
 
+* fixes readme: resulting filenames of an image sequence
+
 # 1.2.0 
 
 * adding script: package.sh <version> <directory>
 * new program: pdisp-permute
 * fixes: missing delete* if file open fails
 * fixes: aborts program forcefully if input file can not be opened
-* fixes: compile error on non-UNIX machines
+* fixes: compile error on non-UNIX machines (thanks to Thomas Lachmann)
 
 # 1.1.0
 
