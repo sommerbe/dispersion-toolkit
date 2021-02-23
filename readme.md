@@ -128,9 +128,9 @@ MAJOR.MINOR.FIX
 
 where
 
-* MAJOR reflects a code change **breaking backwards compatibility**
-* MINOR reflects a code change **with backwards compatibility while introducing new features**
-* FIX reflects a code change **with backwards compatibility and with error fixes** (and without new features)
+* MAJOR reflects a code change **breaking backwards compatibility**,
+* MINOR reflects a code change **with backwards compatibility while introducing new features**,
+* FIX reflects a code change **with error fixes only**, and therefore remaining backwards compatible without introducing new features,
 
 and MAJOR, MINOR, and FIX are unsigned integers in increasing order.
 
