@@ -115,6 +115,26 @@ doc/manual.pdf
 
 Its template in markdown syntax is at ``doc/manual.mdpp`` which is used to glue all the separate manuals (readme and executable man pages) together.
 
+
+## Conventions for developers
+
+### Versioning
+
+All releases are versioned according to
+
+````
+MAJOR.MINOR.FIX
+````
+
+where
+
+* MAJOR reflects a code change **breaking backwards compatibility**
+* MINOR reflects a code change **with backwards compatibility while introducing new features**
+* FIX reflects a code change **with backwards compatibility and with error fixes** (and without new features)
+
+and MAJOR, MINOR, and FIX are unsigned integers in increasing order.
+
+
 ## File format of a point set sequence
 
 The bounded domain is spanned by a tuple of smallest possible coordinates,
