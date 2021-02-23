@@ -1,4 +1,4 @@
-% SET-FIBONACCI(1) 1.1.0 | Dispersion Toolkit Manuals
+% SET-FIBONACCI(1) 1.2.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % November 29, 2020
 

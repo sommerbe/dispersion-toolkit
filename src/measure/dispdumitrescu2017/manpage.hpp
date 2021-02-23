@@ -84,6 +84,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 9, 2020         DISP-DUMITRESCU2017(1)
+1.2.0                          December 9, 2020         DISP-DUMITRESCU2017(1)
 )V0G0N";
 }

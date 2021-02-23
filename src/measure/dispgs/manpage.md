@@ -1,4 +1,4 @@
-% DISP-GS(1) 1.1.0 | Dispersion Toolkit Manuals
+% DISP-GS(1) 1.2.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 3, 2020
 

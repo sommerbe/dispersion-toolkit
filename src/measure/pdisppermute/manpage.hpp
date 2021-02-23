@@ -73,6 +73,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          January 28, 2021                DISP-PERMUTE(1)
+1.2.0                          January 28, 2021                DISP-PERMUTE(1)
 )V0G0N";
 }

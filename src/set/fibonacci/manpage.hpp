@@ -59,6 +59,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          November 29, 2020              SET-FIBONACCI(1)
+1.2.0                          November 29, 2020              SET-FIBONACCI(1)
 )V0G0N";
 }

@@ -108,6 +108,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 2, 2020          DISP-COMBINATORIAL(1)
+1.2.0                          December 2, 2020          DISP-COMBINATORIAL(1)
 )V0G0N";
 }

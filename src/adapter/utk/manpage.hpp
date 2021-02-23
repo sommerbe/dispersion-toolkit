@@ -50,6 +50,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 1, 2020                 UTK-ADAPTER(1)
+1.2.0                          December 1, 2020                 UTK-ADAPTER(1)
 )V0G0N";
 }

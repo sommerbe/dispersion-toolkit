@@ -1,4 +1,4 @@
-% DISP-PERMUTE(1) 1.1.0 | Dispersion Toolkit Manuals
+% DISP-PERMUTE(1) 1.2.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % January 28, 2021
 

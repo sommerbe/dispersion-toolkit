@@ -1,4 +1,4 @@
-% WRITE-MATRIX(1) 1.1.0 | Dispersion Toolkit Manuals
+% WRITE-MATRIX(1) 1.2.0 | Dispersion Toolkit Manuals
 % Benjamin Sommer
 % December 18, 2020
 

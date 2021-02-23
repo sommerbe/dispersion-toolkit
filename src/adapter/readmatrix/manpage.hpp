@@ -49,6 +49,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          December 14, 2020                READ-MATRIX(1)
+1.2.0                          December 14, 2020                READ-MATRIX(1)
 )V0G0N";
 }

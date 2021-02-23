@@ -61,6 +61,6 @@ LIMITATION
 AUTHORS
        Benjamin Sommer.
 
-1.1.0                          November 30, 2020             SET-KRITZINGER(1)
+1.2.0                          November 30, 2020             SET-KRITZINGER(1)
 )V0G0N";
 }
