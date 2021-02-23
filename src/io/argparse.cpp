@@ -1,5 +1,6 @@
 #include "argparse.hpp"
 #include <iostream>
+#include <stdexcept>
 
 namespace dptk {
 namespace argparse {
@@ -66,14 +67,14 @@ void require_argval(const std::vector<std::string>& args,
                     const std::string&              error_message)
 {
   if (idx + 1 == args.size()) {
-    std::__throw_invalid_argument(error_message.c_str());
+    throw std::invalid_argument(error_message.c_str());
   }
 }
 
 void ensure(u1 predicate, const std::string& error_message)
 {
   if (!predicate) {
-    std::__throw_invalid_argument(error_message.c_str());
+    throw std::invalid_argument(error_message.c_str());
   }
 }
 
