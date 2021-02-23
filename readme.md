@@ -277,7 +277,7 @@ Although IO piping is a powerful feature, offering a wide range of flexibility, 
 
 ## License
 
-See the file *license.md* within the directory in which this file resides.
+See the file *license* within the directory in which this file resides.
 
 ## Contributors
 
