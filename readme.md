@@ -281,5 +281,5 @@ See the file *license* within the directory in which this file resides.
 
 ## Contributors
 
-Benjamin Sommer: 2020 - current
+2020 - current: Benjamin Sommer
 
