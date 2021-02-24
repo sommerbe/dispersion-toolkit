@@ -172,7 +172,7 @@ void local_disp(u64 pt, problem_param* problem, prec& disp)
 
   gsp.problem = problem;
 
-  for (i32 axis = 0; axis < problem->pts.dimensions; ++axis) {
+  for (i32 axis = 0; axis < (i32)problem->pts.dimensions; ++axis) {
     for (i32 dir = 0; dir < 3; dir += 2) {
       gsp.axis = axis;
       gsp.dir  = dir - 1;

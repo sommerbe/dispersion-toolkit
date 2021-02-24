@@ -120,8 +120,6 @@ void dispersion_combinatorial(problem_param* p)
   const prec p_zero = 0.0;
   const prec p_one  = 1.0;
 
-  prec     percentile[3];
-  prec*    bd;
   hyperbox box;
   hyperbox box_max;
   i64      n;

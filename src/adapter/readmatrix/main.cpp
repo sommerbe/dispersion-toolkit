@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
+#include <cctype>
 
 namespace dptk {
 

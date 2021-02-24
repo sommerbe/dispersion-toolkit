@@ -89,9 +89,7 @@ void kritzinger_lattice(problem_param* problem)
   u64   Fm;
   u64   Fm1;
   u64   Fm2;
-  prec  Fm_inv;
   prec* pt;
-  prec  integral_part;
   prec  L;
   prec  L_inv;
 

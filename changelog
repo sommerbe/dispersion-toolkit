@@ -2,6 +2,7 @@
 
 * fixes readme: resulting filenames of an image sequence
 * moving manpages into distinct repository
+* fixes MSVC 19 build errors and warnings [issue #1] (thanks to Thomas Lachmann)
 
 # 1.2.0 
 

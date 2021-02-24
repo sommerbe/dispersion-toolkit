@@ -89,7 +89,6 @@ void dispersion_naamad(problem_param* p)
   prec     dist_max;
   prec     extent_up;
   prec     extent_low;
-  u64      dist_idx;
 
   // sort points along 0-axis
   // sort points along 1-axis

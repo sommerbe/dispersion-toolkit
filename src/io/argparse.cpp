@@ -7,7 +7,7 @@ namespace argparse {
 
 void replace(std::string& str, const std::string& from, const std::string& to)
 {
-  int p = 0;
+  std::size_t p = 0;
   while (p < str.size() && (p = str.find(from, p)) != str.npos) {
     str.replace(p, from.size(), to);
     p += to.size();

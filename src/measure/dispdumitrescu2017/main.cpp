@@ -97,7 +97,6 @@ void dispersion_naamad_subdomain(problem_param* p)
   prec     dist_max;
   prec     extent_up;
   prec     extent_low;
-  u64      dist_idx;
 
   // sort points along 0-axis
   // sort points along 1-axis
@@ -354,7 +353,6 @@ void dispersion_dumitrescu2017(problem_param* p)
   prec     base;
   prec     expon;
   prec     slab;
-  prec     disp;
   prec     vol;
   prec     extent;
   pointset pts_base;

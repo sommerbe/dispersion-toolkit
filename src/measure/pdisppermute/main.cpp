@@ -3,9 +3,11 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include "../../math/arithmetic.hpp"
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
+#include <float.h>
 
 namespace dptk {
 
@@ -157,7 +159,7 @@ void pdispersion_permute(problem_param* pb)
 
 void pdispersion_permute_stack_leaf(problem_param* pb)
 {
-  prec  dist = MAXFLOAT;
+  prec  dist = DBL_MAX;
   prec* a;
   prec* b;
   prec  d;
@@ -170,7 +172,7 @@ void pdispersion_permute_stack_leaf(problem_param* pb)
       for (u64 j = i + 1; j <= e; ++j) {
         k    = distance_matrix_index(n, pb->permute[i], pb->permute[j]);
         d    = pb->distance_matrix[k];
-        dist = std::min(d, dist);
+        dist = math::min(d, dist);
       }
     }
   } else {
@@ -179,12 +181,12 @@ void pdispersion_permute_stack_leaf(problem_param* pb)
         a    = pb->pts.at(pb->permute[i], 0);
         b    = pb->pts.at(pb->permute[j], 0);
         d    = compute_distance(a, b, pb->pts.dimensions);
-        dist = std::min(d, dist);
+        dist = math::min(d, dist);
       }
     }
   }
 
-  pb->measures->disp = std::max(dist, pb->measures->disp);
+  pb->measures->disp = math::max(dist, pb->measures->disp);
 
   // debug
   if (pb->rt->debug_permutations)
@@ -209,7 +211,7 @@ void pdispersion_permute_stack(problem_param* pb)
   assert(pb != nullptr);
   assert(pb->pts.size() > 0);
 
-  u64 p = std::min(pb->rt->p, pb->pts.size());
+  u64 p = math::min(pb->rt->p, pb->pts.size());
 
   pb->measures->disp = 0;
   pb->permute.resize(p);
