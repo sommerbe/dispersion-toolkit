@@ -88,6 +88,20 @@ In Windows, create an out-of-source build directory and configure it using CMAKE
 Please refer to *conventions.md* within this directory.
 
 
+## Source code organisation
+
+The source code within the directory *./src* is organised as follows:
+
+Directory | Computational capabilities
+--------- | --------------------------
+./adapter | transducing between various point set formats
+./measure | algorithms computing dispersion measures
+./opt     | optimising point sets w.r.t. dispersion measures
+./set     | constructing d-dimensional point sets
+./stat    | computing statistical descriptors
+./vis     | visualising point sets, point set sequences or other results
+
+
 ## File format of a point set sequence
 
 The bounded domain is spanned by a tuple of smallest possible coordinates,
