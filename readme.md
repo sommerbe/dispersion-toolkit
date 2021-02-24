@@ -267,5 +267,4 @@ See the file *license* within the directory in which this file resides.
 
 ## Contributors
 
-2020 - current: Benjamin Sommer
-
+The file *credits* contains a list of those people who contributed throughout this project's lifetime. For those who (actively) maintain this project, or parts of it, please refer to the file *maintainers*.

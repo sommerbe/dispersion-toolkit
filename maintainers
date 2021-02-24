@@ -1,0 +1,13 @@
+This list of (active) maintainers follows established practice in
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/MAINTAINERS.
+In addition, a temporal range (R) may be given.
+
+Thank you,
+Benjamin
+
+------------------------
+
+M: Benjamin Sommer <benjaminsommer@mailbox.org>
+R: 2020 - present
+T: git git@github.com:sommerbe/dispersion-toolkit.git
+F: *
