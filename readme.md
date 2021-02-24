@@ -85,21 +85,7 @@ In Windows, create an out-of-source build directory and configure it using CMAKE
 
 ## Conventions for developers
 
-### Versioning
-
-All releases are versioned according to the *Backus–Naur Form of Semantic Versioning 2.0.0* to be found at https://semver.org/. Basically, this entails the version core to match
-
-````
-MAJOR.MINOR.PATCH
-````
-
-where
-
-* MAJOR reflects a code change breaking backwards compatibility,
-* MINOR reflects a code change with backwards compatibility while introducing new features,
-* PATCH reflects a code change with error fixes only, and therefore remaining backwards compatible without introducing new features,
-
-and MAJOR, MINOR, and PATCH are unsigned integers in increasing order.
+Please refer to *conventions.md* within this directory.
 
 
 ## File format of a point set sequence
