@@ -44,13 +44,14 @@ void swap_coordinates(problem_param* problem, std::mt19937_64& rengine)
   assert(problem != nullptr);
   assert(problem->rt->pts.size() > 0);
   assert(problem->rt->axis < problem->rt->pts.dimensions);
+  assert(problem->rt->pts.dimensions > 0);
 
   // obtain local copy due to needing independent repetitions
   problem->pts = problem->rt->pts;
 
   // prepare uniform sampling distribution
   std::uniform_int_distribution<u64> distr(0, problem->pts.size() - 1);
-  std::uniform_int_distribution<u64> distr_axis(0, 1);
+  std::uniform_int_distribution<u64> distr_axis(0, problem->pts.dimensions - 1);
 
   u64 i;
   u64 j;
@@ -212,7 +213,6 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);
   dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
-  assert(rt.pts.dimensions == 2);
   assert(rt.is != nullptr);
   assert(rt.os != nullptr);
 
