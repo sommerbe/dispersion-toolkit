@@ -126,6 +126,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 
 set(CMAKE_VERBOSE_MAKEFILE true CACHE BOOL "Enables verbose mode.")
 
+
 ##############################################################
 # Dependencies
 ##############################################################
@@ -139,6 +140,17 @@ function(configure_manpage_embedding NAME SECTION)
   file(READ ${NAME}.1.pre MANPAGE)
   configure_file(${NAME}.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/${NAME}.hpp ESCAPE_QUOTES @ONLY)
 endfunction()
+
+function(target_link_quadmath TARGET)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_link_libraries(${TARGET} -lquadmath)
+  endif()
+endfunction(target_link_quadmath)
+
+function(target_link_libraries_common TARGET)
+  target_link_quadmath(${TARGET})
+endfunction(target_link_libraries_common)
+
 
 ##############################################################
 # Compiler configuration

@@ -23,6 +23,7 @@ message(STATUS "Building: ${NAME}")
 
 
 add_executable(${NAME} main.cpp ${HEADERS} ${SOURCES})
+target_link_libraries_common(${NAME})
 
 ##############################################################
 # Deployment
