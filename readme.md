@@ -201,22 +201,22 @@ Notice that mindispgs retrieves a point set sequence greater or equal to 1. If t
 Visualise how points are moved by the dispersion optimisation:
 
 ````
-./bin/fibonaccilattice --m=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/pss.py
+./bin/fibonaccilattice --m=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/vis-psspy.py
 ````
 or using files:
 ````
 ./bin/fibonaccilattice --m=10 --o pts-fibonacci-m10.dat
 ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-fibonacci-mindisp.dat
-cat pts-fibonacci-mindisp.dat | python ./bin/pss.py
+cat pts-fibonacci-mindisp.dat | python ./bin/vis-psspy.py
 ````
 where ``cat`` is a UNIX or at least Linux system program to read files to stdin.
 
-While mindispgs handles point set sequences, using ``--pointset-sequence`` to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by pss.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, pss.py would show points of an unoptimised set.
+While mindispgs handles point set sequences, using ``--pointset-sequence`` to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by vis-psspy.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, vis-psspy.py would show points of an unoptimised set.
 
 During this visualisation, each frame may be exported to permanent storage:
 
 ````
-cat pts-fibonacci-mindisp.dat | python ./bin/pss.py --image-path='seq-{i}.png' --image-ppi=300
+cat pts-fibonacci-mindisp.dat | python ./bin/vis-psspy.py --image-path='seq-{i}.png' --image-ppi=300
 ````
 
 The result is a sequence of images, 
