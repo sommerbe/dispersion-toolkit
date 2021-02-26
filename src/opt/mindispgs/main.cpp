@@ -489,8 +489,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   }
 
 // parallel iterate through point set sequence
-// - due to MSVC 19, the variable i is declared as dptk::i64 (signed). Notice, however, that the OpemMP 5.1 specification allows
-// "A variable of a signed or unsigned integer type." (https://www.openmp.org/spec-html/5.1/openmpsu45.html#x70-700002.11.1).
+// - due to MSVC 19, the variable i is declared as dptk::i64 (signed). Notice, however,
+// that the OpemMP 5.1 specification allows "A variable of a signed or unsigned integer
+// type." (https://www.openmp.org/spec-html/5.1/openmpsu45.html#x70-700002.11.1).
 #pragma omp parallel for
   for (dptk::i64 i = 0; i < problems.size(); ++i) {
     // need local copies to ensure performance

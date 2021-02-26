@@ -2,12 +2,12 @@
 #include "../../io/ipointset.hpp"
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
-#include "../../math/pointset.hpp"
 #include "../../math/arithmetic.hpp"
+#include "../../math/pointset.hpp"
+#include <float.h>
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
-#include <float.h>
 
 namespace dptk {
 

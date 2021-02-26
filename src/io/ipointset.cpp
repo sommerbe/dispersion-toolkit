@@ -1,8 +1,8 @@
 #include "ipointset.hpp"
+#include <cctype>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
-#include <cctype>
 
 namespace dptk {
 

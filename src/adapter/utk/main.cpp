@@ -3,10 +3,10 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include <cctype>
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
-#include <cctype>
 
 namespace dptk {
 
