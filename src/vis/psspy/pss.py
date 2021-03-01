@@ -191,6 +191,7 @@ def visualise():
 # handle program arguments
 parser = argparse.ArgumentParser(description='Visualise a point set sequence')
 
+parser.add_argument('--i', default='', help='A path to a point set (sequence) to be visualised')
 parser.add_argument('--delay', type=float, default=delay, help='Number of seconds to delay between frame updates')
 parser.add_argument('--image-path', default='', help='A path to images generated during this sequence, containing {i}. Example: "seq-{i}.png"')
 parser.add_argument('--image-ppi', type=float, default='300', help='Resolution of images to be generated, in ppi unit. Example: 300.')
@@ -201,6 +202,9 @@ delay = args.delay
 mk_image_path = args.image_path
 mk_image_ppi = args.image_ppi
 silent = args.silent
+
+if (args.i != ''):
+  ism = open(args.i, 'rt')
 
 # start visualisation of the point set sequence
 visualise()
