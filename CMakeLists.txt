@@ -13,7 +13,7 @@ cmake_minimum_required(VERSION 3.4)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Set additional project information
-set(COPYRIGHT "2020 Benjamin Sommer")
+set(COPYRIGHT "2020-2021 Benjamin Sommer")
 
 ##############################################################
 # Options
