@@ -6,6 +6,7 @@
 * supporting Mathematica's matrix format for both read-matrix and write-matrix (thanks to Thomas Lachmann)
 * visualising point sets may read directly from files, besides std in
 * fixes installation directive concerning vis/psspy
+* new visualisation: rectangles (vis-rectangles.py) (thanks to the suggestion by Thomans Lachmann)
 
 # 1.2.0 
 
