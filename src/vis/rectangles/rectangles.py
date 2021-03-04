@@ -30,6 +30,7 @@ grid_buckets = np.sqrt(64)
 mk_image_path = ''
 mk_image_ppi = 300
 silent = False
+domain = [0,0,1,1]
 
 # figure size / [mm]
 w = 210.0/2 - 35
@@ -37,20 +38,25 @@ h = w
 
 def read_next_pointset(stream, delimiter = ' '):
   pts = []
+  eof = True
   for ln in stream:
     # line ln constraints \n (end-of-line feed); need to remove it
     ln = ln.rstrip()
     # read until end-of-set (aka #eos; by custom convention) obtained
     if (ln == eos):
+      # definitely a valid set (the empty set)
+      eof = False
       break
     # skip comments
     if (len(ln) == 0 or ln[0] == '#'):
       continue
+    # receiving numerical input
+    eof = False    
     # interpret point coordinates as array
     pt = ln.split(delimiter)
     # append point pt to pointset pts
     pts.append(pt)
-  return np.array(pts).astype(np.float)
+  return (np.array(pts).astype(np.float), eof)
 
 def draw_boundary(ax):
   ax.hlines([0,1], 0, 1, ls='-', color='#000', lw=0.75, zorder=3)
@@ -89,6 +95,10 @@ def init_figure(w, h):
   return fig, ax
 
 def draw_rectangles(ax, rects, pts, size=100, marker='+', linewidth=1.5, zorder=100):
+  # skip nil drawing
+  if (rects.shape[0] == 0):
+    return []
+
   # need to split coordinates
   # storage format: rectangle: (left bottom right top)
   # or: (lower-point upper-point)
@@ -130,6 +140,8 @@ def visualise():
   pts_shape_head = []
   pts_shape_i = []
   ptspt_i = np.array([])
+  ism_eof = True
+  ism_pts_eof = True
 
   # initialize figure
   fig, ax = init_figure(w, h)
@@ -141,13 +153,14 @@ def visualise():
   # iterate through input of pointset sequence
   while True:
     # retrieve point se
-    pts_i = read_next_pointset(ism)
+    pts_i, ism_eof = read_next_pointset(ism)
 
     if (ism_pts != None):
-      ptspt_i = read_next_pointset(ism_pts)
+      ptspt_i, ism_pts_eof = read_next_pointset(ism_pts)
 
     # stop reading on empty point set
-    if (len(pts_i) == 0):
+    # if (len(pts_i) == 0):
+    if (ism_eof):
       break
 
     # option: delay between sequence elements (visual inspection by humans)
@@ -183,9 +196,9 @@ def visualise():
     # show console output
     if (not silent):
       if (mk_image_path != ''):
-        print(f'sequence={seq_i}   mkout={p}', end='\r')
+        print(f'sequence={seq_i}   mkout={p}     ', end='\r')
       else:
-        print(f'sequence={seq_i}', end='\r')
+        print(f'sequence={seq_i}   count={pts_i.shape[0]}      ', end='\r')
 
   if (not silent):
     print()
