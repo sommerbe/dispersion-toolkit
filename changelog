@@ -9,6 +9,7 @@
 * new visualisation: rectangles (vis-rectangles.py) (thanks to the suggestion by Thomans Lachmann)
 * parallelised procedure disp-combinatorial using OpenMP (if available)
 * procedure disp-combinatorial accepts new options: [--box-area] [--no-box-coordinates] [--box-area-min=BINARY64] [--box-area-max=BINARY64]
+* visualisation of rectangles works with empty sets within the sequence, and now accepts the specification of the problem domain as well as the number of grid lines to draw
 
 # 1.2.0 
 

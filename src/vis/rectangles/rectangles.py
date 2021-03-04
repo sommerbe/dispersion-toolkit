@@ -31,6 +31,7 @@ mk_image_path = ''
 mk_image_ppi = 300
 silent = False
 domain = [0,0,1,1]
+gridlines = [7, 7]
 
 # figure size / [mm]
 w = 210.0/2 - 35
@@ -59,13 +60,25 @@ def read_next_pointset(stream, delimiter = ' '):
   return (np.array(pts).astype(np.float), eof)
 
 def draw_boundary(ax):
-  ax.hlines([0,1], 0, 1, ls='-', color='#000', lw=0.75, zorder=3)
-  ax.vlines([0,1], 0, 1, ls='-', color='#000', lw=0.75, zorder=3)
+  ax.hlines([domain[1], domain[3]], domain[0], domain[2], ls='-', color='#000', lw=0.75, zorder=3)
+  ax.vlines([domain[0], domain[2]], domain[1], domain[3], ls='-', color='#000', lw=0.75, zorder=3)
 
-def draw_grid(ax, grid_buckets):
-  l =  np.arange(grid_buckets)[1:] / grid_buckets
-  ax.hlines(l, 0, 1, ls='-', color='#aaa', lw=.5, zorder=2)
-  ax.vlines(l, 0, 1, ls='-', color='#aaa', lw=.5, zorder=2)   
+def draw_grid(ax):
+  l = np.linspace(domain[1], domain[3], gridlines[1])
+  ax.hlines(l, domain[0], domain[2], ls='-', color='#aaa', lw=.5, zorder=2)
+  l = np.linspace(domain[0], domain[2], gridlines[0])
+  ax.vlines(l, domain[1], domain[3], ls='-', color='#aaa', lw=.5, zorder=2)
+
+def draw_axes_ticks(ax):
+  ax.set_xticks(np.linspace(domain[0],domain[2], gridlines[0]))
+  ax.set_yticks(np.linspace(domain[1],domain[3], gridlines[1]))
+  ax.tick_params(labelleft=False, labelbottom=False, left=True, right=True, bottom=True, top=True)
+
+def limit_axes(ax):
+  dlim=1.0/32.0
+  ax.set_xlim(domain[0]-dlim, domain[2]+dlim)
+  ax.set_ylim(domain[1]-dlim, domain[3]+dlim)
+  ax.set_aspect(1)
 
 def init_figure(w, h):
   w_ = w
@@ -81,16 +94,9 @@ def init_figure(w, h):
 
   # # boundary, grid, axis ticks
   draw_boundary(ax)
-  draw_grid(ax, grid_buckets)
-  ax.set_xticks(np.linspace(0,1,5))
-  ax.set_yticks(np.linspace(0,1,5))
-  ax.tick_params(labelleft=False, labelbottom=False, left=True, right=True, bottom=True, top=True)
-
-  # viewport: domain, aspect ratio
-  dlim=1.0/32.0
-  ax.set_xlim(-dlim, 1+dlim)
-  ax.set_ylim(-dlim, 1+dlim)
-  ax.set_aspect(1)
+  draw_grid(ax)
+  draw_axes_ticks(ax)
+  limit_axes(ax)  
 
   return fig, ax
 
@@ -217,6 +223,9 @@ def visualise():
 # handle program arguments
 parser = argparse.ArgumentParser(description='Visualise a point set sequence')
 
+parser.add_argument('--domain', type=float, nargs=4, default=domain, help='Problem domain in d=2 dimensions, formatted as [min d=0, min d=1, max d=0, max d=1]. Default: [0,0,1,1].')
+parser.add_argument('--gridlines', type=int, nargs=2, default=gridlines, help='Number of gridlines within the d=2 dimensional problem domain, included the domain boundary itself, formatted as [num d=0, num d=1]. Default: [7,7].')
+
 parser.add_argument('--i', help='A path to a sequence of rectangles to be visualised')
 parser.add_argument('--pts', help='A path to a point set (sequence) to be visualised')
 parser.add_argument('--delay', type=float, default=delay, help='Number of seconds to delay between frame updates')
@@ -241,6 +250,8 @@ args = parser.parse_args()
 delay = args.delay
 mk_image_path = args.image_path
 mk_image_ppi = args.image_ppi
+domain = args.domain
+gridlines = args.gridlines
 
 if (args.colour_rgba_edge != None):
   colour_edge = tuple(args.colour_rgba_edge)
