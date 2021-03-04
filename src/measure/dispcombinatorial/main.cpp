@@ -3,6 +3,7 @@
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
 #include "../../math/pointset.hpp"
+#include <float.h>
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
@@ -39,6 +40,10 @@ struct program_param
   u1            compute_boxes;
   u1            compute_box_max;
   u1            compute_box_interior;
+  u1            compute_box_areas;
+  u1            compute_box_coords;
+  prec          box_area_min;
+  prec          box_area_max;
 };
 
 struct problem_measures
@@ -55,18 +60,36 @@ struct problem_param
   prec                  domain_bound[2];
   std::vector<hyperbox> boxes;
   problem_measures*     measures;
-  program_param*        rt;
+  const program_param*  rt;
 };
 
-void print_coords(std::ostream* os, const hyperbox& box, u8 del = ' ')
+void print_coords(std::ostream*   os,
+                  const hyperbox& box,
+                  u1              pcoords,
+                  u1              parea,
+                  u8              del = ' ')
 {
+  if (!pcoords && !parea)
+    return;
+
   ensure_precision(os, box.coords[0]);
-  for (u32 i = 0; i < box.coords.size(); ++i) {
-    if (i > 0) {
+
+  if (pcoords) {
+    for (u32 i = 0; i < box.coords.size(); ++i) {
+      if (i > 0) {
+        *os << del;
+      }
+      *os << box.coords[i];
+    }
+  }
+
+  if (parea) {
+    if (pcoords) {
       *os << del;
     }
-    *os << box.coords[i];
+    *os << box.area;
   }
+
   *os << std::endl;
 }
 
@@ -108,6 +131,11 @@ prec compute_area(const hyperbox& box, u32 dimensions)
   // - logically, the previous assert should prevent this assert
   assert(area >= 0);
   return area;
+}
+
+u1 predicate_area(prec area, prec range_min, prec range_max)
+{
+  return range_min <= area && area < range_max;
 }
 
 void dispersion_combinatorial(problem_param* p)
@@ -195,6 +223,7 @@ void dispersion_combinatorial(problem_param* p)
 
           // update computation tasks
           if (p->rt->compute_boxes
+              && predicate_area(box.area, p->rt->box_area_min, p->rt->box_area_max)
               && (!p->rt->compute_box_interior
                   || (d0low >= 0 && d0up >= 0 && d1low >= 0 && d1up >= 0))) {
             p->boxes.push_back(box);
@@ -245,7 +274,11 @@ i32 return_partial_results(const program_param& rt, const problem_param& problem
           "# (low_0, low_1, ..., low_d, up_0, up_1, ..., up_d) for d+1 dimensions:",
           !rt.silent);
     for (u64 i = 0; i < problem.boxes.size(); ++i) {
-      print_coords(rt.os, problem.boxes[i]);
+      print_coords(rt.os,
+                   problem.boxes[i],
+                   rt.compute_box_coords,
+                   rt.compute_box_areas,
+                   rt.delimiter);
     }
     write_pointset_eos(rt.os);
   }
@@ -266,7 +299,11 @@ i32 return_partial_results(const program_param&                       rt,
           !rt.silent);
 
     for (u64 i = 0; i < measures.size(); ++i) {
-      print_coords(rt.os, measures[i].box_max);
+      print_coords(rt.os,
+                   measures[i].box_max,
+                   rt.compute_box_coords,
+                   rt.compute_box_areas,
+                   rt.delimiter);
     }
     write_pointset_eos(rt.os);
   }
@@ -332,6 +369,21 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.compute_box_max = true;
     } else if (s == "--boxes") {
       rt.compute_boxes = true;
+    } else if (s == "--box-area") {
+      rt.compute_box_areas = true;
+    } else if (s == "--no-box-coordinates") {
+      rt.compute_box_coords = false;
+
+    } else if (s == "--box-area-min") {
+      if (!argparse::argval(arg, i))
+        return argparse::err("missing box-area-min value. Consider using -h or --help.");
+      rt.box_area_min = std::strtod(arg[++i].c_str(), nullptr);
+
+    } else if (s == "--box-area-max") {
+      if (!argparse::argval(arg, i))
+        return argparse::err("missing box-area-max value. Consider using -h or --help.");
+      rt.box_area_max = std::strtod(arg[++i].c_str(), nullptr);
+
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "--i") {
@@ -351,7 +403,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         << "NAME: compute dispersion with a combinatorial algorithm  (exhaustive search)"
         << std::endl;
       std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--disp]  [--ndisp]  [--count-boxes] "
-                   "[--boxes] [--interior-boxes] [--greatest-box] [--silent]"
+                   "[--boxes] [--interior-boxes] [--greatest-box] [--box-area] "
+                   "[--no-box-coordinates] [--box-area-min=BINARY64] "
+                   "[--box-area-max=BINARY64] [--silent]"
                 << std::endl;
       return false;
     }
@@ -376,7 +430,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::i32                           r;
   dptk::ipointset_read_info           ipts_inf;
   std::vector<dptk::problem_measures> measures;
-  std::vector<dptk::problem_param> problems;
+  std::vector<dptk::problem_param>    problems;
 
   // default configuration
   rt.compute_boxcount     = false;
@@ -385,9 +439,13 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.compute_box_interior = false;
   rt.compute_boxes        = false;
   rt.compute_box_max      = false;
+  rt.compute_box_areas    = false;
+  rt.compute_box_coords   = true;
   rt.delimiter            = ' ';
   rt.del_use_ipts         = true;
   rt.silent               = false;
+  rt.box_area_min         = DBL_MIN;
+  rt.box_area_max         = DBL_MAX;
   rt.input                = "-";
   rt.output               = "-";
   r                       = EXIT_SUCCESS;
@@ -411,6 +469,10 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::putparam(rt.os, "compute interior boxes", rt.compute_box_interior, !rt.silent);
   dptk::putparam(rt.os, "compute boxes", rt.compute_boxes, !rt.silent);
   dptk::putparam(rt.os, "compute greatest box", rt.compute_box_max, !rt.silent);
+  dptk::putparam(rt.os, "predicate box area min", rt.box_area_min, !rt.silent);
+  dptk::putparam(rt.os, "predicate box area max", rt.box_area_max, !rt.silent);
+  dptk::putparam(rt.os, "stream box area", rt.compute_box_areas, !rt.silent);
+  dptk::putparam(rt.os, "stream box coord", rt.compute_box_coords, !rt.silent);
   dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
   dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
@@ -419,7 +481,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     // allocate problem
     dptk::problem_param problem;
 
-    problem.rt = &rt;
+    problem.rt              = &rt;
     problem.domain_bound[0] = 0;
     problem.domain_bound[1] = 1;
 
@@ -444,7 +506,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   measures.resize(problems.size());
 
   // post allocation (due to pointer invalidation on dynamic vector)
-  for (dptk::u64 i=0; i<problems.size(); ++i) {
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
     // linking
     problems[i].measures = &measures[i];
 
@@ -452,9 +514,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     problems[i].measures->boxcount = 0;
   }
 
-  // parallel compute dispersion
-  #pragma omp parallel for
-  for (dptk::u64 i=0; i<problems.size(); ++i) {
+// parallel compute dispersion
+#pragma omp parallel for
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
     // compute dispersion
     dptk::dispersion_combinatorial(&problems[i]);
 
@@ -463,7 +525,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   }
 
   // show sequence of interiour/exteriour/all/.. boxes
-  for (dptk::u64 i=0; i<problems.size(); ++i) {
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
     dptk::return_partial_results(rt, problems[i]);
   }
 
