@@ -224,7 +224,7 @@ def visualise():
 parser = argparse.ArgumentParser(description='Visualise a point set sequence')
 
 parser.add_argument('--domain', type=float, nargs=4, default=domain, help='Problem domain in d=2 dimensions, formatted as [min d=0, min d=1, max d=0, max d=1]. Default: [0,0,1,1].')
-parser.add_argument('--gridlines', type=int, nargs=2, default=gridlines, help='Number of gridlines within the d=2 dimensional problem domain, included the domain boundary itself, formatted as [num d=0, num d=1]. Default: [7,7].')
+parser.add_argument('--gridlines', type=int, nargs=2, default=gridlines, help='Number of gridlines within the d=2 dimensional problem domain, including the domain boundary itself, formatted as [num d=0, num d=1]. Default: [7,7].')
 
 parser.add_argument('--i', help='A path to a sequence of rectangles to be visualised')
 parser.add_argument('--pts', help='A path to a point set (sequence) to be visualised')
