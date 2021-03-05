@@ -392,7 +392,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
       continue;
     }
 
-    assert(problem.pts.dimensions == 2);
+    // assert(problem.pts.dimensions == 2);
     dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
     // allocate index
