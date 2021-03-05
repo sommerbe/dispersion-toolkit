@@ -328,8 +328,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         << "NAME: compute p-dispersion with a permutation algorithm (exhaustive search)"
         << std::endl;
       std::cout
-        << "SYNOPSIS: [--i FILE] [--o FILE] [--p=2] [--disp] [--ndisp] [--count-boxes] "
-           "[--boxes] [--interior-boxes] [--greatest-box] [--silent]"
+        << "SYNOPSIS: [--i FILE] [--o FILE] [--p=2] [--disp] [--ndisp] [--debug-permute] [--silent]"
         << std::endl;
       return false;
     }

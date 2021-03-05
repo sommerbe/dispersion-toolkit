@@ -12,6 +12,7 @@
 * visualisation of rectangles works with empty sets within the sequence, and now accepts the specification of the problem domain as well as the number of grid lines to draw
 * parallelised procedure disp-gs using OpenMP (if available)
 * procedure disp-gs now accepts high dimensional point sets
+* fixes help of pdisp-permute
 
 # 1.2.0 
 
