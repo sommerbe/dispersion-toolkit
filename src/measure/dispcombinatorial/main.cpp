@@ -516,7 +516,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
 // parallel compute dispersion
 #pragma omp parallel for
-  for (dptk::u64 i = 0; i < problems.size(); ++i) {
+  for (dptk::i64 i = 0; i < problems.size(); ++i) {
     // compute dispersion
     dptk::dispersion_combinatorial(&problems[i]);
 
