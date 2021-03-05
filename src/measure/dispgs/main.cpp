@@ -338,11 +338,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
   dptk::dispersion_param              gap;
-  dptk::problem_param                 problem;
   dptk::program_param                 rt;
   dptk::i32                           r;
   dptk::ipointset_read_info           ipts_inf;
   std::vector<dptk::problem_measures> measures;
+  std::vector<dptk::problem_param>    problems;
 
   // default configuration
   rt.compute_boxcount = false;
@@ -353,7 +353,6 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.silent           = false;
   rt.input            = "-";
   rt.output           = "-";
-  problem.rt          = &rt;
   r                   = EXIT_SUCCESS;
 
   // parse arguments
@@ -377,6 +376,11 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   // iterate through pointset sequence
   while (!rt.is->eof() && r == EXIT_SUCCESS) {
+    // allocate problem
+    dptk::problem_param problem;
+
+    problem.rt              = &rt;
+
     // clear pointset
     problem.pts.clear();
 
@@ -394,17 +398,30 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     // allocate index
     problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
 
-    // allocate measures
-    measures.resize(measures.size() + 1);
-    problem.measures           = &measures.back();
-    problem.measures->boxcount = 0;
+    problems.push_back(problem);
+  }
 
+  // allocate measures
+  measures.resize(problems.size());
+
+  // post allocation (due to pointer invalidation on dynamic vector)
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
+    // linking
+    problems[i].measures = &measures[i];
+
+    // default values
+    problems[i].measures->boxcount = 0;
+  }
+
+// parallel compute dispersion
+#pragma omp parallel for
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
     // compute dispersion
-    dptk::dispersion(gap, &problem);
+    dptk::dispersion(gap, &problems[i]);
 
     // store measurements
-    problem.measures->disp  = gap.disp;
-    problem.measures->ndisp = problem.pts.size() * gap.disp;
+    problems[i].measures->disp  = gap.disp;
+    problems[i].measures->ndisp = problems[i].pts.size() * gap.disp;
   }
 
   // show result
