@@ -13,6 +13,7 @@
 * parallelised procedure disp-gs using OpenMP (if available)
 * procedure disp-gs now accepts high dimensional point sets
 * fixes help of pdisp-permute
+* parallelised procedure disp-dumitrescu2017
 
 # 1.2.0 
 
