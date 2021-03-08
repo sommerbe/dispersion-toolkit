@@ -379,7 +379,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     // allocate problem
     dptk::problem_param problem;
 
-    problem.rt              = &rt;
+    problem.rt = &rt;
 
     // clear pointset
     problem.pts.clear();
