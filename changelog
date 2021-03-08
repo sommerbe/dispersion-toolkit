@@ -14,6 +14,7 @@
 * procedure disp-gs now accepts high dimensional point sets
 * fixes help of pdisp-permute
 * parallelised procedure disp-dumitrescu2017
+* parallelised procedure disp-naamad
 
 # 1.2.0 
 
