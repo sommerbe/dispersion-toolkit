@@ -242,12 +242,6 @@ void return_bound(const program_param& rt)
   *rt.os << std::endl;
 }
 
-i32 return_partial_results(const program_param& rt, const problem_param& problem)
-{
-
-  return EXIT_SUCCESS;
-}
-
 i32 return_partial_results(const program_param&                       rt,
                            const std::vector<dptk::problem_measures>& measures)
 {
@@ -348,11 +342,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
 dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 {
-  dptk::problem_param                 problem;
   dptk::program_param                 rt;
   dptk::i32                           r;
   dptk::ipointset_read_info           ipts_inf;
   std::vector<dptk::problem_measures> measures;
+  std::vector<dptk::problem_param>    problems;
 
   // default configuration
   rt.compute_pdisp        = false;
@@ -365,9 +359,6 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.p                    = 2;
   rt.debug_permutations   = false;
   rt.precompute_distances = true;
-  problem.rt              = &rt;
-  problem.domain_bound[0] = 0;
-  problem.domain_bound[1] = 1;
   r                       = EXIT_SUCCESS;
 
   // parse arguments
@@ -391,6 +382,13 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   // iterate through pointset sequence
   while (!rt.is->eof() && r == EXIT_SUCCESS) {
+    // allocate problem
+    dptk::problem_param problem;
+
+    problem.rt              = &rt;
+    problem.domain_bound[0] = 0;
+    problem.domain_bound[1] = 1;
+
     // clear pointset
     problem.pts.clear();
 
@@ -405,19 +403,27 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     assert(problem.pts.dimensions == 2);
     dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
-    // allocate measures
-    measures.resize(measures.size() + 1);
-    problem.measures = &measures.back();
+    problems.push_back(problem);
+  }
 
+  // allocate measures
+  measures.resize(problems.size());
+
+  // post allocation (due to pointer invalidation on dynamic vector)
+  for (dptk::u64 i = 0; i < problems.size(); ++i) {
+    // linking
+    problems[i].measures = &measures[i];
+  }
+
+// parallel compute dispersion
+#pragma omp parallel for
+  for (dptk::i64 i = 0; i < problems.size(); ++i) {
     // compute dispersion
     // dptk::pdispersion_permute(&problem);
-    dptk::pdispersion_permute_stack(&problem);
+    dptk::pdispersion_permute_stack(&problems[i]);
 
     // store measurements
-    problem.measures->ndisp = problem.pts.size() * problem.measures->disp;
-
-    // show result
-    r = dptk::return_partial_results(rt, problem);
+    problems[i].measures->ndisp = problems[i].pts.size() * problems[i].measures->disp;
   }
 
   // show result
