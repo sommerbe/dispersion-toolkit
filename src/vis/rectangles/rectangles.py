@@ -92,7 +92,7 @@ def init_figure(w, h):
   fig, ax = plt.subplots(1,1, figsize=(w_*mm, h_*mm))
   plt.subplots_adjust(left=l, bottom=b, right=r, top=t)
 
-  # # boundary, grid, axis ticks
+  # boundary, grid, axis ticks
   draw_boundary(ax)
   draw_grid(ax)
   draw_axes_ticks(ax)
