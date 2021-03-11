@@ -55,6 +55,9 @@ void write_matrix(problem_param& p)
 
   feed_token(rt->os, rt->set_prefix);
   for (u64 i = 0; i < p.pts.size(); ++i) {
+    if (i > 0) {
+      feed_token(rt->os, rt->point_delimiter);
+    }
     feed_token(rt->os, rt->point_prefix);
     c = p.pts.at(i, 0);
     for (u64 j = 0; j < p.pts.dimensions; ++j) {
@@ -64,7 +67,6 @@ void write_matrix(problem_param& p)
       *rt->os << c[j];
     }
     feed_token(rt->os, rt->point_suffix);
-    feed_token(rt->os, rt->point_delimiter);
   }
   feed_token(rt->os, rt->set_suffix);
 };

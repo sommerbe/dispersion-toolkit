@@ -1,6 +1,7 @@
 # current
 
 * extention: vis-psspy reads point set's domain boundary (previously only [0,1]^2)
+* fixes: write-matrix spurious point delimiter after last point
 
 # 1.3.0
 
