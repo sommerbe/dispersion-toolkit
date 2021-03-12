@@ -17,23 +17,27 @@ typedef regular_pointset<prec> pointset;
 
 struct program_param
 {
-  std::string   input;
-  std::string   output;
-  std::istream* is;
-  std::ostream* os;
-  u1            silent;
-  pointset      percentiles;
-  pointset      pts;
-  i8            delimiter;
-  u1            del_use_ipts;
-  u1            compute_arithmetic_mean;
-  u1            compute_iqr_box;
+  std::string           input;
+  std::string           output;
+  std::istream*         is;
+  std::ostream*         os;
+  u1                    silent;
+  pointset              percentiles;
+  pointset              pts;
+  std::vector<pointset> graphs;
+  i8                    delimiter;
+  u1                    del_use_ipts;
+  u1                    compute_arithmetic_mean;
+  u1                    compute_iqr_box;
+  u1                    layout_stacked_graphs;
+  prec                  stacked_graphs_deviation_limit;
 };
 
 struct problem_param
 {
   pointset       percentiles;
   pointset       arithmetic_mean;
+  pointset       stats;
   program_param* rt;
 };
 
@@ -59,8 +63,10 @@ void percentiles(problem_param* problem)
   // allocate statistics: arithmetic mean
   if (rt->compute_arithmetic_mean) {
     problem->arithmetic_mean.allocate(1, rt->pts.dimensions);
-    problem->arithmetic_mean.reset_inf_bound();
+  } else {
+    problem->arithmetic_mean.allocate(0, rt->pts.dimensions);
   }
+  problem->arithmetic_mean.reset_inf_bound();
 
   // compute percentiles for each dimension
   for (u64 d = 0; d < rt->pts.dimensions; ++d) {
@@ -124,31 +130,201 @@ void compute_iqr_box(problem_param* problem)
   problem->percentiles = ext;
 }
 
-i32 return_results(const program_param& rt, const problem_param& problem)
+void merge_statistics(problem_param& p)
 {
-  if (rt.percentiles.coords.size() > 0) {
-    putln(rt.os, "# percentiles:", !rt.silent);
-    if (!rt.silent) {
-      putln(rt.os, "# Q1 − 1.5 IQR", rt.compute_iqr_box);
-      for (u64 i = 0; i < rt.percentiles.coords.size(); ++i) {
-        *rt.os << "# " << rt.percentiles.coords[i] << std::endl;
-      }
-      putln(rt.os, "# Q3 + 1.5 IQR", rt.compute_iqr_box);
+  u64 cp;
+  u64 o;
+
+  cp = p.percentiles.points + p.arithmetic_mean.points;
+  o  = 0;
+
+  p.stats.allocate(cp, p.percentiles.dimensions);
+  p.stats.reset_inf_bound();
+  p.stats.retrieve_points(o, p.percentiles);
+  o += p.percentiles.points;
+  p.stats.retrieve_points(o, p.arithmetic_mean);
+}
+
+void retrieve_stacked_graphs(program_param& rt, ipointset_read_info& ipts_inf)
+{
+  u32 common_args;
+  u32 common_vals;
+
+  // iterate through point set sequence
+  while (!rt.is->eof()) {
+    rt.graphs.emplace_back();
+    read_pointset(*rt.is, rt.graphs.back(), &ipts_inf);
+
+    if (rt.graphs.back().empty()) {
+      rt.graphs.pop_back();
+      continue;
     }
-    putln(rt.os, "# coordinates of points:", !rt.silent);
-    putln(rt.os, "# (percentile_0 percentile_0 ... )", !rt.silent);
-    putln(rt.os, "# (percentile_1 percentile_1 ... )", !rt.silent);
-    putln(rt.os, "# ...", !rt.silent);
-    putln(rt.os, "# (percentile_n percentile_n ... )", !rt.silent);
-    write_pointset(rt.os, problem.percentiles, rt.delimiter);
+
+    if (rt.graphs.size() == 1) {
+      common_args = rt.graphs.back().size();
+      common_vals = rt.graphs.back().dimensions;
+    }
+    if (common_args != rt.graphs.back().size()) {
+      std::cerr << "warning: stacked graphs vary in number of arguments (graph #"
+                << rt.graphs.size() << std::endl;
+    }
+    if (common_vals != rt.graphs.back().dimensions) {
+      std::cerr << "warning: stacked graphs vary in number of dimensions (graph #"
+                << rt.graphs.size() << std::endl;
+    }
+  }
+}
+
+/**
+ * check whether arguments of stacked graphs are similar (difference < dev)
+ */
+u1 check_argsim_stacked_graphs(program_param&               rt,
+                               const std::vector<pointset>& graphs,
+                               prec                         dev)
+{
+  u1   eq;
+  prec v;
+  prec c;
+
+  eq = true;
+
+  for (u64 i = 0; i < graphs[0].points; ++i) {
+    v = graphs[0].at(i, 0)[0];
+    for (u64 j = 1; j < graphs.size(); ++j) {
+      c = graphs[j].at(i, 0)[0];
+      if (math::abs(v - c) > dev) {
+        eq = false;
+        std::cerr << "# graph arguments not similar: " << v << " (arg=" << i
+                  << ", graph=0) and " << c << " (arg=" << i << ", graph=" << j << ")"
+                  << std::endl;
+      }
+    }
   }
 
-  if (rt.compute_arithmetic_mean) {
-    putln(rt.os, "# arithmetic mean:", !rt.silent);
-    putln(rt.os, "# coordinates of points:", !rt.silent);
-    putln(rt.os, "# (mean_axis_0 mean_axis_1 ... mean_axis_n )", !rt.silent);
-    write_pointset(rt.os, problem.arithmetic_mean, rt.delimiter);
+  putln(rt.os,
+        "# checking arguments' similarity of stacked graphs (1 := passed): ",
+        eq,
+        !rt.silent);
+
+  return eq;
+}
+
+void unstack_graphs(program_param& rt)
+{
+  /**
+   * assume: stacked graphs are equal in their shape (# points, # dimensions)
+   *
+   * algorithm: confidence is computed along axis d (so at(:,d)).
+   * stacked graphs:
+   *  - confidence is computed along graph[:].at(p, d>0), p and d fixed
+   *  - the first coordinate (d=0) of each graph represents the arguments
+   */
+  if (rt.graphs.empty()) {
+    return;
   }
+  assert(rt.graphs[0].dimensions > 1);
+
+  u64  num_graphs;
+  u64  num_points;
+  u64  num_dimensions;
+  u64  np;
+  b64* pxl;
+
+  num_graphs     = rt.graphs[0].dimensions - 1;
+  num_points     = rt.graphs.size();
+  np             = rt.graphs[0].points;
+  num_dimensions = np * num_graphs;
+
+  rt.pts.clear();
+  rt.pts.allocate(num_points, num_dimensions);
+  rt.pts.reset_inf_bound();
+
+  for (u64 i = 0; i < num_points; ++i) {
+    pxl = rt.pts.at(i, 0);
+    for (u64 j = 0; j < num_dimensions; ++j) {
+      pxl[j] = *rt.graphs[i].at(j % np, 1 + j / np);
+    }
+  }
+}
+
+void restack_layout_stats(const std::vector<pointset>& graphs, pointset& stats)
+{
+  if (graphs.empty()) {
+    return;
+  }
+
+  u64      num_graphs;
+  u64      num_points;
+  u64      num_dimensions;
+  u64      num_stats;
+  pointset pts;
+  b64*     pxl;
+
+  num_stats      = stats.points;
+  num_graphs     = graphs[0].dimensions - 1;
+  num_points     = graphs[0].points;
+  num_dimensions = 1 + num_stats * num_graphs;
+
+  pts.allocate(num_points, num_dimensions);
+  pts.reset_inf_bound();
+
+  for (u64 i = 0; i < num_points; ++i) {
+    pxl = pts.at(i, 0);
+    // copy arguments
+    pxl[0] = graphs[0].at(i, 0)[0];
+
+    // copy statistics
+    for (u64 j = 1; j < num_dimensions; ++j) {
+      u64 k  = j - 1;
+      pxl[j] = *stats.at(k % num_stats, i + num_points * (k / num_stats));
+    }
+  }
+
+  stats = pts;
+}
+
+i32 return_results(const program_param& rt, const problem_param& problem)
+{
+  // if (rt.percentiles.coords.size() > 0) {
+  //   putln(rt.os, "# percentiles:", !rt.silent);
+  //   if (!rt.silent) {
+  //     putln(rt.os, "# Q1 − 1.5 IQR", rt.compute_iqr_box);
+  //     for (u64 i = 0; i < rt.percentiles.coords.size(); ++i) {
+  //       *rt.os << "# " << rt.percentiles.coords[i] << std::endl;
+  //     }
+  //     putln(rt.os, "# Q3 + 1.5 IQR", rt.compute_iqr_box);
+  //   }
+  //   putln(rt.os, "# coordinates of points:", !rt.silent);
+  //   putln(rt.os, "# (percentile_0 percentile_0 ... )", !rt.silent);
+  //   putln(rt.os, "# (percentile_1 percentile_1 ... )", !rt.silent);
+  //   putln(rt.os, "# ...", !rt.silent);
+  //   putln(rt.os, "# (percentile_n percentile_n ... )", !rt.silent);
+  //   write_pointset(rt.os, problem.percentiles, rt.delimiter);
+  // }
+
+  if (problem.stats.empty()) {
+    return EXIT_SUCCESS;
+  }
+
+  if (rt.layout_stacked_graphs) {
+    putln(rt.os,
+          "# statistical coordinates: (argument x (statistics of graph i)_i), where row "
+          "x column",
+          !rt.silent);
+  } else {
+    putln(rt.os,
+          "# statistical coordinates: (descriptor_i x dimension_d), where row x column",
+          !rt.silent);
+  }
+
+  write_pointset(rt.os, problem.stats, rt.delimiter);
+
+  // if (rt.compute_arithmetic_mean) {
+  //   putln(rt.os, "# arithmetic mean:", !rt.silent);
+  //   putln(rt.os, "# coordinates of points:", !rt.silent);
+  //   putln(rt.os, "# (mean_axis_0 mean_axis_1 ... mean_axis_n )", !rt.silent);
+  //   write_pointset(rt.os, problem.arithmetic_mean, rt.delimiter);
+  // }
 
   return EXIT_SUCCESS;
 }
@@ -203,6 +379,16 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
     } else if (s == "--mean") {
       rt.compute_arithmetic_mean = true;
+
+    } else if (s == "--stacked-graphs") {
+      rt.layout_stacked_graphs = true;
+
+    } else if (s == "--stacked-graphs-deviation-limit") {
+      if (!argparse::argval(arg, i))
+        return argparse::err("missing deviation limit of arguments of given stacked "
+                             "graphs. Consider using -h or --help.");
+      rt.stacked_graphs_deviation_limit = std::stod(arg[++i]);
+
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "--i") {
@@ -216,9 +402,11 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: estimate confidence intervals, median and arithmetic mean"
                 << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--percentiles=BINARY64  "
-                   "BINARY64...] [--2sigma] [--iqr] [--iqr-box] [--mean] [--silent]"
-                << std::endl;
+      std::cout
+        << "SYNOPSIS: [--i FILE] [--o FILE] [--percentiles=BINARY64  "
+           "BINARY64...] [--2sigma] [--iqr] [--iqr-box] [--mean] "
+           "[--stacked-graphs] [--stacked-graphs-deviation-limit=BINARY64] [--silent]"
+        << std::endl;
       return false;
     }
   }
@@ -244,15 +432,17 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   // default configuration
   // rt.axis        = 0;
-  rt.compute_arithmetic_mean = false;
-  rt.compute_iqr_box         = false;
-  rt.delimiter               = ' ';
-  rt.del_use_ipts            = true;
-  rt.silent                  = false;
-  rt.input                   = "-";
-  rt.output                  = "-";
-  problem.rt                 = &rt;
-  r                          = EXIT_SUCCESS;
+  rt.compute_arithmetic_mean        = false;
+  rt.compute_iqr_box                = false;
+  rt.delimiter                      = ' ';
+  rt.del_use_ipts                   = true;
+  rt.silent                         = false;
+  rt.input                          = "-";
+  rt.output                         = "-";
+  rt.layout_stacked_graphs          = false;
+  rt.stacked_graphs_deviation_limit = -1;
+  problem.rt                        = &rt;
+  r                                 = EXIT_SUCCESS;
 
   rt.percentiles.clear();
   rt.pts.clear();
@@ -267,7 +457,16 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::ostream_init(rt.output, rt.os);
 
   // retrieve point set
-  dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);
+  if (rt.layout_stacked_graphs) {
+    dptk::retrieve_stacked_graphs(rt, ipts_inf);
+    dptk::unstack_graphs(rt);
+    if (rt.stacked_graphs_deviation_limit >= 0) {
+      dptk::check_argsim_stacked_graphs(rt, rt.graphs, rt.stacked_graphs_deviation_limit);
+    }
+  } else {
+    dptk::read_pointset(*rt.is, rt.pts, &ipts_inf);
+  }
+
   dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
   assert(rt.is != nullptr);
@@ -286,6 +485,14 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   // option: compute iqr box (to feed to statistical box plots)
   if (rt.compute_iqr_box) {
     dptk::compute_iqr_box(&problem);
+  }
+
+  // merge separate statistical descriptors into a single point set
+  dptk::merge_statistics(problem);
+
+  // restack back again in case of having stacked layout
+  if (rt.layout_stacked_graphs) {
+    dptk::restack_layout_stats(rt.graphs, problem.stats);
   }
 
   // show result

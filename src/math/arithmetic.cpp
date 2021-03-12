@@ -19,5 +19,10 @@ b64 max(b64 a, b64 b)
   return std::max(a, b);
 }
 
+b64 abs(b64 a)
+{
+  return std::abs(a);
+}
+
 } // namespace math
 } // namespace dptk

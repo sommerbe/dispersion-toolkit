@@ -14,6 +14,9 @@ void put(std::ostream* os, d& data, u1 predicate = true);
 template<typename d>
 void putln(std::ostream* os, d& data, u1 predicate = true);
 
+template<typename d0, typename d1>
+void putln(std::ostream* os, d0& key, d1& value, u1 predicate = true);
+
 template<typename d>
 void putlnsci(std::ostream* os, d& data, u32 precision, u1 predicate = true);
 
@@ -60,6 +63,16 @@ void putln(std::ostream* os, d& data, u1 predicate)
 
   if (predicate) {
     *os << data << std::endl;
+  }
+}
+
+template<typename d0, typename d1>
+void putln(std::ostream* os, d0& key, d1& value, u1 predicate)
+{
+  assert(os != nullptr);
+
+  if (predicate) {
+    *os << key << value << std::endl;
   }
 }
 

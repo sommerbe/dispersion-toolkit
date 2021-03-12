@@ -21,12 +21,15 @@ struct regular_pointset
   void reset_inf_bound();
 
   u64 size() const;
+  u1  empty() const;
 
   inline prec*       at(u64 pidx, u64 axis);
   inline const prec* at(u64 pidx, u64 axis) const;
   inline prec&       operator[](u64 pidx);
 
   void extract(u64 axis, regular_pointset<prec>& pts) const;
+
+  void retrieve_points(u64 poffset, const regular_pointset<prec>& other);
 
   prec domain_extent(u64 axis) const;
   prec domain_low(u64 axis) const;
@@ -40,6 +43,12 @@ template<typename prec>
 u64 regular_pointset<prec>::size() const
 {
   return points;
+}
+
+template<typename prec>
+u1 regular_pointset<prec>::empty() const
+{
+  return coords.empty();
 }
 
 template<typename prec>
@@ -97,6 +106,19 @@ void regular_pointset<prec>::extract(u64 axis, regular_pointset<prec>& pts) cons
   pts.allocate(points, 1);
   for (u64 i = 0; i < points; ++i) {
     pts.coords[i] = *at(i, axis);
+  }
+}
+
+template<typename prec>
+void regular_pointset<prec>::retrieve_points(u64                           poffset,
+                                             const regular_pointset<prec>& other)
+{
+  assert(dimensions == other.dimensions);
+
+  for (u64 i = 0; i < other.points; ++i) {
+    for (u64 j = 0; j < other.dimensions; ++j) {
+      *at(i + poffset, j) = *other.at(i, j);
+    }
   }
 }
 
