@@ -1,6 +1,6 @@
 
 
-set(NAME "vis${PROGRAM_DELIMITER}psspy")
+set(NAME "vis${PROGRAM_DELIMITER}pss")
 
 message(STATUS "Building: ${NAME}")
 
