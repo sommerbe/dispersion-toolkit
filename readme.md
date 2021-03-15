@@ -117,30 +117,30 @@ The following examples assume the parent working directy to be the above mention
 
 Compute dispersion of a Fibonacci lattice, a) by using IO pipes
 ````
-./bin/fibonaccilattice --fibonacci-index=10 | ./bin/dispgs --disp
+./bin/set-fibonacci --fibonacci-index=10 | ./bin/dispgs --disp
 ````
 or b) by storing the lattice to the file ``pointset.dat`` and subsequently loading it:
 ````
-./bin/fibonaccilattice --m=10 --o pointset.dat
+./bin/set-fibonacci --m=10 --o pointset.dat
 ./bin/dispgs --disp --i pointset.dat
 ````
 or
 ````
-./bin/fibonaccilattice --m=10 > pointset.dat
+./bin/set-fibonacci --m=10 > pointset.dat
 ./bin/dispgs --disp --i pointset.dat
 ````
 or append to an existing point set sequence
 ````
-./bin/fibonaccilattice --m=10 >> pointset-sequence.dat
+./bin/set-fibonacci --m=10 >> pointset-sequence.dat
 ./bin/dispgs --disp --i pointset.dat
 ````
 Usually, the order of arguments does not matter. In case the meaning of a program is unclear, or in case of wishing to find out available program parameters,
 ````
-./bin/fibonaccilattice -h
+./bin/set-fibonacci -h
 ````
 shows a small description along with available options, and
 ````
-./bin/fibonaccilattice --help
+./bin/set-fibonacci --help
 ````
 additionally shows the meaning the all options and further program requirements.
 
@@ -148,18 +148,18 @@ additionally shows the meaning the all options and further program requirements.
 Compute point set's cardinality, n, multiplied by dispersion of a Fibonacci lattice:
 
 ````
-./bin/fibonaccilattice --m=10 | ./bin/dispgs --ndisp
+./bin/set-fibonacci --m=10 | ./bin/dispgs --ndisp
 ````
 
 **Minimise dispersion of a fibonacci lattice**
 
 Optimise a Fibonacci lattice w.r.t. minimising dispersion using gradient ascent and obtain its dispersion:
 ````
-./bin/fibonaccilattice --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp
+./bin/set-fibonacci --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp
 ````
 or with using files:
 ````
-./bin/fibonaccilattice --m=10 --o pts-fibonacci.dat
+./bin/set-fibonacci --m=10 --o pts-fibonacci.dat
 ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-min-fibonacci-m10.dat
 ./bin/dispgs --ndisp --i pts-min-fibonacci-m10.dat
 ````
@@ -169,11 +169,11 @@ Storing intermediate results in files is recommended since it keeps parameters a
 
 Randomise the Fibonacci lattice using coordinate swapping to emit a point set sequence, compute dispersion of each point set and estimate the inter quartile range statistics with upper and lower whiskers used to generate statistical box plots along with the arithmetic mean:
 ````
-./bin/fibonaccilattice --m=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
+./bin/set-fibonacci --m=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
 ````
 or with using files:
 ````
-./bin/fibonaccilattice --m=10 --o pts-fibonacci-m10.dat
+./bin/set-fibonacci --m=10 --o pts-fibonacci-m10.dat
 ./bin/cswap --count=1 --repeat=512 --i pts-fibonacci-m10.dat --o pts-cswap.dat
 ./bin/dispgs --ndisp --i pts-cswap.dat --o disp-cswap.dat
 ./bin/confidence --iqr-box --mean --i disp-cswap.dat
@@ -183,11 +183,11 @@ or with using files:
 
 In addition, try to minimise dispersion:
 ````
-./bin/fibonaccilattice --m=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
+./bin/set-fibonacci --m=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
 ````
 or with using files:
 ````
-./bin/fibonaccilattice --m=10 --o pts-fibonacci-m10.dat
+./bin/set-fibonacci --m=10 --o pts-fibonacci-m10.dat
 ./bin/cswap --count=1 --repeat=512 --i pts-fibonacci-m10.dat --o pts-cswap.dat
 ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-cswap.dat --o pts-cswap-mindisp.dat
 ./bin/dispgs --ndisp --i pts-cswap-mindisp.dat --o disp-cswap-ndisp.dat
@@ -201,11 +201,11 @@ Notice that mindispgs retrieves a point set sequence greater or equal to 1. If t
 Visualise how points are moved by the dispersion optimisation:
 
 ````
-./bin/fibonaccilattice --m=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/vis-psspy.py
+./bin/set-fibonacci --m=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/vis-psspy.py
 ````
 or using files:
 ````
-./bin/fibonaccilattice --m=10 --o pts-fibonacci-m10.dat
+./bin/set-fibonacci --m=10 --o pts-fibonacci-m10.dat
 ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-fibonacci-mindisp.dat
 cat pts-fibonacci-mindisp.dat | python ./bin/vis-psspy.py
 ````
