@@ -41,6 +41,31 @@ struct problem_param
   program_param* rt;
 };
 
+void infer_domain_bound(const pointset& src, pointset& dst)
+{
+  dst.domain_bound = src.domain_bound;
+}
+
+void infer_domain_bound_stackedgraphs(const pointset& src, pointset& dst)
+{
+  u64 graphs = src.dimensions - 1;
+  u64 stats = dst.dimensions - 1;
+  u64 sg = stats / graphs;
+  u64 du = dst.dimensions;
+
+  // arguments
+  dst.domain_bound[0] = src.domain_bound[0];
+  dst.domain_bound[du] = src.domain_up(0);
+
+  // statistics
+  for (u64 g=0; g<graphs; ++g) {
+    for (u64 j=0; j<sg; ++j) {
+      dst.domain_bound[1+g*sg+j] = src.domain_low(1+g);
+      dst.domain_bound[du+1+g*sg+j] = src.domain_up(1+g);
+    }
+  }
+}
+
 void percentiles(problem_param* problem)
 {
   assert(problem != nullptr);
@@ -143,6 +168,12 @@ void merge_statistics(problem_param& p)
   p.stats.retrieve_points(o, p.percentiles);
   o += p.percentiles.points;
   p.stats.retrieve_points(o, p.arithmetic_mean);
+
+  if (!p.rt->layout_stacked_graphs) {
+    // infer_domain_bound_stackedgraphs(p.rt->pts, p.stats);
+  // } else {
+    infer_domain_bound(p.rt->pts, p.stats);
+  }
 }
 
 void retrieve_stacked_graphs(program_param& rt, ipointset_read_info& ipts_inf)
@@ -281,6 +312,8 @@ void restack_layout_stats(const std::vector<pointset>& graphs, pointset& stats)
   }
 
   stats = pts;
+
+  infer_domain_bound_stackedgraphs(graphs[0], stats);
 }
 
 i32 return_results(const program_param& rt, const problem_param& problem)

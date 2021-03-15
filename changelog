@@ -2,6 +2,7 @@
 
 * extension: vis-psspy reads point set's domain boundary (previously only [0,1]^2)
 * fixes: write-matrix spurious point delimiter after last point
+* fixes: stat-confidence infers statistics domain from point set domain
 * extension: stat-confidence handles stacked graphs
 * compatibility break: stat-confidence pushes mean stats as final point (not separate point set anymore) after possible confidence values (as points)
 
