@@ -38,7 +38,7 @@ The least amount of requirements in order to build this toolkit to use it are:
 * cmake 3.4 or more recent (tested until 3.19)
 * C++11
 * visualisation (optional): python3, numpy, matplotlib
-* mindispgs (optional): OpenMP
+* mindisp-gs (optional): OpenMP
 
 
 ## Getting started
@@ -117,22 +117,22 @@ The following examples assume the parent working directy to be the above mention
 
 Compute dispersion of a Fibonacci lattice, a) by using IO pipes
 ````
-./bin/set-fibonacci --fibonacci-index=10 | ./bin/dispgs --disp
+./bin/set-fibonacci --fibonacci-index=10 | ./bin/disp-gs --disp
 ````
 or b) by storing the lattice to the file ``pointset.dat`` and subsequently loading it:
 ````
 ./bin/set-fibonacci --m=10 --o pointset.dat
-./bin/dispgs --disp --i pointset.dat
+./bin/disp-gs --disp --i pointset.dat
 ````
 or
 ````
 ./bin/set-fibonacci --m=10 > pointset.dat
-./bin/dispgs --disp --i pointset.dat
+./bin/disp-gs --disp --i pointset.dat
 ````
 or append to an existing point set sequence
 ````
 ./bin/set-fibonacci --m=10 >> pointset-sequence.dat
-./bin/dispgs --disp --i pointset.dat
+./bin/disp-gs --disp --i pointset.dat
 ````
 Usually, the order of arguments does not matter. In case the meaning of a program is unclear, or in case of wishing to find out available program parameters,
 ````
@@ -148,20 +148,20 @@ additionally shows the meaning the all options and further program requirements.
 Compute point set's cardinality, n, multiplied by dispersion of a Fibonacci lattice:
 
 ````
-./bin/set-fibonacci --m=10 | ./bin/dispgs --ndisp
+./bin/set-fibonacci --m=10 | ./bin/disp-gs --ndisp
 ````
 
 **Minimise dispersion of a fibonacci lattice**
 
 Optimise a Fibonacci lattice w.r.t. minimising dispersion using gradient ascent and obtain its dispersion:
 ````
-./bin/set-fibonacci --fibonacci-index=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp
+./bin/set-fibonacci --fibonacci-index=10 | ./bin/mindisp-gs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/disp-gs --ndisp
 ````
 or with using files:
 ````
 ./bin/set-fibonacci --m=10 --o pts-fibonacci.dat
-./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-min-fibonacci-m10.dat
-./bin/dispgs --ndisp --i pts-min-fibonacci-m10.dat
+./bin/mindisp-gs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-min-fibonacci-m10.dat
+./bin/disp-gs --ndisp --i pts-min-fibonacci-m10.dat
 ````
 Storing intermediate results in files is recommended since it keeps parameters and comments of each program or process. In this case, a storing these commands in scripts is recommended, for instance a bash script. IO pipes are supported for convenience, and for this toolkit to be in line with the UNIX system.
 
@@ -169,49 +169,49 @@ Storing intermediate results in files is recommended since it keeps parameters a
 
 Randomise the Fibonacci lattice using coordinate swapping to emit a point set sequence, compute dispersion of each point set and estimate the inter quartile range statistics with upper and lower whiskers used to generate statistical box plots along with the arithmetic mean:
 ````
-./bin/set-fibonacci --m=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
+./bin/set-fibonacci --m=10 | ./bin/set-cswap --count=1 --repeat=512 | ./bin/disp-gs --ndisp | ./bin/stat-confidence --iqr-box --mean
 ````
 or with using files:
 ````
 ./bin/set-fibonacci --m=10 --o pts-fibonacci-m10.dat
-./bin/cswap --count=1 --repeat=512 --i pts-fibonacci-m10.dat --o pts-cswap.dat
-./bin/dispgs --ndisp --i pts-cswap.dat --o disp-cswap.dat
-./bin/confidence --iqr-box --mean --i disp-cswap.dat
+./bin/set-cswap --count=1 --repeat=512 --i pts-fibonacci-m10.dat --o pts-cswap.dat
+./bin/disp-gs --ndisp --i pts-cswap.dat --o disp-cswap.dat
+./bin/stat-confidence --iqr-box --mean --i disp-cswap.dat
 ````
 
 **Estimate minimal dispersion of a randomized lattice**
 
 In addition, try to minimise dispersion:
 ````
-./bin/set-fibonacci --m=10 | ./bin/cswap --count=1 --repeat=512 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/dispgs --ndisp | ./bin/confidence --iqr-box --mean
+./bin/set-fibonacci --m=10 | ./bin/set-cswap --count=1 --repeat=512 | ./bin/mindisp-gs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 | ./bin/disp-gs --ndisp | ./bin/stat-confidence --iqr-box --mean
 ````
 or with using files:
 ````
 ./bin/set-fibonacci --m=10 --o pts-fibonacci-m10.dat
-./bin/cswap --count=1 --repeat=512 --i pts-fibonacci-m10.dat --o pts-cswap.dat
-./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-cswap.dat --o pts-cswap-mindisp.dat
-./bin/dispgs --ndisp --i pts-cswap-mindisp.dat --o disp-cswap-ndisp.dat
-./bin/confidence --iqr-box --mean --i disp-cswap-ndisp.dat
+./bin/set-cswap --count=1 --repeat=512 --i pts-fibonacci-m10.dat --o pts-cswap.dat
+./bin/mindisp-gs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-cswap.dat --o pts-cswap-mindisp.dat
+./bin/disp-gs --ndisp --i pts-cswap-mindisp.dat --o disp-cswap-ndisp.dat
+./bin/stat-confidence --iqr-box --mean --i disp-cswap-ndisp.dat
 ````
 
-Notice that mindispgs retrieves a point set sequence greater or equal to 1. If the cmake build configuration found OpenMP, mindispgs optimises each point set with maximum parallelism supported by the actual hardware. Although being optional, using multi threading is highly recommended.
+Notice that mindisp-gs retrieves a point set sequence greater or equal to 1. If the cmake build configuration found OpenMP, mindisp-gs optimises each point set with maximum parallelism supported by the actual hardware. Although being optional, using multi threading is highly recommended.
 
 **Visualise minimisation of dispersion**
 
 Visualise how points are moved by the dispersion optimisation:
 
 ````
-./bin/set-fibonacci --m=10 | ./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/vis-psspy.py
+./bin/set-fibonacci --m=10 | ./bin/mindisp-gs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --pointset-sequence | python ./bin/vis-psspy.py
 ````
 or using files:
 ````
 ./bin/set-fibonacci --m=10 --o pts-fibonacci-m10.dat
-./bin/mindispgs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-fibonacci-mindisp.dat
+./bin/mindisp-gs --tau=2e-15 --stepsize=0.01 --iteration-limit=10000 --i pts-fibonacci-m10.dat --o pts-fibonacci-mindisp.dat
 cat pts-fibonacci-mindisp.dat | python ./bin/vis-psspy.py
 ````
 where ``cat`` is a UNIX or at least Linux system program to read files to stdin.
 
-While mindispgs handles point set sequences, using ``--pointset-sequence`` to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by vis-psspy.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, vis-psspy.py would show points of an unoptimised set.
+While mindisp-gs handles point set sequences, using ``--pointset-sequence`` to emit point sets during the gradient ascent would result in a sequence of point set sequences, being not supported by vis-psspy.py. To be precise, this stream would be equivalent to a longer point set sequence, in which previous point set sequences are stacked after each other in order. Therefore at some frame, vis-psspy.py would show points of an unoptimised set.
 
 During this visualisation, each frame may be exported to permanent storage:
 
@@ -226,7 +226,7 @@ The result is a sequence of images,
 
 ### Recommendation
 
-Although IO piping is a powerful feature, offering a wide range of flexibility, a long command with many pipes might be difficult to follow, and at least to debug. Instead, keeping the number of pipes small while splitting the command into multiple commands, and using a script, for instance a bash script, increases both readability and detail of the protocol, academic or technical. For instance, mindispgs generates a log of how the gradient ascent progresses. This information may become important. However, these comment like logs are lost as soon as its entire output is piped into another program of this toolkit, such as dispgs.
+Although IO piping is a powerful feature, offering a wide range of flexibility, a long command with many pipes might be difficult to follow, and at least to debug. Instead, keeping the number of pipes small while splitting the command into multiple commands, and using a script, for instance a bash script, increases both readability and detail of the protocol, academic or technical. For instance, mindisp-gs generates a log of how the gradient ascent progresses. This information may become important. However, these comment like logs are lost as soon as its entire output is piped into another program of this toolkit, such as disp-gs.
 
 ## License
 
