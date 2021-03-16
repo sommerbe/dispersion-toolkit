@@ -4,13 +4,22 @@ Analyse d-dimensional point sets with dispersion measures.
 
 ## Introduction
 
-Measuring dispersion is important for:
+This toolkit is primarily meant for _academical purposes_. In detail, it aims
+at helping mathematicians, physicists and computer scientists conducting
+research regarding
 
-* analysing holes within data point sets,
-* optimisation and computer science (cf. modulus of continuity),
-* mathematics: minimal dispersion, relation to discrepancy,
-* physics, mathematics, scientific computing: numerical integration (open).
+* numerical integration of integro-differential equations,
+* quantification of holes within data point sets,
+* optimisation of sampling patterns (cf. modulus of continuity), as well as regarding
+* theoretical understanding of dispersion measures, of minimal dispersion, and its relation to discrepancy.
 
+Any field intersecting with these fundamental areas may take advantage with
+this toolkit. Principally, this platform seeks to motivate
+
+* academic collaboration, as well as
+* scientific reproducibility
+
+even further.
 
 ### Documentation
 
