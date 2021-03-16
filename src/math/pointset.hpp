@@ -36,6 +36,7 @@ struct regular_pointset
   void extract(u64 axis, regular_pointset<prec>& pts) const;
 
   void retrieve_points(u64 poffset, const regular_pointset<prec>& other);
+  void retrieve_shape(const regular_pointset<prec>& other);
 
   prec domain_extent(u64 axis) const;
   prec domain_low(u64 axis) const;
@@ -147,6 +148,14 @@ void regular_pointset<prec>::retrieve_points(u64                           poffs
       *at(i + poffset, j) = *other.at(i, j);
     }
   }
+}
+
+template<typename prec>
+void regular_pointset<prec>::retrieve_shape(const regular_pointset<prec>& other)
+{
+  allocate(other.points, other.dimensions);
+  domain_bound = other.domain_bound;
+  arguments    = other.arguments;
 }
 
 template<typename prec>
