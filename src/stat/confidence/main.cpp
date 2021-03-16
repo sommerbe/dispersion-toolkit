@@ -49,19 +49,19 @@ void infer_domain_bound(const pointset& src, pointset& dst)
 void infer_domain_bound_stackedgraphs(const pointset& src, pointset& dst)
 {
   u64 graphs = src.dimensions - 1;
-  u64 stats = dst.dimensions - 1;
-  u64 sg = stats / graphs;
-  u64 du = dst.dimensions;
+  u64 stats  = dst.dimensions - 1;
+  u64 sg     = stats / graphs;
+  u64 du     = dst.dimensions;
 
   // arguments
-  dst.domain_bound[0] = src.domain_bound[0];
+  dst.domain_bound[0]  = src.domain_bound[0];
   dst.domain_bound[du] = src.domain_up(0);
 
   // statistics
-  for (u64 g=0; g<graphs; ++g) {
-    for (u64 j=0; j<sg; ++j) {
-      dst.domain_bound[1+g*sg+j] = src.domain_low(1+g);
-      dst.domain_bound[du+1+g*sg+j] = src.domain_up(1+g);
+  for (u64 g = 0; g < graphs; ++g) {
+    for (u64 j = 0; j < sg; ++j) {
+      dst.domain_bound[1 + g * sg + j]      = src.domain_low(1 + g);
+      dst.domain_bound[du + 1 + g * sg + j] = src.domain_up(1 + g);
     }
   }
 }
@@ -171,7 +171,7 @@ void merge_statistics(problem_param& p)
 
   if (!p.rt->layout_stacked_graphs) {
     // infer_domain_bound_stackedgraphs(p.rt->pts, p.stats);
-  // } else {
+    // } else {
     infer_domain_bound(p.rt->pts, p.stats);
   }
 }

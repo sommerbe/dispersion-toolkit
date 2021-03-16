@@ -12,8 +12,12 @@ struct regular_pointset
   u64               dimensions;
   std::vector<prec> coords;
 
+  // the problem's domain boundary within which the points reside
   // format bound: (low_0 ... low_(d-1) up_0 ... up_(d-1))
   std::vector<prec> domain_bound;
+
+  // a list of arguments used to generate this point set
+  std::vector<prec> arguments;
 
   void allocate(u64 num_points, u64 num_dimensions);
   void clear();
@@ -88,6 +92,7 @@ void regular_pointset<prec>::clear()
   dimensions = 0;
   points     = 0;
   coords.clear();
+  arguments.clear();
 }
 
 template<typename prec>

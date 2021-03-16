@@ -177,6 +177,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
       continue;
     }
 
+    // deduct argument
+    problem.pts.arguments.push_back(problem.pts.size());
+
     // show result
     r = dptk::return_results(rt, problem);
   }

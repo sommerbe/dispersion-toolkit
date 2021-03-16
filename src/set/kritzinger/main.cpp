@@ -121,6 +121,8 @@ void kritzinger_lattice(problem_param* problem)
     pt[0] = fn_x(k, Fm2, Fm) * L_inv;
     pt[1] = fn_x(fn_pi(k, Fm2, Fm), Fm2, Fm) * L_inv;
   }
+
+  problem->pts.arguments.push_back(problem->pts.size());
 };
 
 i32 return_results(const program_param& rt, const problem_param& problem)

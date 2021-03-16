@@ -37,18 +37,42 @@ void ostream_close(std::ostream*& os)
   os = nullptr;
 }
 
+void write_label(std::ostream* os, const std::string& label)
+{
+  *os << "#" << label << " ";
+}
+
+void write_vector(std::ostream* os, const std::vector<b64>& list, i8 del)
+{
+  *os << list[0];
+  for (u64 i = 1; i < list.size(); ++i) {
+    *os << del << list[i];
+  }
+}
+
+void write_vector_param(std::ostream*           os,
+                        const std::string&      label,
+                        const std::vector<b64>& list,
+                        i8                      del)
+{
+  write_label(os, label);
+  write_vector(os, list, del);
+  *os << std::endl;
+}
+
 void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
 {
   assert(pts.domain_bound.size() > 1);
 
-  // write pointset domain
-  *os << "#d ";
   ensure_precision(os, pts.domain_bound[0]);
-  *os << pts.domain_bound[0];
-  for (u64 i = 1; i < pts.domain_bound.size(); ++i) {
-    *os << del << pts.domain_bound[i];
+
+  // write pointset domain
+  write_vector_param(os, "d", pts.domain_bound, del);
+
+  // write pointset argument list
+  if (!pts.arguments.empty()) {
+    write_vector_param(os, "arg", pts.arguments, del);
   }
-  *os << std::endl;
 
   // write coordinates
   if (pts.coords.empty()) {

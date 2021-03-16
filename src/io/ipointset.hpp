@@ -14,6 +14,9 @@ struct ipointset_read_info
 void istream_init(const std::string& in, std::istream*& is);
 void istream_close(std::istream*& is);
 
+void read_vector(i8* begin, i8* end, std::vector<b64>& list);
+void read_vector(const std::string& in, u64 offset, std::vector<b64>& list);
+
 void read_pointset(std::istream&          in,
                    regular_pointset<b64>& out,
                    ipointset_read_info*   inf = nullptr);

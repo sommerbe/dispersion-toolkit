@@ -85,6 +85,8 @@ void fibonacci_lattice(problem_param* problem)
     pt[0] = k * Fm_inv;
     pt[1] = std::modf((k * Fm2) * Fm_inv, &integral_part);
   }
+
+  problem->pts.arguments.push_back(problem->pts.size());
 };
 
 i32 return_results(const program_param& rt, const problem_param& problem)

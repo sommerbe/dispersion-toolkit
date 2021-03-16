@@ -40,6 +40,50 @@ void istream_close(std::istream*& is)
   is = nullptr;
 }
 
+void read_vector(i8* begin, i8* end, std::vector<b64>& list)
+{
+  i8* e;
+  b64 c;
+
+  while (begin != end) {
+    // delimiter between numbers
+    if (std::isspace(*begin) != 0) {
+      ++begin;
+      continue;
+    }
+    // next number
+    c = std::strtod(begin, &e);
+    list.push_back(c);
+    begin = e;
+  }
+  list.shrink_to_fit();
+}
+
+void read_vector(const std::string& in, u64 offset, std::vector<b64>& list)
+{
+  i8* b;
+  i8* y;
+
+  b = (i8*)in.data() + offset;
+  y = (i8*)&in[in.size()];
+
+  read_vector(b, y, list);
+}
+
+// static __attribute__((always_inline))
+u1 starts_with(const std::string& str, const std::string& prefix)
+{
+  if (str.size() <= prefix.size() || str[0] != prefix[0]) {
+    return false;
+  }
+
+  u1 eq = true;
+  for (u64 i = 1; eq && i < prefix.size(); ++i) {
+    eq &= str[i] == prefix[i];
+  }
+  return eq;
+}
+
 void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_info* inf)
 {
   std::string ln;
@@ -65,20 +109,14 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
     }
 
     // point set domain: #d low_0 low_1 ... low_(d-1) up_0 ... up_(d-1)
-    if (ln.size() > 3 && ln[0] == '#' && ln[1] == 'd' && ln[2] == ' ') {
-      b = (i8*)ln.data() + 3;
-      y = &ln[ln.size()];
-      while (b != y) {
-        if (std::isspace(*b) != 0) {
-          ++b;
-          continue;
-        }
-        c = std::strtod(b, &e);
-        out.domain_bound.push_back(c);
-        b = e;
+    // if (ln.size() > 3 && ln[0] == '#' && ln[1] == 'd' && ln[2] == ' ') {
+    if (ln.size() > 3 && ln[0] == '#') {
+      if (starts_with(ln, "#d ")) {
+        read_vector(ln, 3, out.domain_bound);
+        continue;
+      } else if (starts_with(ln, "#arg ")) {
+        read_vector(ln, 5, out.arguments);
       }
-      out.domain_bound.shrink_to_fit();
-      continue;
     }
 
     // comment: # ...

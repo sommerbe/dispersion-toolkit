@@ -368,6 +368,9 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     // apply specified domain boundary
     problem.pts.domain_bound = rt.domain_boundary.coords;
 
+    // deduct argument
+    problem.pts.arguments.push_back(problem.pts.size());
+
     // show result
     r = dptk::return_results(rt, problem);
   }

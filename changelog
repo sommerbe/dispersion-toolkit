@@ -4,6 +4,7 @@
 * fixes: write-matrix spurious point delimiter after last point
 * fixes: stat-confidence infers statistics domain from point set domain
 * extension: stat-confidence handles stacked graphs
+* extension: point set has new header to store arguments (#arg ...)
 * compatibility break: stat-confidence pushes mean stats as final point (not separate point set anymore) after possible confidence values (as points)
 * compatibility break: renamed procedure vis-psspy.py to vis-pss.py
 
