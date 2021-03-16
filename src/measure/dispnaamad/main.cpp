@@ -191,8 +191,6 @@ void dispersion_naamad(problem_param* p)
   // }
 };
 
-
-
 i32 return_results(const program_param&                       rt,
                    const std::vector<dptk::problem_measures>& measures)
 {
@@ -245,7 +243,7 @@ i32 return_results(const program_param&                       rt,
       }
       *rt.os << std::endl;
     }
-    
+
     write_pointset_footer(rt.os, pts);
   }
 

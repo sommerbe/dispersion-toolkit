@@ -245,8 +245,6 @@ void dispersion_combinatorial(problem_param* p)
   }
 };
 
-
-
 i32 return_partial_results(const program_param& rt, const problem_param& problem)
 {
   if (rt.compute_boxes) {

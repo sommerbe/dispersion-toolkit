@@ -114,19 +114,18 @@ void regular_pointset<prec>::insert_domain_bound(u64 d, prec low, prec upp, u1 p
   if (!predicate)
     return;
 
-  assert(d <= domain_bound.size()/2);
+  assert(d <= domain_bound.size() / 2);
 
-  u64 dims = domain_bound.size()/2 + 1;
-  domain_bound.emplace(domain_bound.begin()+d, low);
-  domain_bound.emplace(domain_bound.begin()+d+dims, upp);
+  u64 dims = domain_bound.size() / 2 + 1;
+  domain_bound.emplace(domain_bound.begin() + d, low);
+  domain_bound.emplace(domain_bound.begin() + d + dims, upp);
 }
 
 template<typename prec>
 void regular_pointset<prec>::append_domain_bound(prec low, prec upp, u1 predicate)
 {
-  insert_domain_bound(domain_bound.size()/2, low, upp, predicate);
+  insert_domain_bound(domain_bound.size() / 2, low, upp, predicate);
 }
-
 
 template<typename prec>
 void regular_pointset<prec>::extract(u64 axis, regular_pointset<prec>& pts) const

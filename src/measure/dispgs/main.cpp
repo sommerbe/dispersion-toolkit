@@ -246,7 +246,7 @@ i32 return_results(const program_param&                       rt,
       }
       *rt.os << std::endl;
     }
-    
+
     write_pointset_footer(rt.os, pts);
   }
 
