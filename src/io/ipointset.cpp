@@ -1,4 +1,5 @@
 #include "ipointset.hpp"
+#include "ftokens.hpp"
 #include <cctype>
 #include <fstream>
 #include <iostream>
@@ -103,28 +104,28 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
     }
 
     // end of point set: #eos
-    if (ln == "#eos") {
+    if (ln == PSS_EOS) {
       eos = true;
       break;
     }
 
     // point set domain: #d low_0 low_1 ... low_(d-1) up_0 ... up_(d-1)
     // if (ln.size() > 3 && ln[0] == '#' && ln[1] == 'd' && ln[2] == ' ') {
-    if (ln.size() > 3 && ln[0] == '#') {
-      if (starts_with(ln, "#d ")) {
-        read_vector(ln, 3, out.domain_bound);
+    if (ln.size() > 3 && ln[0] == PSS_HEADER_PREFIX) {
+      if (starts_with(ln, PSS_HEADER_DOMAIN_LEGACY)) {
+        read_vector(ln, PSS_HEADER_DOMAIN_LEGACY.size(), out.domain_bound);
         continue;
-      } else if (starts_with(ln, "#domain ")) {
-        read_vector(ln, 8, out.domain_bound);
+      } else if (starts_with(ln, PSS_HEADER_DOMAIN)) {
+        read_vector(ln, PSS_HEADER_DOMAIN.size(), out.domain_bound);
         continue;
-      } else if (starts_with(ln, "#arg ")) {
-        read_vector(ln, 5, out.arguments);
+      } else if (starts_with(ln, PSS_HEADER_ARG)) {
+        read_vector(ln, PSS_HEADER_ARG.size(), out.arguments);
         continue;
       }
     }
 
     // comment: # ...
-    if (ln[0] == '#') {
+    if (ln[0] == PSS_COMMENT_PREFIX) {
       continue;
     }
 

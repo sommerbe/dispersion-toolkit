@@ -1,4 +1,5 @@
 #include "opointset.hpp"
+#include "ftokens.hpp"
 #include "ostream.hpp"
 #include <fstream>
 #include <iomanip>
@@ -39,7 +40,7 @@ void ostream_close(std::ostream*& os)
 
 void write_label(std::ostream* os, const std::string& label)
 {
-  *os << "#" << label << " ";
+  *os << label;
 }
 
 void write_vector(std::ostream* os, const std::vector<b64>& list, i8 del)
@@ -67,11 +68,11 @@ void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
   ensure_precision(os, pts.domain_bound[0]);
 
   // write pointset domain
-  write_vector_param(os, "domain", pts.domain_bound, del);
+  write_vector_param(os, PSS_HEADER_DOMAIN, pts.domain_bound, del);
 
   // write pointset argument list
   if (!pts.arguments.empty()) {
-    write_vector_param(os, "arg", pts.arguments, del);
+    write_vector_param(os, PSS_HEADER_ARG, pts.arguments, del);
   }
 
   // write coordinates
@@ -93,7 +94,7 @@ void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
 
 void write_pointset_eos(std::ostream* os)
 {
-  *os << "#eos" << std::endl;
+  *os << PSS_EOS << std::endl;
 }
 
 } // namespace dptk
