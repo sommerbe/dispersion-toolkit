@@ -114,8 +114,12 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
       if (starts_with(ln, "#d ")) {
         read_vector(ln, 3, out.domain_bound);
         continue;
+      } else if (starts_with(ln, "#domain ")) {
+        read_vector(ln, 8, out.domain_bound);
+        continue;
       } else if (starts_with(ln, "#arg ")) {
         read_vector(ln, 5, out.arguments);
+        continue;
       }
     }
 

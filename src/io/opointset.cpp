@@ -67,7 +67,7 @@ void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
   ensure_precision(os, pts.domain_bound[0]);
 
   // write pointset domain
-  write_vector_param(os, "d", pts.domain_bound, del);
+  write_vector_param(os, "domain", pts.domain_bound, del);
 
   // write pointset argument list
   if (!pts.arguments.empty()) {
