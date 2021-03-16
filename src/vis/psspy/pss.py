@@ -29,6 +29,9 @@ domain = [0,0,1,1]
 gridlines = [7, 7]
 silent = False
 
+token_domain = "#domain "
+token_domain_legacy = "#d "
+
 # figure size / [mm]
 w = 210.0/2 - 35
 h = w
@@ -45,13 +48,20 @@ def read_next_pointset(delimiter = ' '):
     # skip empty lines
     if (len(ln) == 0):
       continue
-    if (ln[0] == '#'):
-      # problem domain instruction
-      if (len(ln) > 1 and ln[1] == 'd'):
-        domain = ln[2:].strip().split(delimiter)
-        domain = np.array(domain).astype(np.float)
-      # skip comments
+
+    # problem domain instruction
+    if (ln.startswith(token_domain)):
+      domain = ln[len(token_domain):].strip().split(delimiter)
+      domain = np.array(domain).astype(np.float)
       continue
+    elif (ln.startswith(token_domain_legacy)):
+      domain = ln[len(token_domain_legacy):].strip().split(delimiter)
+      domain = np.array(domain).astype(np.float)
+      continue
+    # skip comments
+    if (ln[0] == '#'):
+      continue
+
     # interpret point coordinates as array
     pt = ln.split(delimiter)
     # append point pt to pointset pts
