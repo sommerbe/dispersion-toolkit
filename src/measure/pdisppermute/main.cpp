@@ -227,21 +227,6 @@ void pdispersion_permute_stack(problem_param* pb)
   pb->measures->ndisp = pb->pts.size() * pb->measures->disp;
 }
 
-void return_bound(const program_param& rt)
-{
-  i8 ndel = ' ';
-
-  *rt.os << "#d";
-
-  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_pdisp);
-  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_npdisp);
-
-  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_pdisp);
-  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_npdisp);
-
-  *rt.os << std::endl;
-}
-
 i32 return_partial_results(const program_param&                       rt,
                            const std::vector<dptk::problem_measures>& measures)
 {
@@ -257,7 +242,13 @@ i32 return_partial_results(const program_param&                       rt,
       *rt.os << ")" << std::endl;
     }
 
-    return_bound(rt);
+    pointset pts;
+
+    pts.clear();
+    pts.append_domain_bound(0, INFINITY, rt.compute_pdisp);
+    pts.append_domain_bound(0, INFINITY, rt.compute_npdisp);
+
+    write_pointset_header(rt.os, pts, rt.delimiter);
 
     for (u64 i = 0; i < measures.size(); ++i) {
       if (rt.compute_pdisp) {
@@ -270,8 +261,8 @@ i32 return_partial_results(const program_param&                       rt,
       }
       *rt.os << std::endl;
     }
-
-    write_pointset_eos(rt.os);
+    
+    write_pointset_footer(rt.os, pts);
   }
 
   return EXIT_SUCCESS;

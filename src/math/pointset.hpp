@@ -23,6 +23,8 @@ struct regular_pointset
   void clear();
 
   void reset_inf_bound();
+  void insert_domain_bound(u64 d, prec low, prec upp, u1 predicate);
+  void append_domain_bound(prec low, prec upp, u1 predicate);
 
   u64 size() const;
   u1  empty() const;
@@ -105,6 +107,26 @@ void regular_pointset<prec>::reset_inf_bound()
     domain_bound[i + dimensions] = +INFINITY;
   }
 }
+
+template<typename prec>
+void regular_pointset<prec>::insert_domain_bound(u64 d, prec low, prec upp, u1 predicate)
+{
+  if (!predicate)
+    return;
+
+  assert(d <= domain_bound.size()/2);
+
+  u64 dims = domain_bound.size()/2 + 1;
+  domain_bound.emplace(domain_bound.begin()+d, low);
+  domain_bound.emplace(domain_bound.begin()+d+dims, upp);
+}
+
+template<typename prec>
+void regular_pointset<prec>::append_domain_bound(prec low, prec upp, u1 predicate)
+{
+  insert_domain_bound(domain_bound.size()/2, low, upp, predicate);
+}
+
 
 template<typename prec>
 void regular_pointset<prec>::extract(u64 axis, regular_pointset<prec>& pts) const

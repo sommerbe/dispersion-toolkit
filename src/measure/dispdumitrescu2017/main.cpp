@@ -415,22 +415,7 @@ void dispersion_dumitrescu2017(problem_param* p)
   p->pts = pts_base;
 };
 
-void return_bound(const program_param& rt)
-{
-  i8 ndel = ' ';
 
-  *rt.os << "#d";
-
-  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_disp);
-  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_ndisp);
-  put_header_column(rt.os, 0, ndel, rt.delimiter, rt.compute_boxcount);
-
-  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_disp);
-  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_ndisp);
-  put_header_column(rt.os, INFINITY, ndel, rt.delimiter, rt.compute_boxcount);
-
-  *rt.os << std::endl;
-}
 
 i32 return_results(const program_param&                       rt,
                    const std::vector<dptk::problem_measures>& measures)
@@ -460,8 +445,15 @@ i32 return_results(const program_param&                       rt,
       put_header_column(rt.os, "number of boxes", ndel, ',', rt.compute_boxcount);
       *rt.os << ")" << std::endl;
     }
+    
+    pointset pts;
 
-    return_bound(rt);
+    pts.clear();
+    pts.append_domain_bound(0, INFINITY, rt.compute_disp);
+    pts.append_domain_bound(0, INFINITY, rt.compute_ndisp);
+    pts.append_domain_bound(0, INFINITY, rt.compute_boxcount);
+
+    write_pointset_header(rt.os, pts, rt.delimiter);
 
     for (u64 i = 0; i < measures.size(); ++i) {
       if (rt.compute_disp) {
@@ -477,8 +469,8 @@ i32 return_results(const program_param&                       rt,
       }
       *rt.os << std::endl;
     }
-
-    write_pointset_eos(rt.os);
+    
+    write_pointset_footer(rt.os, pts);
   }
 
   return EXIT_SUCCESS;
