@@ -2,6 +2,7 @@
 #include "../../io/ipointset.hpp"
 #include "../../io/opointset.hpp"
 #include "../../io/ostream.hpp"
+#include "../../math/arithmetic.hpp"
 #include "../../math/pointset.hpp"
 #include <iomanip>
 #include <iostream>
@@ -28,6 +29,7 @@ struct program_param
   std::istream* is;
   std::ostream* os;
   u1            graph_layout;
+  u1            absolute;
   u1            silent;
   u32           diff_method;
   i8            delimiter;
@@ -81,6 +83,11 @@ void convergance(problem_param* problem)
       // value delta
       delta = next[d] - prev[d];
 
+      // postprocessing: make absolute
+      if (problem->rt->absolute) {
+        delta = math::abs(delta);
+      }
+
       // store
       prev[d] = delta / h;
     }
@@ -117,6 +124,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
 
     } else if (s == "--graph-layout") {
       rt.graph_layout = true;
+    } else if (s == "--absolute") {
+      rt.absolute = true;
 
     } else if (s == "--silent") {
       rt.silent = true;
@@ -130,7 +139,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: swap coordinates of a given point set" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--ffd] [--graph-layout] [--silent]"
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--ffd] [--graph-layout] "
+                   "[--absolute] [--silent]"
                 << std::endl;
       return false;
     }
@@ -151,6 +161,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   // default configuration
   rt.diff_method  = dptk::FORWARD_DIFFERENCES;
   rt.graph_layout = false;
+  rt.absolute     = false;
   rt.delimiter    = ' ';
   rt.del_use_ipts = true;
   rt.silent       = false;
@@ -172,6 +183,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
 
   // show parameters
   dptk::putparam(rt.os, "finite differences", rt.diff_method, !rt.silent);
+  dptk::putparam(rt.os, "absolute", rt.absolute, !rt.silent);
   dptk::putparam(rt.os, "delimiter", rt.delimiter, !rt.silent);
   dptk::putparam(rt.os, "source", rt.input, !rt.silent);
 
