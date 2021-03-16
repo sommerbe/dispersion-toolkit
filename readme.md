@@ -98,6 +98,7 @@ The source code within the directory *./src* is organised as follows:
 Directory | Computational capabilities
 --------- | --------------------------
 ./adapter | transducing between various point set formats
+./ana     | analysis of measurements (e.g. convergence)
 ./measure | algorithms computing dispersion measures
 ./opt     | optimising point sets w.r.t. dispersion measures
 ./set     | constructing d-dimensional point sets
