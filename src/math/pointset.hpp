@@ -21,6 +21,7 @@ struct regular_pointset
 
   void allocate(u64 num_points, u64 num_dimensions);
   void clear();
+  void remove_last();
 
   void reset_inf_bound();
   void insert_domain_bound(u64 d, prec low, prec upp, u1 predicate);
@@ -97,6 +98,16 @@ void regular_pointset<prec>::clear()
   coords.clear();
   domain_bound.clear();
   arguments.clear();
+}
+
+template<typename prec>
+void regular_pointset<prec>::remove_last()
+{
+  assert(points > 0);
+  assert(coords.size() >= dimensions);
+
+  coords.resize(coords.size() - dimensions);
+  --points;
 }
 
 template<typename prec>
