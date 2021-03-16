@@ -1,21 +1,16 @@
 # Dispersion toolkit
 
+Analyse d-dimensional point sets with dispersion measures.
+
 ## Introduction
 
-### Purpose
+Measuring dispersion is important for:
 
-* compute dispersion of a given point set
-* compute empty boxes (interior, exterior, all) of a given point set
-* optimise a point set w.r.t. minimising its dispersion
-* visualise a sequence of a point set
+* analysing holes within data point sets,
+* optimisation and computer science (cf. modulus of continuity),
+* mathematics: minimal dispersion, relation to discrepancy,
+* physics, mathematics, scientific computing: numerical integration (open).
 
-### Usability
-
-* easy to build, low maintenance => minimal dependencies
-* executable in UNIX, Mac?, Windows?
-* executable in server environments (console based) (compute intensive tasks)
-* proper use of IO pipes and argument passing (standard in UNIX)
-* interoperable with 3rd party toolkits: UTK (using scripts, file IO)
 
 ### Documentation
 
@@ -31,6 +26,8 @@ to print a very simple list of valid arguments. A detailed explanation is availa
 dispersion-toolkit-manpages.git
 ````
 
+## Getting started
+
 ### Dependencies
 
 The least amount of requirements in order to build this toolkit to use it are:
@@ -39,9 +36,6 @@ The least amount of requirements in order to build this toolkit to use it are:
 * C++11
 * visualisation (optional): python3, numpy, matplotlib
 * mindisp-gs (optional): OpenMP
-
-
-## Getting started
 
 ### Building on UNIX systems
 
