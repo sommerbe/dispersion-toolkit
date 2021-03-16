@@ -9,6 +9,7 @@
 * stat-confidence handles stacked graphs
 * point set has new header to store arguments (#arg ...)
 * new header (#domain ...) of point sets replaces (#d ...) for readability
+* disp-combinatorial may stream as graphs (arg, values) using --graph-layout
 
 ## fixes
 * write-matrix spurious point delimiter after last point

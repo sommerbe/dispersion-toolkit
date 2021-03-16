@@ -42,6 +42,7 @@ struct program_param
   u1            compute_box_interior;
   u1            compute_box_areas;
   u1            compute_box_coords;
+  u1 layout_graph;
   prec          box_area_min;
   prec          box_area_max;
 };
@@ -270,7 +271,8 @@ i32 return_partial_results(const program_param& rt, const problem_param& problem
 }
 
 i32 return_partial_results(const program_param&                       rt,
-                           const std::vector<dptk::problem_measures>& measures)
+                           const std::vector<dptk::problem_measures>& measures,
+                           const std::vector<dptk::problem_param>& problems)
 {
   putparam(rt.os, "point set sequence size", measures.size(), !rt.silent);
 
@@ -296,6 +298,7 @@ i32 return_partial_results(const program_param&                       rt,
     if (!rt.silent) {
       *rt.os << "# ";
       i8 ndel = '(';
+      put_header_column(rt.os, "argument", ndel, ',', rt.layout_graph);
       put_header_column(rt.os, "dispersion", ndel, ',', rt.compute_disp);
       put_header_column(rt.os, "n*dispersion", ndel, ',', rt.compute_ndisp);
       put_header_column(rt.os, "number of boxes", ndel, ',', rt.compute_boxcount);
@@ -305,6 +308,7 @@ i32 return_partial_results(const program_param&                       rt,
     pointset pts;
 
     pts.clear();
+    pts.append_domain_bound(0, INFINITY, rt.layout_graph);
     pts.append_domain_bound(0, INFINITY, rt.compute_disp);
     pts.append_domain_bound(0, INFINITY, rt.compute_ndisp);
     pts.append_domain_bound(0, INFINITY, rt.compute_boxcount);
@@ -312,6 +316,14 @@ i32 return_partial_results(const program_param&                       rt,
     write_pointset_header(rt.os, pts, rt.delimiter);
 
     for (u64 i = 0; i < measures.size(); ++i) {
+      if (rt.layout_graph) {
+        if (problems[i].pts.arguments.empty()) {
+          *rt.os << "0";
+        } else {
+          putsci(rt.os, problems[i].pts.arguments[0], 16);
+        }
+        *rt.os << rt.delimiter;
+      }
       if (rt.compute_disp) {
         putsci(rt.os, measures[i].disp, 16);
         if (rt.compute_ndisp || rt.compute_boxcount)
@@ -374,6 +386,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return argparse::err("missing box-area-max value. Consider using -h or --help.");
       rt.box_area_max = std::strtod(arg[++i].c_str(), nullptr);
 
+    } else if (s == "--graph-layout") {
+      rt.layout_graph = true;
+
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "--i") {
@@ -431,6 +446,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.compute_box_max      = false;
   rt.compute_box_areas    = false;
   rt.compute_box_coords   = true;
+  rt.layout_graph = false;
   rt.delimiter            = ' ';
   rt.del_use_ipts         = true;
   rt.silent               = false;
@@ -520,7 +536,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   }
 
   // show sequence of dispersion, n*dispersion, box counts, greatest boxes
-  r = dptk::return_partial_results(rt, measures);
+  r = dptk::return_partial_results(rt, measures, problems);
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);
