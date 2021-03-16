@@ -16,8 +16,10 @@ void write_vector_param(std::ostream*           os,
                         const std::vector<b64>& list,
                         i8                      del);
 
+void write_pointset_header(std::ostream* os, const regular_pointset<b64>& pts, i8 del);
 void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del);
 
+void write_pointset_footer(std::ostream* os, const regular_pointset<b64>& pts);
 void write_pointset_eos(std::ostream* os);
 
 } // namespace dptk

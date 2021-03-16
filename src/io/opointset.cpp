@@ -61,7 +61,7 @@ void write_vector_param(std::ostream*           os,
   *os << std::endl;
 }
 
-void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
+void write_pointset_header(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
 {
   assert(pts.domain_bound.size() > 1);
 
@@ -74,6 +74,12 @@ void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
   if (!pts.arguments.empty()) {
     write_vector_param(os, PSS_HEADER_ARG, pts.arguments, del);
   }
+}
+
+void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
+{
+  // header
+  write_pointset_header(os, pts, del);
 
   // write coordinates
   if (pts.coords.empty()) {
@@ -89,6 +95,11 @@ void write_pointset(std::ostream* os, const regular_pointset<b64>& pts, i8 del)
       *os << del;
     }
   }
+  write_pointset_eos(os);
+}
+
+void write_pointset_footer(std::ostream* os, const regular_pointset<b64>& pts)
+{
   write_pointset_eos(os);
 }
 
