@@ -40,6 +40,7 @@ struct program_param
   u1            compute_npdisp;
   u1            debug_permutations;
   u1            precompute_distances;
+  u1            layout_graph;
 };
 
 struct problem_measures
@@ -228,7 +229,8 @@ void pdispersion_permute_stack(problem_param* pb)
 }
 
 i32 return_partial_results(const program_param&                       rt,
-                           const std::vector<dptk::problem_measures>& measures)
+                           const std::vector<dptk::problem_measures>& measures,
+                           const std::vector<dptk::problem_param>&    problems)
 {
   putparam(rt.os, "point set sequence size", measures.size(), !rt.silent);
 
@@ -237,6 +239,7 @@ i32 return_partial_results(const program_param&                       rt,
     if (!rt.silent) {
       *rt.os << "# ";
       i8 ndel = '(';
+      put_header_column(rt.os, "argument", ndel, ',', rt.layout_graph);
       put_header_column(rt.os, "dispersion", ndel, ',', rt.compute_pdisp);
       put_header_column(rt.os, "n*dispersion", ndel, ',', rt.compute_npdisp);
       *rt.os << ")" << std::endl;
@@ -245,12 +248,21 @@ i32 return_partial_results(const program_param&                       rt,
     pointset pts;
 
     pts.clear();
+    pts.append_domain_bound(0, INFINITY, rt.layout_graph);
     pts.append_domain_bound(0, INFINITY, rt.compute_pdisp);
     pts.append_domain_bound(0, INFINITY, rt.compute_npdisp);
 
     write_pointset_header(rt.os, pts, rt.delimiter);
 
     for (u64 i = 0; i < measures.size(); ++i) {
+      if (rt.layout_graph) {
+        if (problems[i].pts.arguments.empty()) {
+          *rt.os << "0";
+        } else {
+          putsci(rt.os, problems[i].pts.arguments[0], 16);
+        }
+        *rt.os << rt.delimiter;
+      }
       if (rt.compute_pdisp) {
         putsci(rt.os, measures[i].disp, 16);
         if (rt.compute_npdisp)
@@ -294,6 +306,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       if (arg[i][0] == '-' || rt.p < 2)
         return argparse::err("invalid argument: p > 1.");
 
+    } else if (s == "--graph-layout") {
+      rt.layout_graph = true;
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "--i") {
@@ -313,7 +327,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         << "NAME: compute p-dispersion with a permutation algorithm (exhaustive search)"
         << std::endl;
       std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--p=2] [--disp] [--ndisp] "
-                   "[--debug-permute] [--silent]"
+                   "[--debug-permute] [--graph-layout] [--silent]"
                 << std::endl;
       return false;
     }
@@ -344,6 +358,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.compute_npdisp       = false;
   rt.delimiter            = ' ';
   rt.del_use_ipts         = true;
+  rt.layout_graph         = false;
   rt.silent               = false;
   rt.input                = "-";
   rt.output               = "-";
@@ -418,7 +433,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   }
 
   // show result
-  r = dptk::return_partial_results(rt, measures);
+  r = dptk::return_partial_results(rt, measures, problems);
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);
