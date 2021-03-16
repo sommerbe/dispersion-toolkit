@@ -410,7 +410,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--disp]  [--ndisp]  [--count-boxes] "
                    "[--boxes] [--interior-boxes] [--greatest-box] [--box-area] "
                    "[--no-box-coordinates] [--box-area-min=BINARY64] "
-                   "[--box-area-max=BINARY64] [--silent]"
+                   "[--box-area-max=BINARY64] [--graph-layout] [--silent]"
                 << std::endl;
       return false;
     }

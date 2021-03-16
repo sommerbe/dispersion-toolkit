@@ -307,6 +307,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "NAME: compute dispersion with algorithm of Naamad et al. 1984"
                 << std::endl;
       std::cout << "SYNOPSIS: [--i  FILE]  [--o FILE] [--disp] [--ndisp] [--count-boxes] "
+                   "[--graph-layout]"
                    "[--silent]"
                 << std::endl;
       return false;
