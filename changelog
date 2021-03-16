@@ -1,40 +1,56 @@
 # current
 
-* compatibility break: stat-confidence pushes mean stats as final point (not separate point set anymore) after possible confidence values (as points)
-* compatibility break: renamed procedure vis-psspy.py to vis-pss.py
-* extension: vis-psspy reads point set's domain boundary (previously only [0,1]^2)
-* extension: stat-confidence handles stacked graphs
-* extension: point set has new header to store arguments (#arg ...)
-* fixes: write-matrix spurious point delimiter after last point
-* fixes: stat-confidence infers statistics domain from point set domain
-* fixes: clearing a point set implicitly clears its domain boundary (since number of dimensions are cleared already)
+## compatibility break 
+* stat-confidence pushes mean stats as final point (not separate point set anymore) after possible confidence values (as points)
+* renamed procedure vis-psspy.py to vis-pss.py
+
+## extensions
+* vis-psspy reads point set's domain boundary (previously only [0,1]^2)
+* stat-confidence handles stacked graphs
+* point set has new header to store arguments (#arg ...)
+
+## fixes
+* write-matrix spurious point delimiter after last point
+* stat-confidence infers statistics domain from point set domain
+* clearing a point set implicitly clears its domain boundary (since number of dimensions are cleared already)
 
 # 1.3.0
 
-* extension: supporting Mathematica's matrix format for both read-matrix and write-matrix (thanks to Thomas Lachmann)
-* extension: visualising point sets may read directly from files, besides std in
-* extension: new visualisation: rectangles (vis-rectangles.py) (thanks to the suggestion by Thomans Lachmann)
-* extension: procedure disp-combinatorial accepts new options: [--box-area] [--no-box-coordinates] [--box-area-min=BINARY64] [--box-area-max=BINARY64]
-* extension: visualisation of rectangles works with empty sets within the sequence, and now accepts the specification of the problem domain as well as the number of grid lines to draw
-* extension: procedure disp-gs now accepts high dimensional point sets
-* code quality: moving manpages into distinct repository
-* parallelised: procedure disp-gs using OpenMP (if available)
-* parallelised: procedure disp-combinatorial using OpenMP (if available)
-* parallelised: procedure disp-dumitrescu2017
-* parallelised: procedure disp-naamad
-* parallelised: procedure pdisp-permute
-* fixes: readme: resulting filenames of an image sequence
-* fixes: MSVC 19 build errors and warnings [issue #1] (thanks to Thomas Lachmann)
-* fixes: installation directive concerning vis/psspy
-* fixes: help of pdisp-permute
+## extensions
+* supporting Mathematica's matrix format for both read-matrix and write-matrix (thanks to Thomas Lachmann)
+* visualising point sets may read directly from files, besides std in
+* new visualisation: rectangles (vis-rectangles.py) (thanks to the suggestion by Thomans Lachmann)
+* procedure disp-combinatorial accepts new options: [--box-area] [--no-box-coordinates] [--box-area-min=BINARY64] [--box-area-max=BINARY64]
+* visualisation of rectangles works with empty sets within the sequence, and now accepts the specification of the problem domain as well as the number of grid lines to draw
+* procedure disp-gs now accepts high dimensional point sets
+
+## code quality
+* moving manpages into distinct repository
+
+## parallelisation
+* procedure disp-gs using OpenMP (if available)
+* procedure disp-combinatorial using OpenMP (if available)
+* procedure disp-dumitrescu2017
+* procedure disp-naamad
+* procedure pdisp-permute
+
+## fixes
+* readme: resulting filenames of an image sequence
+* MSVC 19 build errors and warnings [issue #1] (thanks to Thomas Lachmann)
+* installation directive concerning vis/psspy
+* help of pdisp-permute
+
 
 # 1.2.0 
 
+## extensions
 * adding script: package.sh <version> <directory>
 * new program: pdisp-permute
-* fixes: missing delete* if file open fails
-* fixes: aborts program forcefully if input file can not be opened
-* fixes: compile error on non-UNIX machines (thanks to Thomas Lachmann)
+
+## fixes
+* missing delete* if file open fails
+* aborts program forcefully if input file can not be opened
+* compile error on non-UNIX machines (thanks to Thomas Lachmann)
 
 # 1.1.0
 
