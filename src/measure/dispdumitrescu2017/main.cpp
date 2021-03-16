@@ -38,6 +38,7 @@ struct program_param
   u1            compute_disp;
   u1            compute_ndisp;
   u1            compute_boxcount;
+  u1            layout_graph;
   // u1            compute_boxes;
   // u1            compute_box_max;
   // u1            compute_box_interior;
@@ -416,7 +417,8 @@ void dispersion_dumitrescu2017(problem_param* p)
 };
 
 i32 return_results(const program_param&                       rt,
-                   const std::vector<dptk::problem_measures>& measures)
+                   const std::vector<dptk::problem_measures>& measures,
+                   const std::vector<dptk::problem_param>&    problems)
 {
   putparam(rt.os, "point set sequence size", measures.size(), !rt.silent);
 
@@ -438,6 +440,7 @@ i32 return_results(const program_param&                       rt,
     if (!rt.silent) {
       *rt.os << "# ";
       i8 ndel = '(';
+      put_header_column(rt.os, "argument", ndel, ',', rt.layout_graph);
       put_header_column(rt.os, "dispersion", ndel, ',', rt.compute_disp);
       put_header_column(rt.os, "n*dispersion", ndel, ',', rt.compute_ndisp);
       put_header_column(rt.os, "number of boxes", ndel, ',', rt.compute_boxcount);
@@ -447,6 +450,7 @@ i32 return_results(const program_param&                       rt,
     pointset pts;
 
     pts.clear();
+    pts.append_domain_bound(0, INFINITY, rt.layout_graph);
     pts.append_domain_bound(0, INFINITY, rt.compute_disp);
     pts.append_domain_bound(0, INFINITY, rt.compute_ndisp);
     pts.append_domain_bound(0, INFINITY, rt.compute_boxcount);
@@ -454,6 +458,14 @@ i32 return_results(const program_param&                       rt,
     write_pointset_header(rt.os, pts, rt.delimiter);
 
     for (u64 i = 0; i < measures.size(); ++i) {
+      if (rt.layout_graph) {
+        if (problems[i].pts.arguments.empty()) {
+          *rt.os << "0";
+        } else {
+          putsci(rt.os, problems[i].pts.arguments[0], 16);
+        }
+        *rt.os << rt.delimiter;
+      }
       if (rt.compute_disp) {
         putsci(rt.os, measures[i].disp, 16);
         put(rt.os, rt.delimiter, rt.compute_ndisp || rt.compute_boxcount);
@@ -500,6 +512,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.compute_ndisp = true;
     } else if (s == "--count-boxes") {
       rt.compute_boxcount = true;
+    } else if (s == "--graph-layout") {
+      rt.layout_graph = true;
     } else if (s == "--silent") {
       rt.silent = true;
     } else if (s == "--i") {
@@ -518,6 +532,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       std::cout << "NAME: compute dispersion with algorithm of Dumitrescu and Jiang, 2017"
                 << std::endl;
       std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--disp] [--ndisp]  [--count-boxes] "
+                   "[--graph-layout] "
                    "[--silent]"
                 << std::endl;
       return false;
@@ -554,6 +569,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   // rt.compute_box_interior = false;
   // rt.compute_boxes        = false;
   // rt.compute_box_max      = false;
+  rt.layout_graph = false;
   rt.delimiter    = ' ';
   rt.del_use_ipts = true;
   rt.silent       = false;
@@ -630,7 +646,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   }
 
   // show result
-  r = dptk::return_results(rt, measures);
+  r = dptk::return_results(rt, measures, problems);
 
   // clean up (heap allocations)
   dptk::istream_close(rt.is);

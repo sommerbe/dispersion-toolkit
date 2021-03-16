@@ -12,6 +12,7 @@
 * disp-combinatorial may stream graphs (--graph-layout)
 * disp-naamad may stream graphs (--graph-layout)
 * disp-gs may stream graphs (--graph-layout)
+* disp-dumitrescu2017 may stream graphs (--graph-layout)
 
 ## fixes
 * write-matrix spurious point delimiter after last point
