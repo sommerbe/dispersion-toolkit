@@ -42,7 +42,7 @@ struct program_param
   u1            compute_box_interior;
   u1            compute_box_areas;
   u1            compute_box_coords;
-  u1 layout_graph;
+  u1            layout_graph;
   prec          box_area_min;
   prec          box_area_max;
 };
@@ -272,7 +272,7 @@ i32 return_partial_results(const program_param& rt, const problem_param& problem
 
 i32 return_partial_results(const program_param&                       rt,
                            const std::vector<dptk::problem_measures>& measures,
-                           const std::vector<dptk::problem_param>& problems)
+                           const std::vector<dptk::problem_param>&    problems)
 {
   putparam(rt.os, "point set sequence size", measures.size(), !rt.silent);
 
@@ -446,7 +446,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.compute_box_max      = false;
   rt.compute_box_areas    = false;
   rt.compute_box_coords   = true;
-  rt.layout_graph = false;
+  rt.layout_graph         = false;
   rt.delimiter            = ' ';
   rt.del_use_ipts         = true;
   rt.silent               = false;
