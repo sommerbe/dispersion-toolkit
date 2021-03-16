@@ -92,6 +92,7 @@ void regular_pointset<prec>::clear()
   dimensions = 0;
   points     = 0;
   coords.clear();
+  domain_bound.clear();
   arguments.clear();
 }
 
