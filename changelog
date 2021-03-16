@@ -11,6 +11,7 @@
 * new header (#domain ...) of point sets replaces (#d ...) for readability
 * disp-combinatorial may stream graphs (--graph-layout)
 * disp-naamad may stream graphs (--graph-layout)
+* disp-gs may stream graphs (--graph-layout)
 
 ## fixes
 * write-matrix spurious point delimiter after last point
