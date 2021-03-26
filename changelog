@@ -16,6 +16,7 @@
 * disp-gs may stream graphs (--graph-layout)
 * disp-dumitrescu2017 may stream graphs (--graph-layout)
 * pdisp-permute may stream graphs (--graph-layout)
+* disp-combinatorial accepts d > 1 dimensional point sets
 
 ## fixes
 * write-matrix spurious point delimiter after last point

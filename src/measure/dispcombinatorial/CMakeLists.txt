@@ -6,6 +6,7 @@ set(SOURCES
   ${src}/io/ipointset.cpp
   ${src}/io/opointset.cpp
   ${src}/io/ostream.cpp
+  ${src}/index/pointset_dsorted.cpp
 )
 
 set(HEADERS
@@ -15,6 +16,7 @@ set(HEADERS
   ${src}/io/ostream.hpp
   ${src}/math/pointset.hpp
   ${src}/math/types.hpp
+  ${src}/index/pointset_dsorted.hpp
 )
 
 message(STATUS "Building: ${NAME}")

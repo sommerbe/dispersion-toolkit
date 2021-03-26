@@ -29,6 +29,9 @@ void sort(const regular_pointset<prec>& pts, pointset_dsorted_index& idx);
 // implementation
 //
 
+/**
+ * Assigns indices of points stored in pts, and sorts them, both along given axis.
+ */
 template<typename prec>
 void sort(const regular_pointset<prec>& pts, pointset_dsorted_index& idx, u64 axis)
 {
@@ -44,6 +47,9 @@ void sort(const regular_pointset<prec>& pts, pointset_dsorted_index& idx, u64 ax
   });
 }
 
+/**
+ * Assigns indices of all points, and sorts them, along all axes.
+ */
 template<typename prec>
 void sort(const regular_pointset<prec>& pts, pointset_dsorted_index& idx)
 {
