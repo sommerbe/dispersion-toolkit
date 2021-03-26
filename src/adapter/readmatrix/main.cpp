@@ -31,6 +31,7 @@ struct program_param
   i8            set_prefix;
   i8            set_suffix;
   i8            comment_prefix;
+  u1            domain_boundary_unity;
   pointset      domain_boundary;
 };
 
@@ -288,6 +289,9 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
         return argparse::err("missing set-suffix value. Consider using -h or --help.");
       rt.set_suffix = arg[++i][0];
 
+    } else if (s == "--domain-boundary-unity") {
+      rt.domain_boundary_unity = true;
+
     } else if (s == "--silent") {
       rt.silent = true;
 
@@ -301,7 +305,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.output = arg[i];
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: reads a matrix of points" << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] --domain-boundary LIST_OF_NUMBERS "
+      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] --domain-boundary LIST_OF_NUMBERS | "
+                   "--domain-boundary-unity "
                    "[--mathematica] [--csv] [--point-delimiter=CHARACTER] "
                    "[--coord-delimiter=CHARACTER] "
                    "[--point-prefix=CHARACTER] [--point-suffix=CHARACTER] "
@@ -324,19 +329,20 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   dptk::i32           r;
 
   // default configuration
-  rt.silent          = false;
-  rt.delimiter       = ' ';
-  rt.input           = "-";
-  rt.output          = "-";
-  rt.point_delimiter = '\n';
-  rt.coord_delimiter = ' ';
-  rt.point_prefix    = '\0';
-  rt.point_suffix    = '\0';
-  rt.set_prefix      = '\0';
-  rt.set_suffix      = '\0';
-  rt.comment_prefix  = '#';
-  problem.rt         = &rt;
-  r                  = EXIT_SUCCESS;
+  rt.silent                = false;
+  rt.delimiter             = ' ';
+  rt.input                 = "-";
+  rt.output                = "-";
+  rt.point_delimiter       = '\n';
+  rt.coord_delimiter       = ' ';
+  rt.point_prefix          = '\0';
+  rt.point_suffix          = '\0';
+  rt.set_prefix            = '\0';
+  rt.set_suffix            = '\0';
+  rt.comment_prefix        = '#';
+  rt.domain_boundary_unity = false;
+  problem.rt               = &rt;
+  r                        = EXIT_SUCCESS;
 
   // parse arguments
   if (!dptk::parse_progargs(argc, argv, rt)) {
@@ -366,7 +372,11 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     }
 
     // apply specified domain boundary
-    problem.pts.domain_bound = rt.domain_boundary.coords;
+    if (rt.domain_boundary_unity) {
+      problem.pts.reset_unity_bound();
+    } else {
+      problem.pts.domain_bound = rt.domain_boundary.coords;
+    }
 
     // deduct argument
     problem.pts.arguments.push_back(problem.pts.size());

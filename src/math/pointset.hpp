@@ -24,6 +24,7 @@ struct regular_pointset
   void remove_last();
 
   void reset_inf_bound();
+  void reset_unity_bound();
   void insert_domain_bound(u64 d, prec low, prec upp, u1 predicate);
   void append_domain_bound(prec low, prec upp, u1 predicate);
 
@@ -117,6 +118,16 @@ void regular_pointset<prec>::reset_inf_bound()
   for (u64 i = 0; i < dimensions; ++i) {
     domain_bound[i]              = -INFINITY;
     domain_bound[i + dimensions] = +INFINITY;
+  }
+}
+
+template<typename prec>
+void regular_pointset<prec>::reset_unity_bound()
+{
+  domain_bound.resize(2 * dimensions);
+  for (u64 i = 0; i < dimensions; ++i) {
+    domain_bound[i]              = 0;
+    domain_bound[i + dimensions] = 1;
   }
 }
 

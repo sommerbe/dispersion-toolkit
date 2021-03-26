@@ -7,6 +7,7 @@
 ## extensions
 * new: ana-convergence computes gradients
 * new: vis-graphs.py plots graphs
+* new: read-matrix accepts option --domain-boundary-unity
 * vis-psspy reads point set's domain boundary (previously only [0,1]^2)
 * stat-confidence handles stacked graphs
 * point set has new header to store arguments (#arg ...)
