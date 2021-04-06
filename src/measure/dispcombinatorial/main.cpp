@@ -248,6 +248,7 @@ void dispersion_combinatorial_recursive(problem_param* p)
 /**
  * Here follows the legacy, 2-dimensional implementation
  */
+/*
 void set_rect_boundary(pointset& pts,
                        i32       index,
                        prec*     box_corner,
@@ -365,7 +366,8 @@ void dispersion_combinatorial(problem_param* p)
   if (p->rt->compute_box_max) {
     p->measures->box_max = box_max;
   }
-};
+}
+*/
 
 i32 return_partial_results(const program_param& rt, const problem_param& problem)
 {
