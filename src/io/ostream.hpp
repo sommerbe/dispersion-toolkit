@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <ostream>
 #include <string>
+#include <vector>
 
 namespace dptk {
 
@@ -28,6 +29,13 @@ void putparam(std::ostream*      os,
               const std::string& name,
               const d&           data,
               u1                 predicate = true);
+
+template<typename d>
+void putparam(std::ostream*         os,
+              const std::string&    name,
+              const std::vector<d>& data,
+              u1                    predicate = true,
+              u8                    delimiter = ' ');
 
 void ensure_precision(std::ostream* os, const b64& data);
 
@@ -103,6 +111,28 @@ void putparam(std::ostream* os, const std::string& name, const d& data, u1 predi
 
   if (predicate) {
     *os << "# " << name << " = (" << data << ")" << std::endl;
+  }
+}
+
+template<typename d>
+void putparam(std::ostream*         os,
+              const std::string&    name,
+              const std::vector<d>& data,
+              u1                    predicate,
+              u8                    delimiter)
+
+{
+  assert(os != nullptr);
+
+  if (predicate) {
+    *os << "# " << name << " = (";
+    for (u64 i = 0; i < data.size(); ++i) {
+      if (i > 0) {
+        *os << delimiter;
+      }
+      *os << data[i];
+    }
+    *os << ")" << std::endl;
   }
 }
 
