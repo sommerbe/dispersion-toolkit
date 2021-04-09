@@ -1,7 +1,7 @@
 #include "argparse.hpp"
+#include <cctype>
 #include <iostream>
 #include <stdexcept>
-#include <cctype>
 
 namespace dptk {
 namespace argparse {
@@ -81,7 +81,8 @@ void ensure(u1 predicate, const std::string& error_message)
 
 u1 isarg_short(const std::string& s)
 {
-  return s.size() > 1 && s[0] == '-' && s[1] != '-' && !std::isdigit((u8)s[1]) && s[1] != '.';
+  return s.size() > 1 && s[0] == '-' && s[1] != '-' && !std::isdigit((u8)s[1])
+         && s[1] != '.';
 }
 
 u1 isarg_long(const std::string& s)
@@ -100,7 +101,7 @@ u1 isarg_canonical(const std::string& arg)
 
 u1 argval(const std::vector<std::string>& args, u64 idx)
 {
-  return idx + 1 < args.size() && !isarg_canonical(args[idx+1]);
+  return idx + 1 < args.size() && !isarg_canonical(args[idx + 1]);
 }
 
 u1 err(const std::string& msg)
@@ -113,7 +114,7 @@ u1 retrieve(const std::vector<std::string>& args, u64& idx, b64& val)
 {
   if (!argparse::argval(args, idx))
     return false;
-  
+
   val = std::strtod(args[++idx].c_str(), nullptr);
   return true;
 }
@@ -122,7 +123,7 @@ u1 retrieve(const std::vector<std::string>& args, u64& idx, u64& val)
 {
   if (!argparse::argval(args, idx))
     return false;
-  
+
   val = std::strtoul(args[++idx].c_str(), nullptr, 10);
   return true;
 }

@@ -29,16 +29,21 @@ u1 retrieve(const std::vector<std::string>& args, u64& idx, b64& val);
 u1 retrieve(const std::vector<std::string>& args, u64& idx, u64& val);
 
 template<typename any>
-u1 retrieve(const std::vector<std::string>& args, u64& idx, std::vector<any>& val, u64 count = 0);
-
+u1 retrieve(const std::vector<std::string>& args,
+            u64&                            idx,
+            std::vector<any>&               val,
+            u64                             count = 0);
 
 template<typename any>
-u1 retrieve(const std::vector<std::string>& args, u64& idx, std::vector<any>& val, u64 count)
+u1 retrieve(const std::vector<std::string>& args,
+            u64&                            idx,
+            std::vector<any>&               val,
+            u64                             count)
 {
   any v;
   val.clear();
   while ((count == 0 || val.size() < count) && retrieve(args, idx, v)) {
-    val.push_back(v);    
+    val.push_back(v);
   }
   return count == 0 || val.size() == count;
 }
