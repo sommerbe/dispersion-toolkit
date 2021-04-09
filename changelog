@@ -24,6 +24,9 @@
 * stat-confidence infers statistics domain from point set domain
 * clearing a point set implicitly clears its domain boundary (since number of dimensions are cleared already)
 
+## misc
+* procedure argument parsing accepts vectors without quotes
+
 # 1.3.0
 
 ## extensions

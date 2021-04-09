@@ -1,6 +1,7 @@
 #include "argparse.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <cctype>
 
 namespace dptk {
 namespace argparse {
@@ -35,7 +36,7 @@ void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& 
 
     // expand short options
     // pattern: -abcd... => -a -b -c -d ...
-    if (s[0] == '-' && s.size() > 1 && s[1] != '-') {
+    if (isarg_short(s)) {
       for (u64 j = 1; j < s.size(); ++j) {
         args.push_back("-" + s.substr(j, 1));
       }
@@ -43,7 +44,7 @@ void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& 
     }
 
     // expand long options
-    if (s.size() > 2 && s[0] == '-' && s[1] == '-' && s[2] != '-') {
+    if (isarg_long(s)) {
       u64 p;
       // pattern: --key=value => --key value
       if (s.size() > 4 && (p = s.find_first_of('=', 3)) != std::string::npos) {
@@ -78,15 +79,52 @@ void ensure(u1 predicate, const std::string& error_message)
   }
 }
 
+u1 isarg_short(const std::string& s)
+{
+  return s.size() > 1 && s[0] == '-' && s[1] != '-' && !std::isdigit((u8)s[1]) && s[1] != '.';
+}
+
+u1 isarg_long(const std::string& s)
+{
+  return s.size() > 2 && s[0] == '-' && s[1] == '-' && s[2] != '-';
+}
+
+u1 isarg_canonical(const std::string& arg)
+{
+  if (arg.size() == 2 && isarg_short(arg))
+    return true;
+  if (isarg_long(arg))
+    return true;
+  return false;
+}
+
 u1 argval(const std::vector<std::string>& args, u64 idx)
 {
-  return idx + 1 < args.size() || args[idx + 1].empty();
+  return idx + 1 < args.size() && !isarg_canonical(args[idx+1]);
 }
 
 u1 err(const std::string& msg)
 {
   std::cerr << msg << std::endl;
   return false;
+}
+
+u1 retrieve(const std::vector<std::string>& args, u64& idx, b64& val)
+{
+  if (!argparse::argval(args, idx))
+    return false;
+  
+  val = std::strtod(args[++idx].c_str(), nullptr);
+  return true;
+}
+
+u1 retrieve(const std::vector<std::string>& args, u64& idx, u64& val)
+{
+  if (!argparse::argval(args, idx))
+    return false;
+  
+  val = std::strtoul(args[++idx].c_str(), nullptr, 10);
+  return true;
 }
 
 } // namespace argparse
