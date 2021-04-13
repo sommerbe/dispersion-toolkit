@@ -69,7 +69,7 @@ struct problem_param
   const program_param*        rt;
 
   // internal
-  pointset_dsorted_index psort_idx;
+  // pointset_dsorted_index psort_idx;
   hyperbox<prec>         box;
   u64                    boxspan_ref;
   u64                    boxspan_target;
@@ -280,8 +280,8 @@ void dispersion_subdomain_recursive(problem_param* p)
 
   // preprocess a sorted list of points, along each axis independently
   // - sorting halfs the quadratic complexity during each recursive step
-  p->psort_idx.allocate(p->pts.size(), p->pts.dimensions);
-  sort(p->pts, p->psort_idx);
+  // p->psort_idx.allocate(p->pts.size(), p->pts.dimensions);
+  // sort(p->pts, p->psort_idx);
 
   // reference point index
   p->boxspan_ref = p->rt->refptidx;
