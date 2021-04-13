@@ -177,6 +177,17 @@ bool is_outside(const hyperbox<prec>& box, u32 dimensions, const prec* point)
   return false;
 }
 
+bool check_emptiness(problem_param* p)
+{
+  for (u64 i = 0; i < p->pts.size(); ++i) {
+    // assert(!is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0)));
+    if (is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0))) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void extend_hyperbox_axis(problem_param* p, u64 d)
 {
   // extend hyperbox p.box maximally along axis index d
@@ -223,14 +234,7 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
   }
 
   // check: emptiness condition of hyperbox
-  for (u64 i = 0; i < p->pts.size(); ++i) {
-    // assert(!is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0)));
-    if (is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0))) {
-      prec* pt = p->pts.at(i, 0);
-      std::cerr << i << "," << pt[0] << "," << pt[1] << std::endl;
-      assert(0);
-    }
-  }
+  assert(check_emptiness(p));
 
   // compute area of hyperbox (axes-aligned)
   p->box.area = compute_area(p->box, p->pts.dimensions);
