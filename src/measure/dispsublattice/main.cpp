@@ -45,7 +45,7 @@ struct program_param
   u1             compute_box_areas;
   u1             compute_box_coords;
   u1             layout_graph;
-  u1 debug;
+  u1             debug;
   prec           box_area_min;
   prec           box_area_max;
   hyperbox<prec> subdomain;
@@ -74,7 +74,7 @@ struct problem_param
   u64                    boxspan_ref;
   u64                    boxspan_target;
   u32                    box_exterior;
-  u64 exclude_d[2];
+  u64                    exclude_d[2];
 };
 
 void print_coords(std::ostream*         os,
@@ -145,7 +145,10 @@ bool is_inside(const hyperbox<prec>& box, u32 dimensions, const prec* point)
 /**
  * checks whether point is inside the hyperbox, excluding its boundary
  */
-bool is_inside(const hyperbox<prec>& box, u32 dimensions, u32 exclude_d, const prec* point)
+bool is_inside(const hyperbox<prec>& box,
+               u32                   dimensions,
+               u32                   exclude_d,
+               const prec*           point)
 {
   assert(u64(dimensions) * 2 == box.coords.size());
 
@@ -182,8 +185,8 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
     if (d != p->exclude_d[0]) {
       u32 z = 1;
       b64 y = p->pts.domain_low(d);
-      for (u64 i=0; i<p->pts.size(); ++i) {
-        prec* pt = p->pts.at(i,0);
+      for (u64 i = 0; i < p->pts.size(); ++i) {
+        prec* pt = p->pts.at(i, 0);
         if (pt[d] >= p->box.coords[d] || !is_inside(p->box, p->pts.dimensions, d, pt)) {
           continue;
         }
@@ -198,11 +201,11 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
 
     // extend to above
     if (d != p->exclude_d[1]) {
-      u32 z = 1;
+      u32 z  = 1;
       u64 di = d + p->pts.dimensions;
-      b64 y = p->pts.domain_up(d);
-      for (u64 i=0; i<p->pts.size(); ++i) {
-        prec* pt = p->pts.at(i,0);
+      b64 y  = p->pts.domain_up(d);
+      for (u64 i = 0; i < p->pts.size(); ++i) {
+        prec* pt = p->pts.at(i, 0);
         if (pt[d] <= p->box.coords[di] || !is_inside(p->box, p->pts.dimensions, d, pt)) {
           continue;
         }
@@ -215,31 +218,14 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
       // p->box_exterior += z;
     }
 
-    // find indices of both box corner points (ref, target)
-    // u64 refd = p->psort_idx.search(p->boxspan_ref, d);
-    // u64 trgd = p->psort_idx.search(p->boxspan_target, d);
-    // u64 il   = std::min(refd, trgd);
-    // u64 iu   = std::max(refd, trgd);
-    // // check: need to be extendable to below and to above
-    // if (il == 0 || iu + 1 == p->psort_idx.stride) {
-    //   ++p->box_exterior;
-    //   return;
-    // }
-    // // extend to below and to above
-    // p->box.coords[d]                     = *p->pts.at(p->psort_idx.at(il - 1, d), d);
-    // p->box.coords[d + p->pts.dimensions] = *p->pts.at(p->psort_idx.at(iu + 1, d), d);
-
     // extend along next axis
     return extend_hyperbox_axis(p, d + 1);
   }
 
-  // check: being interiour hyperbox
-  // assert(p->box_exterior == 0);
-
   // check: emptiness condition of hyperbox
   for (u64 i = 0; i < p->pts.size(); ++i) {
     // assert(!is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0)));
-    if(is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0))) {
+    if (is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0))) {
       prec* pt = p->pts.at(i, 0);
       std::cerr << i << "," << pt[0] << "," << pt[1] << std::endl;
       assert(0);
@@ -275,15 +261,15 @@ void dispersion_subdomain_recursive(problem_param* p)
 
   p->box.coords.resize(2 * p->pts.dimensions);
 
-  p->box_exterior      = 0;
+  p->box_exterior       = 0;
   p->box.area           = 0;
   p->measures->box_max  = p->box;
   p->measures->disp     = 0;
   p->measures->boxcount = 0;
   p->boxes.clear();
 
-  prec* pt[2];
-  hyperbox<prec> box_base;
+  prec*            pt[2];
+  hyperbox<prec>   box_base;
   std::vector<u64> lower_bound_idx;
 
   lower_bound_idx.resize(p->pts.dimensions);
@@ -312,10 +298,10 @@ void dispersion_subdomain_recursive(problem_param* p)
     for (u64 d = 0; d < p->pts.dimensions; ++d) {
       if (pt[0][d] < pt[1][d]) {
         lower_bound_idx[d] = i;
-        p->box.coords[d] = pt[0][d];
+        p->box.coords[d]   = pt[0][d];
       } else {
         lower_bound_idx[d] = p->boxspan_ref;
-        p->box.coords[d] = pt[1][d];
+        p->box.coords[d]   = pt[1][d];
       }
       p->box.coords[d + p->pts.dimensions] = math::max(pt[0][d], pt[1][d]);
     }
@@ -331,19 +317,26 @@ void dispersion_subdomain_recursive(problem_param* p)
     }
     if (j < p->pts.size()) {
       continue;
-    }    
-    putparam(p->rt->os, "considering box candidate " + std::to_string(i) + " " + std::to_string(p->boxspan_ref), p->box.coords, p->rt->debug);
+    }
+    putparam(p->rt->os,
+             "considering box candidate " + std::to_string(i) + " "
+               + std::to_string(p->boxspan_ref),
+             p->box.coords,
+             p->rt->debug);
 
     // recursive search of hyperboxes (interiour hyperboxes only)
     // - start with axis 0 -> d-1; at d, record hyperbox
     p->boxspan_target = i;
-    box_base = p->box;
+    box_base          = p->box;
     for (u64 dref = 0; dref < p->pts.dimensions; ++dref) {
       for (u64 di = 0; di < p->pts.dimensions; ++di) {
-        putparam(p->rt->os, "exclude axes (below, above)", std::vector<u64>({dref,di}), p->rt->debug);
-        p->box.coords = box_base.coords;
+        putparam(p->rt->os,
+                 "exclude axes (below, above)",
+                 std::vector<u64>({ dref, di }),
+                 p->rt->debug);
+        p->box.coords                                              = box_base.coords;
         p->exclude_d[u64(lower_bound_idx[dref] != p->boxspan_ref)] = dref;
-        p->exclude_d[u64(lower_bound_idx[di] != i)] = di;
+        p->exclude_d[u64(lower_bound_idx[di] != i)]                = di;
         extend_hyperbox_axis(p, 0);
         putparam(p->rt->os, "found empty box", p->box.coords, p->rt->debug);
       }
@@ -581,7 +574,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.input              = "-";
   rt.output             = "-";
   rt.refptidx           = 0;
-  rt.debug = false;
+  rt.debug              = false;
   r                     = EXIT_SUCCESS;
 
   rt.subdomain.coords.clear();
