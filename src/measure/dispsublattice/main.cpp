@@ -73,7 +73,7 @@ struct problem_param
   hyperbox<prec>         box;
   u64                    boxspan_ref;
   u64                    boxspan_target;
-  u32                    box_exteriour;
+  u32                    box_exterior;
   u64 exclude_d[2];
 };
 
@@ -193,7 +193,7 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
       if (z == 0) {
         p->box.coords[d] = y;
       }
-      p->box_exteriour += z;
+      // p->box_exterior += z;
     }
 
     // extend to above
@@ -212,7 +212,7 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
       if (z == 0) {
         p->box.coords[di] = y;
       }
-      p->box_exteriour += z;
+      // p->box_exterior += z;
     }
 
     // find indices of both box corner points (ref, target)
@@ -222,7 +222,7 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
     // u64 iu   = std::max(refd, trgd);
     // // check: need to be extendable to below and to above
     // if (il == 0 || iu + 1 == p->psort_idx.stride) {
-    //   ++p->box_exteriour;
+    //   ++p->box_exterior;
     //   return;
     // }
     // // extend to below and to above
@@ -234,11 +234,16 @@ void extend_hyperbox_axis(problem_param* p, u64 d)
   }
 
   // check: being interiour hyperbox
-  // assert(p->box_exteriour == 0);
+  // assert(p->box_exterior == 0);
 
   // check: emptiness condition of hyperbox
   for (u64 i = 0; i < p->pts.size(); ++i) {
-    assert(!is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0)));
+    // assert(!is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0)));
+    if(is_inside(p->box, p->pts.dimensions, p->pts.at(i, 0))) {
+      prec* pt = p->pts.at(i, 0);
+      std::cerr << i << "," << pt[0] << "," << pt[1] << std::endl;
+      assert(0);
+    }
   }
 
   // compute area of hyperbox (axes-aligned)
@@ -270,7 +275,7 @@ void dispersion_subdomain_recursive(problem_param* p)
 
   p->box.coords.resize(2 * p->pts.dimensions);
 
-  p->box_exteriour      = 0;
+  p->box_exterior      = 0;
   p->box.area           = 0;
   p->measures->box_max  = p->box;
   p->measures->disp     = 0;
@@ -279,6 +284,9 @@ void dispersion_subdomain_recursive(problem_param* p)
 
   prec* pt[2];
   hyperbox<prec> box_base;
+  std::vector<u64> lower_bound_idx;
+
+  lower_bound_idx.resize(p->pts.dimensions);
 
   // preprocess a sorted list of points, along each axis independently
   // - sorting halfs the quadratic complexity during each recursive step
@@ -302,7 +310,13 @@ void dispersion_subdomain_recursive(problem_param* p)
     pt[0] = p->pts.at(i, 0);
     pt[1] = p->pts.at(p->boxspan_ref, 0);
     for (u64 d = 0; d < p->pts.dimensions; ++d) {
-      p->box.coords[d]                     = math::min(pt[0][d], pt[1][d]);
+      if (pt[0][d] < pt[1][d]) {
+        lower_bound_idx[d] = i;
+        p->box.coords[d] = pt[0][d];
+      } else {
+        lower_bound_idx[d] = p->boxspan_ref;
+        p->box.coords[d] = pt[1][d];
+      }
       p->box.coords[d + p->pts.dimensions] = math::max(pt[0][d], pt[1][d]);
     }
     // check: emptyness condition
@@ -318,18 +332,18 @@ void dispersion_subdomain_recursive(problem_param* p)
     if (j < p->pts.size()) {
       continue;
     }    
-    putparam(p->rt->os, "considering box candidate", p->box.coords, p->rt->debug);
+    putparam(p->rt->os, "considering box candidate " + std::to_string(i) + " " + std::to_string(p->boxspan_ref), p->box.coords, p->rt->debug);
 
     // recursive search of hyperboxes (interiour hyperboxes only)
     // - start with axis 0 -> d-1; at d, record hyperbox
     p->boxspan_target = i;
     box_base = p->box;
-    for (u64 d0 = 0; d0 < p->pts.dimensions; ++d0) {
-      for (u64 d1 = 0; d1 < p->pts.dimensions; ++d1) {
-        putparam(p->rt->os, "exclude axes", std::vector<u64>({d0,d1}), p->rt->debug);
+    for (u64 dref = 0; dref < p->pts.dimensions; ++dref) {
+      for (u64 di = 0; di < p->pts.dimensions; ++di) {
+        putparam(p->rt->os, "exclude axes (below, above)", std::vector<u64>({dref,di}), p->rt->debug);
         p->box.coords = box_base.coords;
-        p->exclude_d[0] = d0;
-        p->exclude_d[1] = d1;
+        p->exclude_d[u64(lower_bound_idx[dref] != p->boxspan_ref)] = dref;
+        p->exclude_d[u64(lower_bound_idx[di] != i)] = di;
         extend_hyperbox_axis(p, 0);
         putparam(p->rt->os, "found empty box", p->box.coords, p->rt->debug);
       }
@@ -359,9 +373,9 @@ i32 return_partial_results(const program_param& rt, const problem_param& problem
   }
 
   putln(rt.os,
-        "# encountered exteriour boxes: ",
-        problem.box_exteriour,
-        problem.box_exteriour > 0);
+        "# encountered exterior boxes: ",
+        problem.box_exterior,
+        problem.box_exterior > 0);
 
   return EXIT_SUCCESS;
 }
@@ -647,7 +661,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     problems[i].measures->ndisp = problems[i].pts.size() * problems[i].measures->disp;
   }
 
-  // show sequence of interiour/exteriour/all/.. boxes
+  // show sequence of interiour/exterior/all/.. boxes
   for (dptk::u64 i = 0; i < problems.size(); ++i) {
     dptk::return_partial_results(rt, problems[i]);
   }
