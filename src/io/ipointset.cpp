@@ -99,6 +99,12 @@ void read_pointset(std::istream& in, regular_pointset<b64>& out, ipointset_read_
   eos = false;
 
   while (std::getline(in, ln) && !in.fail()) {
+    // trim eol 
+    while (ln.size() > 0 && (ln.back() == '\r' || ln.back() == '\n')) {
+      ln.pop_back();
+    }
+
+    // skip emty lines
     if (ln.empty()) {
       continue;
     }

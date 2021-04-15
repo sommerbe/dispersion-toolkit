@@ -24,6 +24,7 @@
 * write-matrix spurious point delimiter after last point
 * stat-confidence infers statistics domain from point set domain
 * clearing a point set implicitly clears its domain boundary (since number of dimensions are cleared already)
+* point set reader trims (spurious) EOL characters of various OS conventions
 
 ## misc
 * procedure argument parsing accepts vectors without quotes
