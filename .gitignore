@@ -7,3 +7,4 @@ relbuild
 __pycache__
 *.pdf
 **/dispgs/main-2d.cpp
+assets/
