@@ -70,11 +70,11 @@ struct problem_param
 
   // internal
   // pointset_dsorted_index psort_idx;
-  hyperbox<prec>         box;
-  u64                    boxspan_ref;
-  u64                    boxspan_target;
-  u32                    box_exterior;
-  u64                    exclude_d[2];
+  hyperbox<prec>   box;
+  u64              boxspan_ref;
+  u64              boxspan_target;
+  u32              box_exterior;
+  std::vector<u32> exclude_d;
 };
 
 void print_coords(std::ostream*         os,
@@ -188,43 +188,68 @@ bool check_emptiness(problem_param* p)
   return true;
 }
 
+void attach_box_debug(problem_param* p)
+{
+  if (p->rt->debug && p->rt->compute_boxes) {
+    p->box.area = compute_area(p->box, p->pts.dimensions);
+    if (predicate_area(p->box.area, p->rt->box_area_min, p->rt->box_area_max)) {
+      putparam(p->rt->os, "    box #", p->boxes.size(), p->rt->debug);
+      p->boxes.push_back(p->box);
+    }
+  }
+}
+
 void extend_hyperbox_axis(problem_param* p, u64 d)
 {
   // extend hyperbox p.box maximally along axis index d
   if (d < p->pts.dimensions) {
     // extend to below
-    if (d != p->exclude_d[0]) {
+    if (p->exclude_d[d] == 0) {
       u32 z = 1;
       b64 y = p->pts.domain_low(d);
+      u64 j;
       for (u64 i = 0; i < p->pts.size(); ++i) {
         prec* pt = p->pts.at(i, 0);
         if (pt[d] >= p->box.coords[d] || !is_inside(p->box, p->pts.dimensions, d, pt)) {
           continue;
         }
-        y = math::max(pt[d], y);
+        if (pt[d] > y) {
+          j = i;
+          y = pt[d];
+        }
+        // y = math::max(pt[d], y);
         z = 0;
       }
       if (z == 0) {
         p->box.coords[d] = y;
+        putparam(p->rt->os, "    extend below", std::vector<u64>({ d, j }), p->rt->debug);
+        attach_box_debug(p);
       }
       // p->box_exterior += z;
     }
 
     // extend to above
-    if (d != p->exclude_d[1]) {
+    if (p->exclude_d[d + p->pts.dimensions] == 0) {
       u32 z  = 1;
       u64 di = d + p->pts.dimensions;
       b64 y  = p->pts.domain_up(d);
+      u64 j;
       for (u64 i = 0; i < p->pts.size(); ++i) {
         prec* pt = p->pts.at(i, 0);
         if (pt[d] <= p->box.coords[di] || !is_inside(p->box, p->pts.dimensions, d, pt)) {
           continue;
         }
-        y = math::min(pt[d], y);
+        if (pt[d] < y) {
+          j = i;
+          y = pt[d];
+        }
+        // y = math::min(pt[d], y);
         z = 0;
       }
       if (z == 0) {
         p->box.coords[di] = y;
+        putparam(p->rt->os, "    extend above", std::vector<u64>({ d, j }), p->rt->debug);
+        attach_box_debug(p);
       }
       // p->box_exterior += z;
     }
@@ -277,6 +302,7 @@ void dispersion_subdomain_recursive(problem_param* p)
   std::vector<u64> lower_bound_idx;
 
   lower_bound_idx.resize(p->pts.dimensions);
+  p->exclude_d.resize(p->pts.dimensions * 2, 0);
 
   // preprocess a sorted list of points, along each axis independently
   // - sorting halfs the quadratic complexity during each recursive step
@@ -330,19 +356,34 @@ void dispersion_subdomain_recursive(problem_param* p)
 
     // recursive search of hyperboxes (interiour hyperboxes only)
     // - start with axis 0 -> d-1; at d, record hyperbox
+    u32 k[2];
+
     p->boxspan_target = i;
     box_base          = p->box;
     for (u64 dref = 0; dref < p->pts.dimensions; ++dref) {
       for (u64 di = 0; di < p->pts.dimensions; ++di) {
+        // transform exclude axis relative to point to absolute axis
+        k[0]               = lower_bound_idx[dref] != p->boxspan_ref;
+        k[0]               = k[0] * p->pts.dimensions + dref;
+        k[1]               = lower_bound_idx[di] != i;
+        k[1]               = k[1] * p->pts.dimensions + di;
+        p->exclude_d[k[0]] = 1;
+        p->exclude_d[k[1]] = 1;
+        p->box.coords      = box_base.coords;
+
         putparam(p->rt->os,
-                 "exclude axes (below, above)",
-                 std::vector<u64>({ dref, di }),
+                 "  exclude axes (di, dref)",
+                 std::vector<u64>({ di, dref }),
                  p->rt->debug);
-        p->box.coords                                              = box_base.coords;
-        p->exclude_d[u64(lower_bound_idx[dref] != p->boxspan_ref)] = dref;
-        p->exclude_d[u64(lower_bound_idx[di] != i)]                = di;
+        putparam(p->rt->os, "  exclude axes (below, above)", p->exclude_d, p->rt->debug);
+
+        attach_box_debug(p);
         extend_hyperbox_axis(p, 0);
-        putparam(p->rt->os, "found empty box", p->box.coords, p->rt->debug);
+
+        putparam(p->rt->os, "  found empty box", p->box.coords, p->rt->debug);
+
+        p->exclude_d[k[0]] = 0;
+        p->exclude_d[k[1]] = 0;
       }
     }
   }
