@@ -24,6 +24,8 @@
 * stat-confidence infers statistics domain from point set domain
 * clearing a point set implicitly clears its domain boundary (since number of dimensions are cleared already)
 * point set reader trims (spurious) EOL characters of various OS conventions
+* argument parsing (loss of precision on some Windows installations)
+* disp-dumitrescu2017 (synopsis, sorting, limit of epsilon)
 
 ## misc
 * procedure argument parsing accepts vectors without quotes
