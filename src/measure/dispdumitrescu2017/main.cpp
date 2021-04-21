@@ -398,6 +398,13 @@ void dispersion_dumitrescu2017(problem_param* p)
         p->pts.coords.push_back(p0[1]);
         ++p->pts.points;
       }
+
+      // skip empty slabs
+      if (p->pts.empty()) {
+        continue;
+      }
+
+      // define boundary
       p->pts.dimensions = 2;
       p->pts.domain_bound.push_back(pts_base.domain_low(0));
       p->pts.domain_bound.push_back(pts_base.domain_low(1));
