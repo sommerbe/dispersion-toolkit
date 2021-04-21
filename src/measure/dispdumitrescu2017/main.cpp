@@ -531,7 +531,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: compute dispersion with algorithm of Dumitrescu and Jiang, 2017"
                 << std::endl;
-      std::cout << "SYNOPSIS: [--i FILE] [--o FILE] [--disp] [--ndisp]  [--count-boxes] "
+      std::cout << "SYNOPSIS: --epsilon BINARY64 [--i FILE] [--o FILE] [--disp] "
+                   "[--ndisp]  [--count-boxes] "
                    "[--graph-layout] "
                    "[--silent]"
                 << std::endl;
