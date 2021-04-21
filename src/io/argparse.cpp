@@ -45,7 +45,7 @@ void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& 
 
     // expand long options
     if (isarg_long(s)) {
-      u64 p;
+      std::size_t p;
       // pattern: --key=value => --key value
       if (s.size() > 4 && (p = s.find_first_of('=', 3)) != std::string::npos) {
         args.push_back("--" + s.substr(2, p - 2));
