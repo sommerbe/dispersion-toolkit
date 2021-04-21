@@ -39,6 +39,7 @@ struct program_param
   u1            compute_ndisp;
   u1            compute_boxcount;
   u1            layout_graph;
+  u1            debug;
   // u1            compute_boxes;
   // u1            compute_box_max;
   // u1            compute_box_interior;
@@ -380,7 +381,7 @@ void dispersion_dumitrescu2017(problem_param* p)
   // - and iterate through all pairs of parallel planes (orthogonal to 2-axis)
   for (u64 i = 0; i < planes; ++i) {
     p->subdomain_low = i * norm + base;
-    for (u64 j = i + 1; i < planes; ++j) {
+    for (u64 j = i + 1; j < planes; ++j) {
       p->subdomain_up = j * norm + base;
       extent          = p->subdomain_up - p->subdomain_low;
 
@@ -403,12 +404,23 @@ void dispersion_dumitrescu2017(problem_param* p)
       p->pts.domain_bound.push_back(pts_base.domain_up(0));
       p->pts.domain_bound.push_back(pts_base.domain_up(1));
 
+      // need to allocate sorted index
+      p->idx.allocate(p->pts.size(), p->pts.dimensions);
+
       // find greatest empty rectangle within [low, up] (2-axis)
       dispersion_naamad_subdomain(p);
 
       // expand rectangle into 3rd dimension
       vol               = p->subdomain_disp * extent;
       p->measures->disp = std::max(vol, p->measures->disp);
+
+      // debug
+      if (p->rt->debug) {
+        putparam(
+          p->rt->os,
+          "slab",
+          std::vector<prec>{ p->subdomain_low, p->subdomain_up, p->subdomain_disp, vol });
+      }
     }
   }
 
@@ -516,6 +528,8 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.layout_graph = true;
     } else if (s == "--silent") {
       rt.silent = true;
+    } else if (s == "--debug") {
+      rt.debug = true;
     } else if (s == "--i") {
       if (++i == arg.size()) {
         std::cerr << "invalid argument: -i misses a mandatory parameter" << std::endl;
@@ -533,7 +547,7 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
                 << std::endl;
       std::cout << "SYNOPSIS: --epsilon BINARY64 [--i FILE] [--o FILE] [--disp] "
                    "[--ndisp]  [--count-boxes] "
-                   "[--graph-layout] "
+                   "[--graph-layout] [--debug] "
                    "[--silent]"
                 << std::endl;
       return false;
@@ -576,6 +590,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
   rt.silent       = false;
   rt.input        = "-";
   rt.output       = "-";
+  rt.debug        = false;
   r               = EXIT_SUCCESS;
 
   // parse arguments
@@ -619,7 +634,7 @@ dptk::i32 main(dptk::i32 argc, const dptk::i8** argv)
     dptk::forward_delimiter(rt.del_use_ipts, ipts_inf, rt.delimiter);
 
     // allocate index
-    problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
+    // problem.idx.allocate(problem.pts.size(), problem.pts.dimensions);
 
     problems.push_back(problem);
   }
