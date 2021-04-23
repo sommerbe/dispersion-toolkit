@@ -224,22 +224,18 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
     const std::string& s = arg[i];
 
     if (s == "--delimiter") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.delimiter))
         return argparse::err("missing delimiter value. Consider using -h or --help.");
-      rt.delimiter = arg[++i][0];
 
     } else if (s == "--domain-boundary") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.domain_boundary.coords))
+        return argparse::err("missing subdomain value. Consider using -h or --help.");
+      if (rt.domain_boundary.coords.size() % 2 != 0)
         return argparse::err(
-          "missing domain boundary value. Consider using -h or --help.");
+          "invalid domain-boundary value. The size of this list is not a multiple of 2.");
 
-      // a tuple of values is a special case of a pointset
-      std::stringstream is(arg[++i]);
-      rt.domain_boundary.clear();
-      read_pointset(is, rt.domain_boundary);
-
-      if (rt.domain_boundary.coords.empty())
-        return argparse::err("invalid argument: domain boundary tuple may not be empty.");
+    } else if (s == "--domain-boundary-unity") {
+      rt.domain_boundary_unity = true;
 
     } else if (s == "--mathematica") {
       rt.point_delimiter = ',';
@@ -258,51 +254,42 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
       rt.set_suffix      = '\0';
 
     } else if (s == "--point-delimiter") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.point_delimiter))
         return argparse::err(
           "missing point-delimiter value. Consider using -h or --help.");
-      rt.point_delimiter = arg[++i][0];
 
     } else if (s == "--coord-delimiter") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.coord_delimiter))
         return argparse::err(
           "missing coord-delimiter value. Consider using -h or --help.");
-      rt.coord_delimiter = arg[++i][0];
 
     } else if (s == "--point-prefix") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.point_prefix))
         return argparse::err("missing point-prefix value. Consider using -h or --help.");
-      rt.point_prefix = arg[++i][0];
 
     } else if (s == "--point-suffix") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.point_suffix))
         return argparse::err("missing point-suffix value. Consider using -h or --help.");
-      rt.point_suffix = arg[++i][0];
 
     } else if (s == "--set-prefix") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.set_prefix))
         return argparse::err("missing set-prefix value. Consider using -h or --help.");
-      rt.set_prefix = arg[++i][0];
 
     } else if (s == "--set-suffix") {
-      if (!argparse::argval(arg, i))
+      if (!argparse::retrieve(arg, i, rt.set_suffix))
         return argparse::err("missing set-suffix value. Consider using -h or --help.");
-      rt.set_suffix = arg[++i][0];
-
-    } else if (s == "--domain-boundary-unity") {
-      rt.domain_boundary_unity = true;
 
     } else if (s == "--silent") {
       rt.silent = true;
 
     } else if (s == "--i") {
-      if (++i == arg.size())
+      if (!argparse::retrieve(arg, i, rt.input))
         return argparse::err("invalid argument: -i misses a mandatory parameter");
-      rt.input = arg[i];
+
     } else if (s == "--o") {
-      if (++i == arg.size())
+      if (!argparse::retrieve(arg, i, rt.output))
         return argparse::err("invalid argument: -o misses a mandatory parameter");
-      rt.output = arg[i];
+
     } else if (s == "-h" || s == "--help") {
       std::cout << "NAME: reads a matrix of points" << std::endl;
       std::cout << "SYNOPSIS: [--i FILE] [--o FILE] --domain-boundary LIST_OF_NUMBERS | "
@@ -315,6 +302,12 @@ u1 parse_progargs(i32 argc, const i8** argv, program_param& rt)
                 << std::endl;
       return false;
     }
+  }
+
+  if (!(rt.domain_boundary_unity || !rt.domain_boundary.coords.empty())) {
+    return argparse::err(
+      "Missing command option. Either specify --domain-boundary LIST_OF_NUMBERS or "
+      "--domain-boundary-unity. Consider using -h or --help.");
   }
 
   return true;

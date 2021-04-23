@@ -11,6 +11,9 @@ void replace(std::string& str, const std::string& from, const std::string& to);
 
 void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& args);
 
+u1 require_args(const std::vector<std::string>& args_all,
+                const std::vector<std::string>& args_required);
+
 void require_argval(const std::vector<std::string>& args,
                     u64                             idx,
                     const std::string&              error_message);
@@ -25,6 +28,8 @@ u1 argval(const std::vector<std::string>& args, u64 idx);
 
 u1 err(const std::string& msg);
 
+u1 retrieve(const std::vector<std::string>& args, u64& idx, std::string& val);
+u1 retrieve(const std::vector<std::string>& args, u64& idx, i8& val);
 u1 retrieve(const std::vector<std::string>& args, u64& idx, b64& val);
 u1 retrieve(const std::vector<std::string>& args, u64& idx, u64& val);
 
@@ -45,7 +50,7 @@ u1 retrieve(const std::vector<std::string>& args,
   while ((count == 0 || val.size() < count) && retrieve(args, idx, v)) {
     val.push_back(v);
   }
-  return count == 0 || val.size() == count;
+  return (count == 0 && !val.empty()) || val.size() == count;
 }
 
 } // namespace argparse

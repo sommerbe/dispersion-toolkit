@@ -2,6 +2,7 @@
 #include <cctype>
 #include <iostream>
 #include <stdexcept>
+#include <unordered_set>
 
 namespace dptk {
 namespace argparse {
@@ -63,6 +64,20 @@ void canonical(dptk::i32 argc, const dptk::i8** argv, std::vector<std::string>& 
   }
 }
 
+u1 require_args(const std::vector<std::string>& args_all,
+                const std::vector<std::string>& args_required)
+{
+  std::unordered_set<std::string> args(args_all.begin(), args_all.end());
+  for (const std::string& s : args_required) {
+    if (args.find(s) == args.end()) {
+      std::cerr << "missing required argument option " << s
+                << ". Providing -h or --help may help." << std::endl;
+      return false;
+    }
+  }
+  return true;
+}
+
 void require_argval(const std::vector<std::string>& args,
                     u64                             idx,
                     const std::string&              error_message)
@@ -108,6 +123,28 @@ u1 err(const std::string& msg)
 {
   std::cerr << msg << std::endl;
   return false;
+}
+
+u1 retrieve(const std::vector<std::string>& args, u64& idx, std::string& val)
+{
+  if (!argparse::argval(args, idx))
+    return false;
+
+  val = args[++idx];
+  return true;
+}
+
+u1 retrieve(const std::vector<std::string>& args, u64& idx, i8& val)
+{
+  if (!argparse::argval(args, idx))
+    return false;
+
+  ++idx;
+  if (args[idx].empty()) {
+    val = '\0';
+  } else
+    val = args[idx][0];
+  return true;
 }
 
 u1 retrieve(const std::vector<std::string>& args, u64& idx, b64& val)
