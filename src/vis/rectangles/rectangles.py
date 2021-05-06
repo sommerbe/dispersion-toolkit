@@ -202,9 +202,9 @@ def visualise():
     # show console output
     if (not silent):
       if (mk_image_path != ''):
-        print(f'sequence={seq_i}   mkout={p}     ', end='\r')
+        print(f'sequence= {seq_i}   mkout= {p}     ', end='\r')
       else:
-        print(f'sequence={seq_i}   count={pts_i.shape[0]}      ', end='\r')
+        print(f'sequence= {seq_i}   count= {pts_i.shape[0]}      ', end='\r')
 
   if (not silent):
     print()
