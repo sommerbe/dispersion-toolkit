@@ -256,6 +256,9 @@ void gradient_ascent(ascent_param& ga, problem_param* problem)
   u64      d;
   prec     lgrad_max;
 
+  // prepend iteration number to point set argument to be its most significant argument
+  problem->pts.arguments.insert(problem->pts.arguments.begin(), b64(0));
+
   ga.i                 = 0;
   pts                  = problem->pts;
   bd                   = &problem->pts.domain_bound[0];
@@ -300,6 +303,9 @@ void gradient_ascent(ascent_param& ga, problem_param* problem)
     // finish up
     ++ga.i;
     msg(ga, problem);
+
+    // store current iteration number index [0,end) to first pts argument
+    problem->pts.arguments[0] = ga.i;
   }
 
   if (!problem->rt->silent)
