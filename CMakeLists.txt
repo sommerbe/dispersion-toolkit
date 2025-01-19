@@ -6,14 +6,14 @@
 ## Benjamin Sommer: 2020 - current
 ## ========================================
 
-project(dispersion-toolkit)
+cmake_minimum_required(VERSION 3.18)
 
-cmake_minimum_required(VERSION 3.4)
+project(dispersion-toolkit)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 # Set additional project information
-set(COPYRIGHT "2020-2021 Benjamin Sommer")
+set(COPYRIGHT "2020-2025 Benjamin Sommer")
 
 ##############################################################
 # Options
