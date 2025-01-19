@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdlib.h>
+#include <cstdint>
 #include <vector>
 
 namespace dptk {

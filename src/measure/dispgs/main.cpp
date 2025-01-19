@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <iostream>
 #include <stdlib.h>
+#include <cstdint>
 
 namespace dptk {
 
